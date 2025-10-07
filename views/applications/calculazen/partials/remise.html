@@ -1,0 +1,52 @@
+<form id="formRemise">
+    <fieldset class="fr-fieldset" aria-labelledby="text-legend text-messages">
+        <legend class="fr-fieldset__legend" id="text-legend">
+            Calcul de Remise avec Unités Gratuites
+            <span class="fr-hint-text">Ce formulaire détermine le pourcentage de remise réel</span>
+        </legend>
+        <div class="fr-fieldset__element">
+            <div class="fr-input-group">
+                <label class="fr-label" for="unitesPayantes">
+                    Unités Payantes
+                </label>
+                <input class="fr-input" name="unitesPayantes" id="unitesPayantes" type="number" required min="0"
+                    step="1">
+            </div>
+        </div>
+        <div class="fr-fieldset__element">
+            <div class="fr-input-group">
+                <label class="fr-label" for="prixUnitaire">
+                    Prix Unitaire (€)
+                </label>
+                <input class="fr-input" name="prixUnitaire" id="prixUnitaire" type="number" required min="0"
+                    step="0.01">
+            </div>
+        </div>
+        <div class="fr-fieldset__element">
+            <div class="fr-input-group">
+                <label class="fr-label" for="remisePourcent">
+                    Remise sur payantes (%)
+                </label>
+                <input class="fr-input" name="remisePourcent" id="remisePourcent" type="number" required min="0"
+                    max="100" step="0.01">
+            </div>
+        </div>
+        <div class="fr-fieldset__element">
+            <div class="fr-input-group">
+                <label class="fr-label" for="unitesGratuites">
+                    Unités Gratuites
+                </label>
+                <input class="fr-input" name="unitesGratuites" id="unitesGratuites" type="number" required min="0"
+                    step="1">
+            </div>
+        </div>
+        <div class="fr-messages-group" id="text-messages" aria-live="polite">
+            <codex-missives for="formRemise" small="true"></codex-missives>
+        </div>
+    </fieldset>
+
+    <button class="fr-btn" type="submit" id="submitRemise">
+        Calculer le pourcentage de remise
+    </button>
+</form>
+<script src="/views/applications/calculazen/js/form-remise.js"></script>
