@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fr" data-fr-scheme="system">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="format-detection" content="telephone=no,date=no,address=no,email=no,url=no">
+
+    <meta name="theme-color" content="#000091"><!-- Défini la couleur de thème du navigateur (Safari/Android) -->
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png"><!-- 180×180 -->
+    <link rel="icon" href="/favicon/favicon.svg" type="image/svg+xml">
+    <link rel="shortcut icon" href="/favicon/favicon.ico" type="image/x-icon"><!-- 32×32 -->
+    <link rel="manifest" href="/favicon/manifest.webmanifest" crossorigin="use-credentials">
+    <link rel="stylesheet" href="/dsfr-v1.14.2/dist/dsfr.min.css">
+    <link rel="stylesheet" href="/dsfr-v1.14.2/dist/utility/utility.min.css">
+    <link rel="stylesheet" href="/dsfr-v1.14.2/dist/core/core.min.css">
+    <!--- Script pour corriger l'effet de flash au chargement du mode sombre, à placer dans le head pour être exécuté le plus tôt possible -->
+    <script type="module" src="/static/js/libs/dsfr.themefixer@1.14.2.js"></script>
+    <!-- Script spécifique à l'application -->
+    <script type="module" src="/static/js/loader.js"></script>
+    <script type="module" src="/static/js/application.js"></script>
+    <script type="module" src="/static/js/route.js"></script>
+    <script type="module" src="/static/js/form-manager.js"></script>
+    <script type="module" src="/static/js/form-validators.js"></script>
+    
+    <title>Pharmacie St Barthélémy</title>
+</head>
+
+<body>
+    <template hx-get="/layout/header.html" hx-trigger="load" hx-swap="outerHTML"></template>
+    <main id="main" role="main" class="fr-container fr-my-4w">
+        <div id="router"></div>
+    </main>
+    <!-- Script DSFR en version es6 module et nomodule pour les navigateurs le ne supportant pas -->
+    <script type="module" src="/dsfr-v1.14.2/dist/dsfr.module.min.js"></script>
+    <script type="text/javascript" nomodule src="/dsfr-v1.14.2/dist/dsfr.nomodule.js"></script>
+    <!-- Librairies -->
+    <script src="/static/js/libs/docxtemplater@3.66.3.js"></script>
+    <script src="/static/js/libs/pizzip@3.2.0.js"></script>
+    <script src="/static/js/libs/pizzip-utils@3.2.0.js"></script>
+    <script src="/static/js/libs/FileSaver.min@2.0.5.js"></script>
+    <script src="/static/js/libs/htmx.min@2.0.7.js"></script>
+</body>
+
+</html>
