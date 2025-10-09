@@ -1,9 +1,9 @@
 /* /composants/codex-missives/codex-missives.css */
 :host {
   display: block;
+  min-width: 590px;
   min-height: 50px;
   padding: 0.5rem;
-  background-color: #f9f9f9;
   box-sizing: border-box;
 }
 

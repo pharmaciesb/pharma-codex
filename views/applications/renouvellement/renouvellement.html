@@ -1,0 +1,90 @@
+<div data-load-key="vueRenouvellement" id="vueRenouvellement">
+    <h1>Planification des Dates de Renouvellement</h1>
+    <form id="formRenouvellement">
+        <fieldset class="fr-fieldset" aria-labelledby="text-legend text-messages">
+            <legend class="fr-fieldset__legend" id="text-legend">
+                Calcul des Dates de Renouvellement
+                <span class="fr-hint-text">Ce formulaire planifie les dates de renouvellement à partir d'une date
+                    donnée</span>
+            </legend>
+            <div class="fr-fieldset__element">
+                <div class="fr-input-group">
+                    <label class="fr-label" for="dateInitiale">Date Initiale</label>
+                    <input class="fr-input" name="dateInitiale" id="dateInitiale" type="date" required>
+                </div>
+            </div>
+            <div class="fr-fieldset__element">
+                <div class="fr-input-group">
+                    <label class="fr-label" for="nombreRenouvellements">Nombre de renouvellements</label>
+                    <input class="fr-input" name="nombreRenouvellements" id="nombreRenouvellements" type="number"
+                        required value="5" min="1" step="1">
+                </div>
+            </div>
+            <div class="fr-fieldset__element">
+                <div class="fr-input-group">
+                    <label class="fr-label" for="intervalleRenouvellement">Intervalle entre chaque
+                        renouvellement</label>
+                    <input class="fr-input" name="intervalleRenouvellement" id="intervalleRenouvellement" type="number"
+                        required value="22" min="7">
+                </div>
+            </div>
+        </fieldset>
+
+        <button class="fr-btn" type="submit" id="submitRenouvellement">
+            Générer les Dates
+        </button>
+    </form>
+
+    <div class="fr-table">
+        <div class="fr-table__wrapper">
+            <div class="fr-table__container">
+                <div class="fr-table__content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col"> # </th>
+                                <th scope="col"> Date </th>
+                                <th scope="col"> Actions </th>
+                            </tr>
+                        </thead>
+                        <tbody id="renouvellementTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fr-highlight" id="infoRenouvellement">
+        <p id="messageRenouvellement">Renouvellement possible si la dernière facturation est antérieure ou égale au :
+            <strong id="dateDerniereFacturation"></strong>
+        </p>
+    </div>
+
+    <div class="fr-callout fr-callout--pink-macaron">
+        <h3 class="fr-callout__title">Jours Fériés de l'Année</h3>
+        <p class="fr-callout__text">
+        <div class="fr-table">
+            <div class="fr-table__wrapper">
+                <div class="fr-table__container">
+                    <div class="fr-table__content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col"> Date </th>
+                                    <th scope="col"> Dénomination </th>
+                                    <th scope="col"> Jour </th>
+                                </tr>
+                            </thead>
+                            <tbody id="joursFeries"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </p>
+    </div>
+    <div id="modalesContainer"></div>
+</div>
+
+<script src="./static/js/libs/qrious.min@4.0.2.js"></script>
+<script src="./views/applications/renouvellement/js/view-renouvellement.js"></script>

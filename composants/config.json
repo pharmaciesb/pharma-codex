@@ -1,6 +1,7 @@
 {
   "env": {
-    "basePath": "/composants",
+    "basePath": "/pharma-codex",
+    "componentPath": "/composants",
     "cssPath": "/css",
     "jsPath": "/js",
     "imagesPath": "/images",

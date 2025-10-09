@@ -1,14 +1,14 @@
 // Ex. grenier/js/loader.js
-export async function loadComponentsFromConfig(configPath = '/composants/config.json') {
+export async function loadComponentsFromConfig(configPath = './composants/config.json') {
   try {
     const config = await fetch(configPath).then(r => r.json());
     const { env, components } = config;
 
     for (const comp of components) {
       const { name, global } = comp;
-      const jsPath = `${env.basePath}/${name}/${name}.js`;
-      const htmlPath = `${env.basePath}/${name}/${name}.html`;
-      const cssPath = `${env.basePath}/${name}/${name}.css`;
+      const jsPath = `${env.basePath}/${env.componentPath}/${name}/${name}.js`;
+      const htmlPath = `${env.basePath}/${env.componentPath}/${name}/${name}.html`;
+      const cssPath = `${env.basePath}/${env.componentPath}/${name}/${name}.css`;
 
       // Import dynamique du module JS
       const module = await import(jsPath).catch(err => {

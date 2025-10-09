@@ -5,7 +5,10 @@
                 <div class="fr-header__brand fr-enlarge-link">
                     <div class="fr-header__brand-top">
                         <div class="fr-header__logo" style="flex-direction: left;">
-                            <img src="favicon/android-chrome-102x102.png" alt="Logo de la pharmacie" />
+                            <img src="./favicon/android-chrome-102x102.png" alt="Logo de la pharmacie" />
+                        </div>
+                        <div class="fr-header__operator">
+                            <codex-missives id="codexGlobal" small="true"></codex-missives>
                         </div>
                         <div class="fr-header__service">
                             <p class="fr-header__service-title">Pharmacie Saint Barthélémy</p>
@@ -15,5 +18,5 @@
                 </div>
             </div>
         </div>
-        <template hx-get="/layout/navigation.html" hx-trigger="load" hx-swap="outerHTML"></template>
+        <template hx-get="./layout/navigation.html" hx-trigger="load" hx-swap="outerHTML"></template>
 </header>

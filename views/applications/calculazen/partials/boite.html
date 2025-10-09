@@ -1,48 +1,47 @@
-<form id="formNombreBoites">
-    <fieldset class="fr-fieldset" aria-labelledby="text-legend text-messages">
-        <legend class="fr-fieldset__legend" id="text-legend">
-            Calcul du Nombre de Boîtes
-            <span class="fr-hint-text">Ce formulaire détermine le nombre de boîtes à délivrer</span>
-        </legend>
-        <div class="fr-fieldset__element">
-            <div class="fr-input-group">
-                <label class="fr-label" for="unitePrise">
-                    Unités par prise
-                </label>
-                <input class="fr-input" name="unitePrise" id="unitePrise" type="number" required min="0" step="1">
+<div data-load-key="vueBoite" id="vueBoite">
+    <form id="formNombreBoites">
+        <fieldset class="fr-fieldset" aria-labelledby="text-legend text-messages">
+            <legend class="fr-fieldset__legend" id="text-legend">
+                Calcul du Nombre de Boîtes
+                <span class="fr-hint-text">Ce formulaire détermine le nombre de boîtes à délivrer</span>
+            </legend>
+            <div class="fr-fieldset__element">
+                <div class="fr-input-group">
+                    <label class="fr-label" for="unitePrise">
+                        Unités par prise
+                    </label>
+                    <input class="fr-input" name="unitePrise" id="unitePrise" type="number" required min="0" step="1">
+                </div>
             </div>
-        </div>
-        <div class="fr-fieldset__element">
-            <div class="fr-input-group">
-                <label class="fr-label" for="nombrePrise">
-                    Nombre de prises
-                </label>
-                <input class="fr-input" name="nombrePrise" id="nombrePrise" type="number" required min="0" step="1">
+            <div class="fr-fieldset__element">
+                <div class="fr-input-group">
+                    <label class="fr-label" for="nombrePrise">
+                        Nombre de prises
+                    </label>
+                    <input class="fr-input" name="nombrePrise" id="nombrePrise" type="number" required min="0" step="1">
+                </div>
             </div>
-        </div>
-        <div class="fr-fieldset__element">
-            <div class="fr-input-group">
-                <label class="fr-label" for="dureePrise">
-                    Durée en jours
-                </label>
-                <input class="fr-input" name="dureePrise" id="dureePrise" type="number" required min="0" step="1">
+            <div class="fr-fieldset__element">
+                <div class="fr-input-group">
+                    <label class="fr-label" for="dureePrise">
+                        Durée en jours
+                    </label>
+                    <input class="fr-input" name="dureePrise" id="dureePrise" type="number" required min="0" step="1">
+                </div>
             </div>
-        </div>
-        <div class="fr-fieldset__element">
-            <div class="fr-input-group">
-                <label class="fr-label" for="unitesBoite">
-                    Unités par Boîte
-                </label>
-                <input class="fr-input" name="unitesBoite" id="unitesBoite" type="number" required min="1" step="1">
+            <div class="fr-fieldset__element">
+                <div class="fr-input-group">
+                    <label class="fr-label" for="unitesBoite">
+                        Unités par Boîte
+                    </label>
+                    <input class="fr-input" name="unitesBoite" id="unitesBoite" type="number" required min="1" step="1">
+                </div>
             </div>
-        </div>
-        <div class="fr-messages-group" id="text-messages" aria-live="polite">
-            <codex-missives for="formNombreBoites" small="true"></codex-missives>
-        </div>
-    </fieldset>
+        </fieldset>
 
-    <button class="fr-btn" type="submit">
-        Calculer le nombre de boîtes
-    </button>
-</form>
-<script src="/views/applications/calculazen/js/form-boite.js"></script>
+        <button class="fr-btn" type="submit">
+            Calculer le nombre de boîtes
+        </button>
+    </form>
+</div>
+<script src="./views/applications/calculazen/js/view-boite.js"></script>
