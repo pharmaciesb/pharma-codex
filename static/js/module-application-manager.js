@@ -81,6 +81,19 @@
                     if (result instanceof Promise) await result;
                 }
             } catch (err) { log('DomloadManager', 'error', `Erreur onload pour ${key}:`, err); }
+        },
+
+        waitForCodex: async function (selector = '#codexGlobal', timeout = 2000) {
+            const start = performance.now();
+            while (performance.now() - start < timeout) {
+                const codex = document.querySelector(selector);
+                if (codex && codex.shadowRoot && codex.shadowRoot.querySelector('.missives')) {
+                    return codex;
+                }
+                await new Promise(r => setTimeout(r, 50));
+            }
+            console.warn(`[DomloadManager] Codex ${selector} non prêt après ${timeout}ms`);
+            return document.querySelector(selector); // fallback même si pas prêt
         }
     };
 
@@ -93,17 +106,17 @@
             log('FormManager', 'info', `Handler enregistré pour: ${formId}`);
         },
 
-        addResultMessage: function (codex, type, message) {
+        addResultMessage: async function (codex, type, message) {
             if (!codex) return;
-            codex.addMessage(type, message);
+
+            // ⚡ On attend que le codex soit prêt
+            const readyCodex = await AppManagers.DomloadManager.waitForCodex(`#${codex.id}`);
+            readyCodex.addMessage(type, message);
+
             log('FormManager', 'success', `Message ajouté: [${type}] ${message}`);
         },
 
         init: function () {
-            // Codex global dans le header
-            const globalCodex = document.getElementById('codexGlobal');
-            if (!globalCodex) log('FormManager','warn','Codex global non trouvé');
-
             document.addEventListener("submit", async (e) => {
                 if (!e.target || !e.target.matches("form")) return;
                 e.preventDefault();
@@ -113,11 +126,13 @@
                 const handler = this.handlers[form.id];
                 if (!handler) { log('FormManager', 'warn', `Aucun handler pour ${form.id}`); return; }
 
+                const globalCodex = document.getElementById('codexGlobal');
+
                 try {
                     await handler(data, form, globalCodex, this, window.Validator);
                 } catch (err) {
                     log('FormManager', 'error', `Erreur dans handler pour ${form.id}:`, err);
-                    globalCodex?.addMessage('error', err.message || 'Erreur inconnue');
+                    await this.addResultMessage(globalCodex, 'error', err.message || 'Erreur inconnue');
                 }
             });
 
@@ -128,4 +143,5 @@
     // -------------------- Export global --------------------
     window.AppManagers = { DomloadManager, FormManager, log };
     window.addEventListener('load', () => { DomloadManager.init(); FormManager.init(); });
+
 })();
