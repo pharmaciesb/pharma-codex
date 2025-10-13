@@ -41,29 +41,47 @@
                 }, 50));
             };
 
-            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', safeExecute);
-            else safeExecute();
+            if (document.readyState === 'loading')
+                document.addEventListener('DOMContentLoaded', safeExecute);
+            else
+                safeExecute();
 
             if (typeof htmx !== 'undefined') {
                 document.body.addEventListener('htmx:afterSwap', (e) => {
-                    const targetKey = e.detail.target.getAttribute('data-load-key') || e.detail.target.id;
-                    if (targetKey) requestAnimationFrame(() => setTimeout(() => this._executeHandlerWithRetry(targetKey, 3), 50));
+                    const targetKey =
+                        e.detail.target.getAttribute('data-load-key') ||
+                        e.detail.target.id;
+                    if (targetKey)
+                        requestAnimationFrame(() =>
+                            setTimeout(() => this._executeHandlerWithRetry(targetKey, 3), 50)
+                        );
                 });
             }
         },
 
         _executeHandlersWithRetry: function (maxRetries = 3) {
-            Object.keys(this.handlers).forEach(key => this._executeHandlerWithRetry(key, maxRetries));
+            Object.keys(this.handlers).forEach(key =>
+                this._executeHandlerWithRetry(key, maxRetries)
+            );
         },
 
         _executeHandlerWithRetry: async function (key, retries = 3) {
             const handler = this.handlers[key];
-            if (!handler) { log('DomloadManager', 'warn', `Handler manquant pour ${key}`); return; }
+            if (!handler) {
+                log('DomloadManager', 'warn', `Handler manquant pour ${key}`);
+                return;
+            }
 
             for (let attempt = 1; attempt <= retries; attempt++) {
-                const element = document.querySelector(`[data-load-key="${key}"]`) || document.getElementById(key);
-                if (element) { await this._executeHandler(key); return; }
-                if (attempt < retries) await new Promise(r => setTimeout(r, 100 * attempt));
+                const element =
+                    document.querySelector(`[data-load-key="${key}"]`) ||
+                    document.getElementById(key);
+                if (element) {
+                    await this._executeHandler(key);
+                    return;
+                }
+                if (attempt < retries)
+                    await new Promise(r => setTimeout(r, 100 * attempt));
             }
             log('DomloadManager', 'error', `Onload ${key} : échec après ${retries} tentatives`);
         },
@@ -71,16 +89,22 @@
         _executeHandler: async function (key) {
             const handler = this.handlers[key];
             if (!handler) return;
-            const element = document.querySelector(`[data-load-key="${key}"]`) || document.getElementById(key);
+            const element =
+                document.querySelector(`[data-load-key="${key}"]`) ||
+                document.getElementById(key);
             if (!element) return;
 
             try {
-                if (typeof handler.presetVariableOnload === 'function') handler.presetVariableOnload(element, key);
+                if (typeof handler.presetVariableOnload === 'function')
+                    handler.presetVariableOnload(element, key);
+
                 if (typeof handler.methodeOnload === 'function') {
                     const result = handler.methodeOnload(element, key);
                     if (result instanceof Promise) await result;
                 }
-            } catch (err) { log('DomloadManager', 'error', `Erreur onload pour ${key}:`, err); }
+            } catch (err) {
+                log('DomloadManager', 'error', `Erreur onload pour ${key}:`, err);
+            }
         },
 
         waitForCodex: async function (selector = '#codexGlobal', timeout = 2000) {
@@ -93,7 +117,7 @@
                 await new Promise(r => setTimeout(r, 50));
             }
             console.warn(`[DomloadManager] Codex ${selector} non prêt après ${timeout}ms`);
-            return document.querySelector(selector); // fallback même si pas prêt
+            return document.querySelector(selector);
         }
     };
 
@@ -108,23 +132,23 @@
 
         addResultMessage: async function (codex, type, message) {
             if (!codex) return;
-
-            // ⚡ On attend que le codex soit prêt
             const readyCodex = await AppManagers.DomloadManager.waitForCodex(`#${codex.id}`);
             readyCodex.addMessage(type, message);
-
             log('FormManager', 'success', `Message ajouté: [${type}] ${message}`);
         },
 
         init: function () {
-            document.addEventListener("submit", async (e) => {
-                if (!e.target || !e.target.matches("form")) return;
+            document.addEventListener('submit', async (e) => {
+                if (!e.target || !e.target.matches('form')) return;
                 e.preventDefault();
 
                 const form = e.target;
                 const data = new FormData(form);
                 const handler = this.handlers[form.id];
-                if (!handler) { log('FormManager', 'warn', `Aucun handler pour ${form.id}`); return; }
+                if (!handler) {
+                    log('FormManager', 'warn', `Aucun handler pour ${form.id}`);
+                    return;
+                }
 
                 const globalCodex = document.getElementById('codexGlobal');
 
@@ -140,8 +164,57 @@
         }
     };
 
-    // -------------------- Export global --------------------
-    window.AppManagers = { DomloadManager, FormManager, log };
-    window.addEventListener('load', () => { DomloadManager.init(); FormManager.init(); });
+    // -------------------- TemplateManager --------------------
+    const TemplateManager = {
+        _cache: new Map(),
 
+        async load(url) {
+            if (this._cache.has(url)) return this._cache.get(url);
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`Échec du chargement du template : ${url}`);
+            const html = await response.text();
+            this._cache.set(url, html);
+            log('TemplateManager', 'info', `Template chargé : ${url}`);
+            return html;
+        },
+
+        /**
+         * Remplace les variables du type ${variable} dans un template HTML
+         * @param {string} template - le contenu du template HTML
+         * @param {object} data - les données à injecter
+         * @returns {string} - le HTML rendu
+         */
+        renderString(template, data = {}) {
+            return template.replace(/\$\{(.*?)\}/g, (match, key) => {
+                const value = key.split('.').reduce((acc, k) => acc?.[k], data);
+                return value ?? match;
+            });
+        },
+
+        /**
+         * Charge, compile et insère le template rendu dans une cible du DOM
+         * @param {string} url - chemin du template HTML
+         * @param {object} data - données à injecter
+         * @param {Element|string} target - élément cible ou sélecteur
+         * @param {boolean} replace - si true, remplace entièrement le contenu
+         */
+        async renderInto(url, data, target, replace = true) {
+            const tpl = await this.load(url);
+            const rendered = this.renderString(tpl, data);
+            const element = typeof target === 'string' ? document.querySelector(target) : target;
+            if (!element) throw new Error(`Cible introuvable : ${target}`);
+            if (replace) element.innerHTML = rendered;
+            else element.insertAdjacentHTML('beforeend', rendered);
+            log('TemplateManager', 'success', `Template inséré dans ${target}`);
+            return element;
+        }
+    };
+
+    // -------------------- Export global --------------------
+    window.AppManagers = { DomloadManager, FormManager, TemplateManager, log };
+
+    window.addEventListener('load', () => {
+        DomloadManager.init();
+        FormManager.init();
+    });
 })();
