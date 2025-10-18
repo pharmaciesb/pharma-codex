@@ -1,0 +1,21 @@
+.fr-logo::before {
+    min-width: 84px !important;
+    min-height: 84px !important;
+    margin: 0.333333rem auto !important;
+    background-size: contain !important;
+    content: "" !important;
+    display: block !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    background-image: url("../../favicon/favicon.svg") !important;
+}
+.fr-logo::after {
+    width: 0px !important;
+    height: 0px !important;
+    background-size: contain !important;
+    content: "" !important;
+    display: none !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-image: none !important;
+}

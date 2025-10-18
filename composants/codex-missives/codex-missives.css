@@ -1,22 +1,26 @@
-/* /composants/codex-missives/codex-missives.css */
 :host {
-  display: block;
+  display: flex;
+  align-items: flex-start; /* ou center si tu veux centrer verticalement */
   min-width: 590px;
   min-height: 50px;
   padding: 0.5rem;
   box-sizing: border-box;
+  gap: 0.5rem;
 }
 
+/* arsenal : reste à droite, ne s’étire pas */
 .arsenal {
   display: flex;
   gap: 0.5rem;
   justify-content: flex-end;
-  margin-bottom: 0.5rem;
+  flex-shrink: 0;
 }
 
+/* missives : prend tout l’espace restant à gauche */
 .missives {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   gap: 0.5rem;
   min-height: 50px;
 }
