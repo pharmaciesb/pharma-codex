@@ -1,0 +1,24 @@
+<div class="fr-col-12 fr-mt-4w" data-load-key="vueOrdonnancier" id="vueOrdonnancier">
+    <div class="fr-callout fr-callout--pink-macaron">
+        <h3 class="fr-callout__title">Téléchargement</h3>
+        <p class="fr-callout__text">
+            Utilisez les boutons ci-dessous pour générer un PDF de l'ordonnance de votre choix.
+        </p>
+        <div class="fr-btns-group fr-btns-group--inline-md fr-mt-2w">
+            <button id="pdf-basique" class="fr-btn" type="button">
+                📄 Basique A4
+            </button>
+            <button id="pdf-basique-double" class="fr-btn fr-btn--secondary" type="button">
+                🧾 Basique A5 (x2)
+            </button>
+            <button id="pdf-pansement" class="fr-btn fr-btn--secondary" type="button">
+                🧾 Pansement A4
+            </button>
+            <button id="pdf-pansement-double" class="fr-btn fr-btn--secondary" type="button">
+                🧾 Pansement A5 (x2)
+            </button>
+        </div>
+    </div>
+</div>
+<script src="./static/js/libs/html2pdf.bundle.min@0.10.1.js"></script>
+<script src="./views/infirmerie/ordonnancier/js/view-ordonnancier.js"></script>

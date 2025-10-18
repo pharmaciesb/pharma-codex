@@ -1,0 +1,73 @@
+section#ordonnance {
+  width: 20cm;
+}
+section#ordonnance h1 {
+  font-size: 2rem;
+  text-transform: uppercase;
+  text-align: center;
+}
+section#prescripteur, section#patient {
+  border: 2px dashed #333;
+  padding: 12px;
+  width: 45%;
+}
+section#patient div#date-lieu {
+  text-align: right;
+}
+section#prescription h3 {
+  font-size: 1.2rem;
+}
+section#prescription section#prescription-contenu {
+  padding-top: 12px;
+  min-height: 12cm;
+}
+section#pansement-avertissement {
+  display: flex;
+  align-items: flex-end;
+  padding: 0 12px;
+}
+section#pansement-avertissement p {
+  font-size: x-small;
+  font-style: italic;
+  text-align: justify;
+}
+section#signature {
+  min-width: 280px;
+}
+section#signature div.tampon-cadre {
+  width: 50mm;
+  height: 25mm;
+  border: 2px dashed #333;
+  margin: 1rem auto;
+}
+dl dd {
+  border-bottom: 1px dashed #333;
+}
+dl dt {
+  font-weight: bold;
+}
+dl dd {
+  position: relative;
+  padding-right: 2em;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+.conteneur {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.haut {
+  display: flex;
+  justify-content: space-between;
+}
+.bas {
+  display: flex;
+  justify-content: space-between;
+}
+.milieu {
+  display: flex;
+  justify-content: center;
+}
