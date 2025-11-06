@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function loadRoute() {
     const route = getRouteFromHash();
-    htmx.ajax("GET", route, { target: target });
+    htmx.ajax("GET", route, { target: target }).catch(() => document.querySelector(target).innerHTML = "<p>Erreur : vue introuvable.</p>");;
     updateActiveNav(route);
     console.log("Loaded route:", route);
   }
