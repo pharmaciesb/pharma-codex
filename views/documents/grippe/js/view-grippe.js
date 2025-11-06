@@ -47,7 +47,7 @@ AppManagers.FormManager.registerHandler('formGrippe', async function (data, form
     manager.addResultMessage(codex, 'info', 'Remplissage du document en cours...');
 
     // Chargement du modèle
-    const existingPdfBytes = await fetch('./views/documents/partials/grippe/pdf/610d.pdf').then(r => r.arrayBuffer());
+    const existingPdfBytes = await fetch('./views/documents/grippe/pdf/610d.pdf').then(r => r.arrayBuffer());
     const { PDFDocument } = PDFLib;
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
     const formPdf = pdfDoc.getForm();
