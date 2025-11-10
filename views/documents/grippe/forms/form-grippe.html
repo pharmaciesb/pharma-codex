@@ -1,0 +1,63 @@
+<form id="formGrippe">
+    <fieldset class="fr-fieldset">
+        <legend class="fr-fieldset__legend">Informations du bénéficiaire</legend>
+
+        <div class="fr-fieldset__element">
+            <div class="fr-input-group">
+                <label class="fr-label" for="nom">Nom</label>
+                <input class="fr-input" type="text" name="nom" id="nom" required />
+            </div>
+        </div>
+
+        <div class="fr-fieldset__element">
+            <div class="fr-input-group">
+                <label class="fr-label" for="prenom">Prénom</label>
+                <input class="fr-input" type="text" name="prenom" id="prenom" required />
+            </div>
+        </div>
+
+        <div class="fr-fieldset__element">
+            <div class="fr-input-group">
+                <label class="fr-label" for="dateNaissance">Date de naissance</label>
+                <input class="fr-input" type="date" name="dateNaissance" id="dateNaissance" required />
+            </div>
+        </div>
+
+        <div class="fr-fieldset__element">
+            <div class="fr-input-group">
+                <label class="fr-label" for="immatriculation">N° d'immatriculation</label>
+                <input class="fr-input" type="text" name="immatriculation" id="immatriculation" required />
+            </div>
+        </div>
+
+        <div class="fr-fieldset__element">
+            <div class="fr-input-group">
+                <label class="fr-label" for="codeOrganisme">Code organisme</label>
+                <input class="fr-input" type="text" name="codeOrganisme" id="codeOrganisme" required />
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset class="fr-fieldset fr-mt-3w">
+        <legend class="fr-fieldset__legend">Vaccin et Injection</legend>
+
+        <div class="fr-fieldset__element">
+            <div class="fr-select-group">
+                <label class="fr-label" for="specialite">Spécialité</label>
+                <select id="specialite" name="specialite" class="fr-select" required>
+                    <option value="influvac">Influvac</option>
+                    <option value="vaxigrip">Vaxigrip</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="fr-fieldset__element fr-mt-2w">
+            <div class="fr-checkbox-group">
+                <input type="checkbox" id="avecInjection" name="avecInjection" />
+                <label class="fr-label" for="avecInjection">Avec injection</label>
+            </div>
+        </div>
+    </fieldset>
+
+    <button class="fr-btn" type="submit" id="submitGrippe">Générer le bon PDF</button>
+</form>

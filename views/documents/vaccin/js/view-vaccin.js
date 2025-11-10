@@ -121,7 +121,7 @@ AppManagers.FormManager.registerHandler('formVaccin', async function (data, form
     // Téléchargement
     const a = document.createElement('a');
     a.href = blobUrl;
-    a.download = `bon_grippe_${nom}_${prenom}.pdf`;
+    a.download = `bon_vaccin_${nom}_${prenom}.pdf`;
     a.click();
 
     manager.addResultMessage(codex, 'success', 'Le bon de prise en charge a été généré avec succès.');

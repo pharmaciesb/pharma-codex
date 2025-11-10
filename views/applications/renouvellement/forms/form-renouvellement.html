@@ -1,0 +1,34 @@
+<form id="formRenouvellement">
+    <fieldset class="fr-fieldset" aria-labelledby="text-legend text-messages">
+        <legend class="fr-fieldset__legend" id="text-legend">
+            Calcul des Dates de Renouvellement
+            <span class="fr-hint-text">Ce formulaire planifie les dates de renouvellement à partir d'une date</span>
+            <span class="fr-hint-text">Il évite soigneusement les dimanches et les jours fériés</span>
+        </legend>
+        <div class="fr-fieldset__element">
+            <div class="fr-input-group">
+                <label class="fr-label" for="dateInitiale">Date Initiale</label>
+                <input class="fr-input" name="dateInitiale" id="dateInitiale" type="date" required>
+            </div>
+        </div>
+        <div class="fr-fieldset__element">
+            <div class="fr-input-group">
+                <label class="fr-label" for="nombreRenouvellements">Nombre de renouvellements</label>
+                <input class="fr-input" name="nombreRenouvellements" id="nombreRenouvellements" type="number" required
+                    value="5" min="1" step="1">
+            </div>
+        </div>
+        <div class="fr-fieldset__element">
+            <div class="fr-input-group">
+                <label class="fr-label" for="intervalleRenouvellement">Intervalle entre chaque
+                    renouvellement</label>
+                <input class="fr-input" name="intervalleRenouvellement" id="intervalleRenouvellement" type="number"
+                    required value="22" min="7">
+            </div>
+        </div>
+    </fieldset>
+
+    <button class="fr-btn" type="submit" id="submitRenouvellement">
+        Générer les Dates
+    </button>
+</form>

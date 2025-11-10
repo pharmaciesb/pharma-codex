@@ -1,35 +1,9 @@
 <div class="fr-grid-row fr-grid-row--gutters">
     <div class="fr-col-6">
         <div data-load-key="vueNir" id="vueNir">
-            <form id="formCleNir">
-                <fieldset class="fr-fieldset" aria-labelledby="text-legend text-messages">
-                    <legend class="fr-fieldset__legend" id="text-legend">
-                        Calcul de la clé d'un numéro de sécurité sociale français (NIR)
-                        <span class="fr-hint-text">Les codes corses 2A et 2B sont remplacés par 19 et 18</span>
-                        <span class="fr-hint-text">Après validation le numéro et la clé seront copiés dans le presse-papier</span>
-                    </legend>
-                    <div class="fr-fieldset__element">
-                        <div class="fr-input-group">
-                            <label class="fr-label" for="nir">
-                                Numéro de sécurité sociale (NIR)
-                            </label>
-                            <input class="fr-input" name="nir" id="nir" type="text" required>
-                        </div>
-                    </div>
-                    <div class="fr-fieldset__element">
-                        <div class="fr-input-group">
-                            <label class="fr-label" for="nombrePrise">
-                                Clé
-                            </label>
-                            <input class="fr-input" name="cle" id="cle" type="text" readonly>
-                        </div>
-                    </div>
-                </fieldset>
-
-                <button class="fr-btn" type="submit">
-                    Calculer la clé
-                </button>
-            </form>
+            <template hx-get="./views/applications/calculanir/forms/form-nir.html" hx-trigger="load"
+                hx-swap="outerHTML"></template>
         </div>
     </div>
-    <script src="./views/applications/calculanir/js/view-calculanir.js"></script>
+</div>
+<script src="./views/applications/calculanir/js/view-calculanir.js"></script>

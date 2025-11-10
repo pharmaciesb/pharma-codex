@@ -2,39 +2,8 @@
   <!-- ===== FORMULAIRE FACTURE ===== -->
   <div class="fr-col-12">
     <div data-load-key="vueFacture" id="vueFacture">
-      <form id="formFacture">
-        <fieldset class="fr-fieldset" aria-labelledby="facture-legend">
-          <legend class="fr-fieldset__legend" id="facture-legend">
-            Générateur de Facture Pharmaceutique
-            <span class="fr-hint-text">
-              Remplissez les champs ci-dessous puis téléchargez votre facture au format PDF.
-            </span>
-          </legend>
-
-          <div class="fr-fieldset__element">
-            <div class="fr-input-group">
-              <label class="fr-label" for="nom">Nom :</label>
-              <input class="fr-input" type="text" id="nom" name="nom" placeholder="Dupont Jean">
-            </div>
-          </div>
-
-          <div class="fr-fieldset__element">
-            <div class="fr-input-group">
-              <label class="fr-label" for="date">Date :</label>
-              <input class="fr-input" type="date" id="date" name="date" required>
-            </div>
-          </div>
-
-          <div class="fr-fieldset__element">
-            <div class="fr-input-group">
-              <label class="fr-label" for="total">Total TTC (€) :</label>
-              <input class="fr-input" type="number" step="0.01" id="total" name="total" placeholder="99.99" required>
-            </div>
-          </div>
-
-          <button class="fr-btn fr-mt-2w" type="submit">Prévisualiser</button>
-        </fieldset>
-      </form>
+      <template hx-get="./views/infirmerie/facture/forms/form-facture.html" hx-trigger="load"
+        hx-swap="outerHTML"></template>
     </div>
   </div>
 

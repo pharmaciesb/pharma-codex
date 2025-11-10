@@ -1,0 +1,43 @@
+<form id="formDatamatrix">
+    <fieldset class="fr-fieldset" aria-labelledby="text-legend text-messages">
+        <legend class="fr-fieldset__legend" id="text-legend">
+            Générateur de Datamatrix
+            <span class="fr-hint-text">
+                Imprime un nombre souhaité de datamatrix après avoir renseigné l'EAN13, le N° de LOT, et la DLU.
+            </span>
+        </legend>
+
+        <div class="fr-fieldset__element">
+            <div class="fr-input-group">
+                <label class="fr-label" for="ean">Code EAN13 :</label>
+                <input class="fr-input" name="ean" id="ean" type="text" required placeholder="3400933047467"
+                    value="3400933047467">
+            </div>
+        </div>
+
+        <div class="fr-fieldset__element">
+            <div class="fr-input-group">
+                <label class="fr-label" for="lot">N° de LOT</label>
+                <input class="fr-input" name="lot" id="lot" type="text" required placeholder="XJ1012" value="XJ1012">
+            </div>
+        </div>
+
+        <div class="fr-fieldset__element">
+            <div class="fr-input-group">
+                <label class="fr-label" for="dlu">DLU (date limite d'utilisation)</label>
+                <input class="fr-input" name="dlu" id="dlu" type="text" required placeholder="MM/YYYY"
+                    pattern="^(0[1-9]|1[0-2])\/\d{4}$">
+            </div>
+        </div>
+
+        <div class="fr-fieldset__element">
+            <div class="fr-input-group">
+                <label class="fr-label" for="qte">Quantité</label>
+                <input class="fr-input" name="qte" id="qte" type="number" required placeholder="1" value="12" min="1"
+                    max="24">
+            </div>
+        </div>
+    </fieldset>
+
+    <button class="fr-btn fr-mt-2w" type="submit">Générer</button>
+</form>

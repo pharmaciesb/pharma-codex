@@ -1,76 +1,44 @@
+// -- Vue DomloadManager
 AppManagers.DomloadManager.registerHandler('vueFacture', {
-  presetVariableOnload: function (element, key) {
-    window.currentView = key;
-    element.setAttribute('data-loaded', 'true');
-    AppManagers.log('vueFacture', 'info', 'Preset onload');
+  presetVariableOnload(element, key) {
+    try {
+      window.currentView = key;
+      element.setAttribute('data-loaded', 'true');
+      AppManagers.log('vueFacture', 'info', 'Preset onload OK');
+    } catch (err) {
+      console.error('[vueFacture] Erreur presetVariableOnload :', err);
+    }
+  },
+
+  async setDateDuJour() {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const input = document.getElementById('date');
+      if (input) input.value = today;
+    } catch (err) {
+      console.warn('[vueFacture] setDateDuJour échoué :', err);
+    }
   },
 
   methodeOnload: async function () {
-    AppManagers.log('vueFacture', 'success', 'Méthode onload OK');
+    AppManagers.log('vueFacture', 'success', 'Méthode onload déclenchée');
+    await this.setDateDuJour();
 
-    // --- Formatage de date au format dd/mm/yyyy ---
-    function formatDate(isoDate) {
-      const [year, month, day] = isoDate.split('-');
-      return `${day}/${month}/${year}`;
+    // Récupération boutons
+    const btnRenseignee = document.getElementById('pdf-renseignee');
+    const btnVierge = document.getElementById('pdf-vierge');
+    const btnViergeDouble = document.getElementById('pdf-vierge-double');
+
+    // -- Vérification DOM --
+    if (!btnVierge || !btnViergeDouble) {
+      AppManagers.log('vueFacture', 'warn', 'Boutons vierge non trouvés, vérifiez la vue HTML.');
+      return;
     }
 
-    // --- Préremplir la date du jour ---
-    const dateInput = document.getElementById('date');
-    if (dateInput) {
-      const today = new Date().toISOString().split('T')[0];
-      dateInput.value = today;
-    }
-
-    const form = document.getElementById('formFacture');
-    const outputDiv = document.getElementById('facture-output');
-
-    // --- Patch HTMX : on clone les boutons pour éviter les anciens listeners ---
-    const oldBtnR = document.getElementById('pdf-renseignee');
-    const oldBtnV = document.getElementById('pdf-vierge');
-    const oldBtnVD = document.getElementById('pdf-vierge-double'); // 🔥 Nouveau bouton
-    if (!oldBtnR || !oldBtnV || !oldBtnVD) return;
-
-    const btnRenseignee = oldBtnR.cloneNode(true);
-    const btnVierge = oldBtnV.cloneNode(true);
-    const btnViergeDouble = oldBtnVD.cloneNode(true);
-
-    oldBtnR.replaceWith(btnRenseignee);
-    oldBtnV.replaceWith(btnVierge);
-    oldBtnVD.replaceWith(btnViergeDouble);
-    // ------------------------------------------------------------------
-
-    // --- Soumission du formulaire ---
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const data = {
-        nom: document.getElementById('nom').value.trim(),
-        date: document.getElementById('date').value,
-        total: document.getElementById('total').value,
-      };
-
-      if (!data.date || !data.total) {
-        alert("Veuillez remplir tous les champs obligatoires avant de prévisualiser la facture !");
-        return;
-      }
-
-      try {
-        await AppManagers.TemplateManager.renderInto(
-          './views/infirmerie/facture/partials/satisfait.html',
-          { facture: data },
-          outputDiv
-        );
-
-        btnRenseignee.disabled = false;
-        AppManagers.log('vueFacture', 'success', 'Prévisualisation générée');
-      } catch (err) {
-        AppManagers.log('vueFacture', 'error', 'Erreur de prévisualisation', err);
-        alert("Erreur lors du chargement de la prévisualisation !");
-      }
-    });
-
-    // --- Fonction générique pour exporter un élément en PDF ---
+    // -- Fonction générique d’export PDF --
     const exportToPDF = (element, filename, options = {}) => {
+      if (!element) return console.error('[vueFacture] Aucun élément à exporter.');
+
       const sandbox = document.createElement('div');
       sandbox.style.cssText = `
         position: fixed;
@@ -87,85 +55,158 @@ AppManagers.DomloadManager.registerHandler('vueFacture', {
         margin: 0,
         filename,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: '#ffffff',
-          scrollY: 0,
-        },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: '#fff', scrollY: 0 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
         pagebreak: { mode: ['css', 'legacy'], before: '.breaker' },
         ...options
       };
 
-      // délai pour laisser le temps aux images/fonts de se charger
+      // léger délai pour le rendu
       setTimeout(() => {
         html2pdf()
           .set(opt)
-          .from(element) // 🔥 On capture le contenu réel, pas le parent invisible
+          .from(element)
           .save()
-          .then(() => sandbox.remove())
-          .catch(() => sandbox.remove());
-      }, 800);
+          .finally(() => sandbox.remove());
+      }, 300);
     };
 
-    // --- Génération facture renseignée ---
-    const generateFactureRenseignee = () => {
-      const facture = document.getElementById('facture-pdf');
-      if (!facture) {
-        alert("Veuillez d'abord générer la facture via le formulaire !");
-        return;
-      }
-
-      const clone = facture.cloneNode(true);
-      const dateEl = clone.querySelector('#facture-pdf-date input');
-      if (dateEl) {
-        const dateFrancaise = formatDate(dateEl.value);
-        clone.querySelector('#facture-pdf-date').innerHTML = 'À MARSEILLE, le : ' + dateFrancaise;
-      }
-
-      exportToPDF(clone, 'facture-renseignee.pdf');
-    };
-
-    // --- Génération facture vierge simple ---
+    // -- Génération de facture vierge (A4 simple) --
     const generateFactureVierge = async () => {
       try {
-        const resp = await fetch('./views/infirmerie/facture/partials/vierge.html');
+        const resp = await fetch('./views/infirmerie/facture/partials/vierge.html', { cache: 'no-store' });
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const html = await resp.text();
-
         const temp = document.createElement('div');
         temp.innerHTML = html.trim();
         const facture = temp.querySelector('#facture-vierge');
-
+        if (!facture) throw new Error('Template vierge introuvable.');
         exportToPDF(facture, 'facture-vierge.pdf');
       } catch (err) {
-        console.error('Erreur lors du chargement de vierge.html :', err);
-        alert("Impossible de charger le modèle vierge !");
+        console.error('[vueFacture] Erreur génération vierge :', err);
+        alert('Impossible de charger le modèle vierge.');
       }
     };
 
-    // --- Génération facture vierge double page ---
+    // -- Génération de facture vierge double (A5 x2) --
     const generateFactureViergeDouble = async () => {
       try {
-        const resp = await fetch('./views/infirmerie/facture/partials/vierge-double.html');
+        const resp = await fetch('./views/infirmerie/facture/partials/vierge-double.html', { cache: 'no-store' });
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const html = await resp.text();
-
         const temp = document.createElement('div');
         temp.innerHTML = html.trim();
         const facture = temp.querySelector('#facture-vierge-double');
-
+        if (!facture) throw new Error('Template vierge double introuvable.');
         exportToPDF(facture, 'facture-vierge-double.pdf');
       } catch (err) {
-        console.error('Erreur lors du chargement de vierge-double.html :', err);
-        alert("Impossible de charger le modèle vierge double !");
+        console.error('[vueFacture] Erreur génération vierge double :', err);
+        alert('Impossible de charger le modèle vierge double.');
       }
     };
 
-    // --- Liaison des boutons ---
-    btnRenseignee.addEventListener('click', generateFactureRenseignee);
-    btnVierge.addEventListener('click', generateFactureVierge);
-    btnViergeDouble.addEventListener('click', generateFactureViergeDouble);
+    // -- Configuration des boutons (sans doublons) --
+    btnVierge.disabled = false;
+    btnVierge.onclick = generateFactureVierge;
+
+    btnViergeDouble.disabled = false;
+    btnViergeDouble.onclick = generateFactureViergeDouble;
+
+    if (btnRenseignee) {
+      btnRenseignee.disabled = true;
+      btnRenseignee.onclick = null; // sera défini par le FormManager après rendu
+    }
+
+    AppManagers.log('vueFacture', 'info', 'Boutons vierge actifs, bouton renseignée en attente.');
+  }
+});
+
+
+// -- FormManager : gestion du formulaire de facture
+AppManagers.FormManager.registerHandler('formFacture', async function (data, form, codex, manager, validator) {
+  try {
+    const outputDiv = document.getElementById('facture-output');
+    const btnRenseignee = document.getElementById('pdf-renseignee');
+
+    if (!outputDiv) {
+      manager.addResultMessage(codex, 'error', 'Zone de prévisualisation introuvable.');
+      return;
+    }
+
+    // Validation de base
+    const required = ["nom", "date", "total"];
+    for (const f of required) {
+      const val = data.get(f)?.trim();
+      if (!val) {
+        manager.addResultMessage(codex, 'error', `Le champ "${f}" est obligatoire.`);
+        return;
+      }
+    }
+
+    const factureData = {
+      nom: data.get("nom").trim(),
+      date: data.get("date").trim(),
+      total: data.get("total").trim(),
+    };
+
+    manager.addResultMessage(codex, 'info', 'Génération de la prévisualisation...');
+    await AppManagers.TemplateManager.renderInto(
+      './views/infirmerie/facture/partials/satisfait.html',
+      { facture: factureData },
+      outputDiv
+    );
+
+    // Active le bouton "renseignée" et attache son handler
+    if (btnRenseignee) {
+      btnRenseignee.disabled = false;
+
+      const formatDate = (isoDate) => {
+        const [year, month, day] = isoDate.split('-');
+        return `${day}/${month}/${year}`;
+      };
+
+      btnRenseignee.onclick = () => {
+        const facture = document.getElementById('facture-pdf');
+        if (!facture) return alert("Veuillez d'abord générer la facture !");
+        const clone = facture.cloneNode(true);
+        const dateEl = clone.querySelector('#facture-pdf-date input');
+        if (dateEl) {
+          const dateFr = formatDate(dateEl.value);
+          clone.querySelector('#facture-pdf-date').innerHTML = 'À MARSEILLE, le : ' + dateFr;
+        }
+
+        const exportToPDF = (element, filename, options = {}) => {
+          const sandbox = document.createElement('div');
+          sandbox.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 210mm;
+            background: white; opacity: 0; z-index: -1;
+          `;
+          document.body.appendChild(sandbox);
+          sandbox.appendChild(element);
+
+          const opt = {
+            margin: 0,
+            filename,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, backgroundColor: '#fff', scrollY: 0 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: ['css', 'legacy'], before: '.breaker' },
+            ...options
+          };
+
+          setTimeout(() => {
+            html2pdf().set(opt).from(element).save().finally(() => sandbox.remove());
+          }, 300);
+        };
+
+        exportToPDF(clone, 'facture-renseignee.pdf');
+      };
+    }
+
+    manager.addResultMessage(codex, 'success', 'Prévisualisation générée avec succès.');
+    AppManagers.log('formFacture', 'success', 'Facture renseignée OK');
+  } catch (err) {
+    AppManagers.log('formFacture', 'error', 'Erreur génération facture', err);
+    manager.addResultMessage(codex, 'error', 'Erreur lors de la génération : ' + (err.message || err));
   }
 });
