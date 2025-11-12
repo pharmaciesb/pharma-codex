@@ -1,3 +1,5 @@
+// -- Vue Assistants
+import { definirAujourdhui } from '/pharma-codex/static/js/assistants/assistant-date.js';
 // -- Vue DomloadManager
 AppManagers.DomloadManager.registerHandler('vueFacture', {
   presetVariableOnload(element, key) {
@@ -10,19 +12,9 @@ AppManagers.DomloadManager.registerHandler('vueFacture', {
     }
   },
 
-  async setDateDuJour() {
-    try {
-      const today = new Date().toISOString().split('T')[0];
-      const input = document.getElementById('date');
-      if (input) input.value = today;
-    } catch (err) {
-      console.warn('[vueFacture] setDateDuJour échoué :', err);
-    }
-  },
-
   methodeOnload: async function () {
     AppManagers.log('vueFacture', 'success', 'Méthode onload déclenchée');
-    await this.setDateDuJour();
+    await definirAujourdhui();
 
     // Récupération boutons
     const btnRenseignee = document.getElementById('pdf-renseignee');

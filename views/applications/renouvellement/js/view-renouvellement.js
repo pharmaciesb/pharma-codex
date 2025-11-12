@@ -1,3 +1,5 @@
+// -- Vue Assistants
+import { definirAujourdhui, formatFR, obtenirIntervalle } from '/pharma-codex/static/js/assistants/assistant-date.js';
 // -- Vue DomloadManager
 AppManagers.DomloadManager.registerHandler('vueRenouvellement', {
   joursFeries: [],
@@ -57,16 +59,8 @@ AppManagers.DomloadManager.registerHandler('vueRenouvellement', {
     return dates;
   },
 
-  setDateDuJour: async function () {
-    const today = new Date();
-    const formatted = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-    const input = document.getElementById('dateInitiale');
-    if(input) input.value = formatted;
-
-    const lastDate = new Date(today);
-    lastDate.setDate(lastDate.getDate() - 22);
-    document.getElementById('dateDerniereFacturation').textContent =
-      `${String(lastDate.getDate()).padStart(2,'0')}/${String(lastDate.getMonth() + 1).padStart(2,'0')}/${lastDate.getFullYear()}`;
+  initDates: async function () {
+    document.getElementById('dateDerniereFacturation').textContent = await formatFR(await obtenirIntervalle(new Date(), -22));
   },
 
   presetVariableOnload: function(element,key){
@@ -77,7 +71,9 @@ AppManagers.DomloadManager.registerHandler('vueRenouvellement', {
 
   methodeOnload: async function(){
     await this.chargerJoursFeries();
-    await this.setDateDuJour();
+    await definirAujourdhui();
+    await this.initDates();
+
     AppManagers.log('vueRenouvellement','success','Méthode onload OK');
   }
 });

@@ -1,14 +1,23 @@
+// =============================================================
+// Vue Datamatrix - version refactorisée inspirée de vueFacture
+// =============================================================
+
+// -- Vue DomloadManager
 AppManagers.DomloadManager.registerHandler('vueDatamatrix', {
     presetVariableOnload(element, key) {
-        window.currentView = key;
-        element.setAttribute('data-loaded', 'true');
-        AppManagers.log('vueDatamatrix', 'info', 'Preset onload');
+        try {
+            window.currentView = key;
+            element.setAttribute('data-loaded', 'true');
+            AppManagers.log('vueDatamatrix', 'info', 'Preset onload OK');
+        } catch (err) {
+            console.error('[vueDatamatrix] Erreur presetVariableOnload :', err);
+        }
     },
 
     methodeOnload(element, key) {
-        AppManagers.log('vueDatamatrix', 'success', 'Méthode onload OK');
+        AppManagers.log('vueDatamatrix', 'success', 'Méthode onload déclenchée');
 
-        // --- Gestion de la saisie auto DLU ---
+        // --- Saisie auto format DLU (MMYYYY -> MM/YYYY) ---
         const expiryInput = document.getElementById('dlu');
         if (expiryInput && !expiryInput.dataset.listenerAttached) {
             expiryInput.dataset.listenerAttached = 'true';
@@ -27,49 +36,13 @@ AppManagers.DomloadManager.registerHandler('vueDatamatrix', {
             });
         }
 
-        // --- Bouton PDF (corrigé pour éviter les doublons) ---
-        let oldBtn = document.getElementById('pdf-btn');
-        if (!oldBtn) return;
-
-        // clone propre pour supprimer les anciens listeners
-        const newBtn = oldBtn.cloneNode(true);
-        oldBtn.replaceWith(newBtn);
-
-        newBtn.addEventListener('click', async () => {
-            const outputDiv = document.getElementById('datamatrix-output');
-            if (!outputDiv || outputDiv.children.length === 0) {
-                alert("Aucun Datamatrix généré à exporter !");
-                return;
-            }
-
-            const opt = {
-                margin: 10,
-                filename: 'datamatrix.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            newBtn.disabled = true;
-            newBtn.textContent = '📄 Génération...';
-
-            try {
-                await html2pdf().set(opt).from(outputDiv).save();
-                AppManagers.log('vueDatamatrix', 'success', 'PDF généré avec succès');
-            } catch (err) {
-                console.error('Erreur lors de la génération du PDF :', err);
-                alert('Erreur lors de la génération du PDF.');
-            } finally {
-                newBtn.disabled = false;
-                newBtn.textContent = '📄 Télécharger en PDF';
-            }
-        });
+        AppManagers.log('vueDatamatrix', 'info', 'Champ DLU autoformat actif.');
     }
 });
 
-// -------------------------------------------------------------
-// FORM HANDLER : génération du datamatrix
-// -------------------------------------------------------------
+// =============================================================
+// FormManager : génération + export PDF du Datamatrix
+// =============================================================
 AppManagers.FormManager.registerHandler('formDatamatrix', async (data, form, codex, manager) => {
     try {
         const ean = (data.get('ean') || '').trim();
@@ -82,31 +55,38 @@ AppManagers.FormManager.registerHandler('formDatamatrix', async (data, form, cod
             return;
         }
 
-        // --- Calculs DLU & GS1 ---
+        // --- Calcul DLU & GS1 ---
         const [mm, yyyy] = dlu.split('/');
         const yy = yyyy.slice(-2);
-        const year = parseInt(yyyy, 10);
-        const month = parseInt(mm, 10);
-        const lastDay = new Date(year, month, 0).getDate();
+        const lastDay = new Date(parseInt(yyyy), parseInt(mm), 0).getDate();
         const expiryDate = yy + mm.padStart(2, '0') + String(lastDay).padStart(2, '0');
         const ean14 = ean.length === 13 ? '0' + ean : ean;
         const datamatrixData = `01${ean14}17${expiryDate}10${lot}`;
 
-        // --- Sortie ---
-        const output = document.getElementById('datamatrix-output');
-        if (!output) {
-            AppManagers.log('formDatamatrix', 'error', 'Aucune sortie trouvée (#datamatrix-output)');
+        const outputDiv = document.getElementById('datamatrix-output');
+        if (!outputDiv) {
+            manager.addResultMessage(codex, 'error', 'Zone de sortie introuvable.');
             return;
         }
 
-        output.innerHTML = `
-            <p class="fr-text--sm fr-mb-1v"><b>Code GS1 généré :</b> ${datamatrixData}</p>
-            <div id="datamatrix-page" class="fr-grid-row fr-grid-row--gutters"></div>
-        `;
+        manager.addResultMessage(codex, 'info', 'Préparation du modèle de sortie...');
 
-        const page = document.getElementById('datamatrix-page');
+        // --- Chargement du partial "satisfait.html" ---
+        await AppManagers.TemplateManager.renderInto(
+            './views/applications/datamatrix/partials/satisfait.html',
+            { datamatrix: { data: datamatrixData, lot, dlu, qte, ean } },
+            outputDiv
+        );
+        
+        const titleEl = document.getElementById('datamatrix-title');
+        if (titleEl) {
+            titleEl.textContent = `DATAMATRIX – ${ean}`;
+        }
 
-        // --- Génération des SVG ---
+        // --- Génération des codes dans le partial ---
+        const page = document.querySelector('#datamatrix-pdf #datamatrix-output');
+        if (!page) throw new Error('Zone #datamatrix-output introuvable dans le partial.');
+
         for (let i = 0; i < qte; i++) {
             const svgNode = DATAMatrix({
                 msg: datamatrixData,
@@ -116,7 +96,6 @@ AppManagers.FormManager.registerHandler('formDatamatrix', async (data, form, cod
                 pal: ['#000000', '#ffffff'],
                 vrb: 0
             });
-
             const item = document.createElement('div');
             item.classList.add('datamatrix-item', 'fr-col-3');
             item.appendChild(svgNode);
@@ -124,15 +103,50 @@ AppManagers.FormManager.registerHandler('formDatamatrix', async (data, form, cod
             page.appendChild(item);
         }
 
-        // --- Réactivation du bouton PDF ---
-        const pdfBtn = document.getElementById('pdf-btn');
-        if (pdfBtn) {
-            pdfBtn.disabled = false;
+        // --- Export PDF automatique ---
+        const exportToPDF = (element, filename, options = {}) => {
+            const sandbox = document.createElement('div');
+            sandbox.style.cssText = `
+        position: fixed;
+        top: 0; left: 0;
+        width: 210mm;
+        background: white;
+        opacity: 0;
+        z-index: -1;
+      `;
+            document.body.appendChild(sandbox);
+            sandbox.appendChild(element);
+
+            const opt = {
+                margin: 0,
+                filename,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#fff', scrollY: 0 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['css', 'legacy'], before: '.breaker' },
+                ...options
+            };
+
+            setTimeout(() => {
+                html2pdf()
+                    .set(opt)
+                    .from(element)
+                    .save()
+                    .finally(() => sandbox.remove());
+            }, 300);
+        };
+
+        const datamatrixPdf = document.getElementById('datamatrix-pdf');
+        if (datamatrixPdf) {
+            exportToPDF(datamatrixPdf, 'datamatrix.pdf');
+            AppManagers.log('formDatamatrix', 'success', 'PDF Datamatrix généré avec succès.');
+        } else {
+            AppManagers.log('formDatamatrix', 'warn', 'Élément #datamatrix-pdf introuvable, export annulé.');
         }
 
-        manager.addResultMessage(codex, 'success', `${qte} datamatrix généré${qte > 1 ? 's' : ''} avec succès.`);
+        manager.addResultMessage(codex, 'success', `${qte} datamatrix exporté${qte > 1 ? 's' : ''} en PDF.`);
     } catch (err) {
-        AppManagers.log('formDatamatrix', 'error', 'Erreur :', err);
-        manager.addResultMessage(codex, 'error', 'Erreur inattendue lors de la génération du datamatrix.');
+        console.error('[formDatamatrix] Erreur :', err);
+        manager.addResultMessage(codex, 'error', 'Erreur lors de la génération : ' + (err.message || err));
     }
 });
