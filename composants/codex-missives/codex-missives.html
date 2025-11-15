@@ -1,6 +1,19 @@
-<!-- /composants/codex-missives/codex-missives.html (exemple avec arsenal pour boutons, DSFR linké) -->
 <link rel="stylesheet" href="./dsfr-v1.14.2/dist/dsfr.min.css">
-<div class="arsenal">
-  <button class="fr-btn fr-btn--tertiary" onclick="this.getRootNode().host.clearMessages()">🗑️ Vider</button>
-</div>
+
 <div class="missives"></div>
+
+<div class="arsenal">
+  <button class="fr-btn fr-btn--secondary fr-btn--sm" part="journal-btn">
+    📜 Journal <span class="counter" part="counter">(0)</span>
+  </button>
+
+  <button class="fr-btn fr-btn--tertiary fr-btn--sm" onclick="this.getRootNode().host.clearMessages()">
+    🗑️ Vider
+  </button>
+</div>
+
+<!-- panneau historique -->
+<div class="history-panel" hidden>
+  <div class="history-title">Historique</div>
+  <div class="history-list"></div>
+</div>

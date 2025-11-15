@@ -1,4 +1,3 @@
-// codex-missives.min.js
 import { BaseComponent } from '../base-component.js';
 
 export class CodexMissives extends BaseComponent {
@@ -7,33 +6,36 @@ export class CodexMissives extends BaseComponent {
       htmlPath: './composants/codex-missives/codex-missives.html',
       cssPath: './composants/codex-missives/codex-missives.css'
     });
+
     this._pendingMessages = [];
+    this._history = [];
     this._small = false;
   }
 
   _init() {
-    console.log('CodexMissives _init ✅');
-
     this._container = this.shadowRoot.querySelector('.missives');
-    if (!this._container) {
-      console.error('Container ".missives" non trouvé !');
-      return;
-    }
+    this._panel = this.shadowRoot.querySelector('.history-panel');
+    this._historyList = this.shadowRoot.querySelector('.history-list');
+    this._btnJournal = this.shadowRoot.querySelector('[part=journal-btn]');
+    this._counter = this.shadowRoot.querySelector('.counter');   // ← compteur ajouté
 
     this._small = this.getAttribute('small') === 'true';
 
-    // Flush des messages en attente
+    this._btnJournal.addEventListener('click', () => this._togglePanel());
     this._flushPending();
   }
 
-  // Ajouter un message
   addMessage(type, message) {
     if (!this._container) {
       this._pendingMessages.push([type, message]);
-      console.warn('Container pas prêt, message en attente:', { type, message });
       return;
     }
 
+    // conserver historique 
+    this._history.push({ type, message });
+
+    // afficher uniquement le dernier
+    this._container.innerHTML = '';
     const alertDiv = document.createElement('div');
     alertDiv.className = `fr-alert fr-alert--${type}`;
     if (this._small) {
@@ -43,15 +45,41 @@ export class CodexMissives extends BaseComponent {
       alertDiv.innerHTML = `<h3 class="fr-alert__title">${message}</h3>`;
     }
     this._container.appendChild(alertDiv);
-    this._container.scrollTop = this._container.scrollHeight;
+
+    // historisation (pas visible)
+    this._refreshHistoryList();
+    this._updateCounter();    // ← Mise à jour compteur
   }
 
-  // Vider les messages
   clearMessages() {
     if (this._container) this._container.innerHTML = '';
+    this._history = [];
+    this._refreshHistoryList();
+    this._updateCounter();    // ← Mise à jour compteur
   }
 
-  // Flush des messages en attente
+  _updateCounter() {
+    if (this._counter) {
+      this._counter.textContent = `(${this._history.length})`;
+    }
+  }
+
+  _togglePanel() {
+    const isHidden = this._panel.hasAttribute('hidden');
+    if (isHidden) this._panel.removeAttribute('hidden');
+    else this._panel.setAttribute('hidden', '');
+  }
+
+  _refreshHistoryList() {
+    this._historyList.innerHTML = this._history
+      .map(h => `
+        <div class="fr-alert fr-alert--${h.type} fr-alert--sm">
+          <p>${h.message}</p>
+        </div>
+      `)
+      .join('');
+  }
+
   _flushPending() {
     while (this._pendingMessages.length > 0) {
       const [type, message] = this._pendingMessages.shift();
@@ -62,4 +90,3 @@ export class CodexMissives extends BaseComponent {
 
 customElements.define('codex-missives', CodexMissives);
 window.CodexMissives = CodexMissives;
-console.log('Composant "codex-missives" minimal chargé');

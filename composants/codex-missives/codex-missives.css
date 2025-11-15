@@ -1,14 +1,15 @@
 :host {
   display: flex;
-  align-items: flex-start; /* ou center si tu veux centrer verticalement */
-  min-width: 590px;
-  min-height: 50px;
-  padding: 0.5rem;
+  flex-direction: row;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: nowrap;
+  position: relative;
+  padding: .5rem;
   box-sizing: border-box;
-  gap: 0.5rem;
 }
 
-/* arsenal : reste à droite, ne s’étire pas */
+/* arsenal */
 .arsenal {
   display: flex;
   gap: 0.5rem;
@@ -16,11 +17,55 @@
   flex-shrink: 0;
 }
 
-/* missives : prend tout l’espace restant à gauche */
 .missives {
   display: flex;
-  flex-direction: column;
-  flex-grow: 1;
+  flex-direction: row;
+  align-items: center;
   gap: 0.5rem;
-  min-height: 50px;
+  flex-grow: 1;
+  min-height: 40px;
+}
+
+/* panneau historique interne */
+.history-panel {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  width: 600px;
+  max-height: 600px;
+  overflow-y: auto;
+  background: var(--background-default-grey);
+  border: 1px solid var(--border-default-grey);
+  border-radius: .5rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,.2);
+  padding: .5rem;
+  z-index: 10;
+}
+
+.history-title {
+  font-weight: bold;
+  margin-bottom: .5rem;
+  text-align: center;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+/* transition propre */
+.history-panel {
+  transition: opacity .15s ease, transform .15s ease;
+}
+
+.history-panel[hidden] {
+  opacity: 0;
+  transform: scale(.95);
+  pointer-events: none;
+}
+
+.counter {
+  font-weight: bold;
+  margin-left: .25rem;
 }
