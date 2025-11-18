@@ -1,5 +1,5 @@
 // Handler spécifique pour calcul remise effective
-AppManagers.FormManager.registerHandler('formRemise', async function(data, form, codex, manager, validator) {
+AppManagers.FormManager.registerHandler('formRemise', async function (data, form, codex, manager, validator) {
   try {
     // Validation globale
     const globalValidation = validator.validatePositiveNumbers(
@@ -37,6 +37,6 @@ AppManagers.FormManager.registerHandler('formRemise', async function(data, form,
     );
   } catch (err) {
     manager.addResultMessage(codex, 'error', 'Erreur lors du calcul de la remise.');
-    AppManagers.log('formRemise','error','Erreur handler',err);
+    AppManagers.log('formRemise', 'error', 'Erreur handler', err);
   }
 });

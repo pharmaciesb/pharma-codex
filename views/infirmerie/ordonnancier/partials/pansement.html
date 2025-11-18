@@ -91,64 +91,66 @@
     }
 </style>
 <div id="ordonnance">
-<section class="ordonnance conteneur">
-    <h1>Ordonnance</h1>
-    
-  <div class="haut">
-    <section class="prescripteur">
-        <dl>
-            <dt>Prescripteur</dt>
-            <dd>Nom : </dd>
-            <dd>Prénom : </dd>
-            <dd>N° RPPS : </dd>
-            <dd>N° AM/FINESS : </dd>
-        </dl>
-    </section>
-    <section class="patient">
-        <dl>
-            <dt>Patient</dt>
-            <dd>Nom :</dd>
-            <dd>Prénom :</dd>
-            <dd>Date de naissance :</dd>
-        </dl>
-        
-        <div class="date-lieu">
-            <label>À MARSEILLE, le : </label>
-            <span>_ _ / _ _ / _ _ _ _</span>
-	    </div>
-    </section>
-  </div>
-  <div class="milieu">
-    <section class="prescription">
-        <h3>
-            Soins en rapport avec une affection longue durée exonérante (ALD)
-        <input type="checkbox">Oui
-        <input type="checkbox">Non
-        </h3>
-        <section class="prescription-contenu">
-            <div class="mode-pansement">Faire pratiquer par IDE à compter du _ _ / _ _ / _ _ _ _
+    <section class="ordonnance conteneur">
+        <h1>Ordonnance</h1>
+
+        <div class="haut">
+            <section class="prescripteur">
                 <dl>
-                <dd>Localisation(s) de la plaie :</dd>
-                <dd>Classe(s) de pansement ou marque(s) :</dd>
-                <dd>Dimensions :</dd>
-                <dd>Fréquence de renouvellement :</dd>
+                    <dt>Prescripteur</dt>
+                    <dd>Nom : </dd>
+                    <dd>Prénom : </dd>
+                    <dd>N° RPPS : </dd>
+                    <dd>N° AM/FINESS : </dd>
                 </dl>
-            </div>
-        </section>
+            </section>
+            <section class="patient">
+                <dl>
+                    <dt>Patient</dt>
+                    <dd>Nom :</dd>
+                    <dd>Prénom :</dd>
+                    <dd>Date de naissance :</dd>
+                </dl>
+
+                <div class="date-lieu">
+                    <label>À MARSEILLE, le : </label>
+                    <span>_ _ / _ _ / _ _ _ _</span>
+                </div>
+            </section>
+        </div>
+        <div class="milieu">
+            <section class="prescription">
+                <h3>
+                    Soins en rapport avec une affection longue durée exonérante (ALD)
+                    <input type="checkbox">Oui
+                    <input type="checkbox">Non
+                </h3>
+                <section class="prescription-contenu">
+                    <div class="mode-pansement">Faire pratiquer par IDE à compter du _ _ / _ _ / _ _ _ _
+                        <dl>
+                            <dd>Localisation(s) de la plaie :</dd>
+                            <dd>Classe(s) de pansement ou marque(s) :</dd>
+                            <dd>Dimensions :</dd>
+                            <dd>Fréquence de renouvellement :</dd>
+                        </dl>
+                    </div>
+                </section>
+            </section>
+        </div>
+        <div class="bas">
+            <section class="pansement-avertissement">
+                <p class="mode-pansement">
+                    Les pharmaciens doivent limiter à 7 jours la 1ère délivrance, suite à la prescription initiale.<br>
+                    Renouveler la délivrance à l'issue de la période de traitement couverte par le 1er conditionnement
+                    délivré,<br>
+                    À la demande expresse du patient, en fonction de ses besoins, et dans la limite de la durée de
+                    traitement mentionnée sur l'ordonnance.
+                </p>
+            </section>
+            <section class="signature">
+                <p>Cachet et Signature du Prescripteur</p>
+                <div class="tampon-cadre"></div>
+            </section>
+        </div>
     </section>
-    </div>    
-  <div class="bas">
-    <section class="pansement-avertissement">
-        <p class="mode-pansement">
-            Les pharmaciens doivent limiter à 7 jours la 1ère délivrance, suite à la prescription initiale.<br>
-            Renouveler la délivrance à l'issue de la période de traitement couverte par le 1er conditionnement délivré,<br>
-            À la demande expresse du patient, en fonction de ses besoins, et dans la limite de la durée de traitement mentionnée sur l'ordonnance.
-        </p>
-    </section>
-    <section class="signature">
-        <p>Cachet et Signature du Prescripteur</p>
-        <div class="tampon-cadre"></div>
-    </section>
-    </div>
-</section>
 </div>

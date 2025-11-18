@@ -23,7 +23,7 @@
     <script type="module" src="./static/js/module-route.js"></script>
     <script type="module" src="./static/js/module-breadcrumb.js"></script>
     <script type="module" src="./static/js/module-form-validators.js"></script>
-    
+
     <title>Pharmacie St Barthélémy</title>
 </head>
 
@@ -31,13 +31,17 @@
     <template hx-get="./layout/header.html" hx-trigger="load" hx-swap="outerHTML"></template>
     <main id="main" role="main" class="fr-container fr-my-4w">
         <template hx-get="./layout/fil-ariane.html" hx-trigger="load" hx-swap="outerHTML"></template>
-        <template hx-get="./layout/codex-missives.html" hx-trigger="load" hx-swap="outerHTML"></template>                          
+        <template hx-get="./layout/codex-missives.html" hx-trigger="load" hx-swap="outerHTML"></template>
         <div id="router"></div>
     </main>
     <!-- Script DSFR en version es6 module et nomodule pour les navigateurs le ne supportant pas -->
     <script type="module" src="./dsfr-v1.14.2/dist/dsfr.module.min.js"></script>
     <script type="text/javascript" nomodule src="./dsfr-v1.14.2/dist/dsfr.nomodule.js"></script>
     <!-- Librairies -->
+     <script src="./static/js/libs/xlsx.full.min@0.20.3.js"></script>
+    <script src="./static/js/libs/datamatrix.min.js"></script>
+    <script src="./static/js/libs/qrious.min@4.0.2.js"></script>
+    <script src="./static/js/libs/html2pdf.bundle.min@0.10.1.js"></script>
     <script src="./static/js/libs/docxtemplater@3.66.3.js"></script>
     <script src="./static/js/libs/pizzip@3.2.0.js"></script>
     <script src="./static/js/libs/pizzip-utils@3.2.0.js"></script>

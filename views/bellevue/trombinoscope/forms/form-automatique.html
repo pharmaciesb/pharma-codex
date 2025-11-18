@@ -1,0 +1,21 @@
+<form id="formTrombinoscopeAutomatique" class="fr-form-group">
+    <fieldset class="fr-fieldset" aria-labelledby="trombinoscope-import-legend">
+        <legend class="fr-fieldset__legend" id="trombinoscope-import-legend">
+            Importer depuis Excel / JSON
+            <span class="fr-hint-text">
+                Génére le trombinoscope automatiquement à partir d'un fichier préexistant.
+            </span>
+        </legend>
+
+        <div class="fr-fieldset__element fr-upload-group">
+            <label class="fr-label" for="file-upload">
+                Ajouter un fichier
+                <span class="fr-hint-text">Indication : Formats supportés : xlsm, xlsx, json.
+                    Doit contenir les données du trombinoscope</span>
+            </label>
+            <input class="fr-upload fr-input" aria-describedby="file-upload-messages" type="file" id="fileinput" name="fileinput">
+        </div>
+
+        <button id="btnLoad" type="submit" class="fr-btn fr-btn--secondary fr-mt-2v">Charger</button>
+    </fieldset>
+</form>

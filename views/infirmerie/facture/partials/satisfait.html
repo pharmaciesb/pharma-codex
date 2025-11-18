@@ -1,20 +1,18 @@
-<div id="facture-pdf"
-  class="fr-container fr-mb-4w"
+<div id="facture-pdf" class="fr-container fr-mb-4w"
   style="width: 20cm; min-height: 27cm; background: white; padding: 2rem; color: black;">
 
   <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
     <div class="fr-col">
-      <img src="./static/images/tampon.png"
-           alt="Tampon"
-           style="transform:rotate(-45deg); margin:80px 0 0 60px;">
+      <img src="./static/images/tampon.png" alt="Tampon" style="transform:rotate(-45deg); margin:80px 0 0 60px;">
     </div>
     <div class="fr-col" style="text-align:right;">
-      <p id="facture-pdf-date">À MARSEILLE, le : <input type="date" id="date-preview" name="date-preview" value="${facture.date}"></p>
+      <p id="facture-pdf-date">À MARSEILLE, le : <input type="date" id="date-preview" name="date-preview"
+          value="${facture.date}"></p>
     </div>
   </div>
-<div class="fr-text--xl fr-mb-3w" style="text-align:left;margin-top: 80px;">
-  <h5 id="facture-pdf-nom">Nom : ${facture.nom}</h5>
-</div>
+  <div class="fr-text--xl fr-mb-3w" style="text-align:left;margin-top: 80px;">
+    <h5 id="facture-pdf-nom">Nom : ${facture.nom}</h5>
+  </div>
   <div class="fr-text--xl fr-mb-3w" style="text-align:center;">
     <h1>FACTURE</h1>
     <h2>PRODUITS PHARMACEUTIQUES</h2>

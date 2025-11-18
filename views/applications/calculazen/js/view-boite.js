@@ -1,5 +1,5 @@
 // Handler spécifique pour calcul nombre de boîtes
-AppManagers.FormManager.registerHandler('formNombreBoites', async function(data, form, codex, manager, validator) {
+AppManagers.FormManager.registerHandler('formNombreBoites', async function (data, form, codex, manager, validator) {
   try {
     const unitePrise = parseFloat((data.get("unitePrise") || "0").replace(",", ".")) || 0;
     const nombrePrise = parseFloat((data.get("nombrePrise") || "0").replace(",", ".")) || 0;
@@ -23,6 +23,6 @@ AppManagers.FormManager.registerHandler('formNombreBoites', async function(data,
     manager.addResultMessage(codex, 'success', `Nombre de boîtes nécessaires : ${nombreBoites}`, nombreBoites);
   } catch (err) {
     manager.addResultMessage(codex, 'error', 'Erreur lors du calcul du nombre de boîtes.');
-    AppManagers.log('formNombreBoites','error','Erreur handler',err);
+    AppManagers.log('formNombreBoites', 'error', 'Erreur handler', err);
   }
 });

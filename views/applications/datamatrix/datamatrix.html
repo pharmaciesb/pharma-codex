@@ -7,9 +7,7 @@
   <!-- ===== FORMULAIRE DATAMATRIX ===== -->
   <div class="fr-col-6">
     <div data-load-key="vueDatamatrix" id="vueDatamatrix">
-      <template
-        hx-get="./views/applications/datamatrix/forms/form-datamatrix.html"
-        hx-trigger="load"
+      <template hx-get="./views/applications/datamatrix/forms/form-datamatrix.html" hx-trigger="load"
         hx-swap="outerHTML">
       </template>
     </div>
@@ -33,8 +31,4 @@
   </div>
 
 </div>
-
-<!-- ===== LIBRARIES ===== -->
-<script src="./static/js/libs/datamatrix.min.js"></script>
-<script src="./static/js/libs/html2pdf.bundle.min@0.10.1.js"></script>
 <script type="module" src="./views/applications/datamatrix/js/view-datamatrix.js"></script>

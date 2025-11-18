@@ -77,7 +77,7 @@ AppManagers.FormManager.registerHandler('formDatamatrix', async (data, form, cod
             { datamatrix: { data: datamatrixData, lot, dlu, qte, ean } },
             outputDiv
         );
-        
+
         const titleEl = document.getElementById('datamatrix-title');
         if (titleEl) {
             titleEl.textContent = `DATAMATRIX – ${ean}`;

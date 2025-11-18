@@ -46,13 +46,13 @@ export async function parseLoose(s) {
     // accepte dd/mm/yyyy, yyyy-mm-dd, ddmmyyyy
     if (!s) return null;
     if (s.includes('/')) {
-      const [d,m,y] = s.split('/');
-      return new Date(`${y}-${m}-${d}`);
+        const [d, m, y] = s.split('/');
+        return new Date(`${y}-${m}-${d}`);
     }
     if (s.includes('-')) return new Date(s);
     if (/^\d{8}$/.test(s)) {
-      return new Date(`${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6)}`);
+        return new Date(`${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6)}`);
     }
     return null;
-  }
+}
 

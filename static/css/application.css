@@ -9,6 +9,7 @@
     background-repeat: no-repeat !important;
     background-image: url("../../favicon/favicon.svg") !important;
 }
+
 .fr-logo::after {
     width: 0px !important;
     height: 0px !important;

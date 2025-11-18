@@ -32,7 +32,7 @@ AppManagers.DomloadManager.registerHandler('vueRenouvellement', {
       });
 
     } catch (err) {
-      AppManagers.log('vueRenouvellement','error','Erreur chargement jours fériés:', err);
+      AppManagers.log('vueRenouvellement', 'error', 'Erreur chargement jours fériés:', err);
       document.getElementById("joursFeries").innerHTML =
         '<tr><td colspan="3" class="fr-text--danger">Erreur chargement fériés (mode offline).</td></tr>';
     }
@@ -63,18 +63,18 @@ AppManagers.DomloadManager.registerHandler('vueRenouvellement', {
     document.getElementById('dateDerniereFacturation').textContent = await formatFR(await obtenirIntervalle(new Date(), -22));
   },
 
-  presetVariableOnload: function(element,key){
+  presetVariableOnload: function (element, key) {
     window.currentView = key;
-    element.setAttribute('data-loaded','true');
-    AppManagers.log('vueRenouvellement','info','Preset onload');
+    element.setAttribute('data-loaded', 'true');
+    AppManagers.log('vueRenouvellement', 'info', 'Preset onload');
   },
 
-  methodeOnload: async function(){
+  methodeOnload: async function () {
     await this.chargerJoursFeries();
     await definirAujourdhui();
     await this.initDates();
 
-    AppManagers.log('vueRenouvellement','success','Méthode onload OK');
+    AppManagers.log('vueRenouvellement', 'success', 'Méthode onload OK');
   }
 });
 

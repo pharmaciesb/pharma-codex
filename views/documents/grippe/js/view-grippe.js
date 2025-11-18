@@ -1,12 +1,12 @@
 // -- Vue DomloadManager
 AppManagers.DomloadManager.registerHandler('vueGrippe', {
-  presetVariableOnload: function(element, key) {
+  presetVariableOnload: function (element, key) {
     window.currentView = key;
     element.setAttribute('data-loaded', 'true');
     AppManagers.log('vueGrippe', 'info', 'Vue grippe chargée.');
   },
 
-  methodeOnload: async function() {
+  methodeOnload: async function () {
     AppManagers.log('vueGrippe', 'success', 'Méthode onload OK - Vue grippe prête.');
   }
 });
@@ -103,13 +103,13 @@ AppManagers.FormManager.registerHandler('formGrippe', async function (data, form
 
     // Texte : "Influvac  06/11/2025"
     const texteVaccin = `${specialite.toUpperCase()}`;
-    const texteDate = `${dateJour}`;    
-    page.drawText(texteVaccin, {x: specialiteTop.left + 5,y: ySpecialiteTop ,size,font});    
-    page.drawText(texteDate, {x: dateTop.left + 5,y: yDateTop ,size,font});
+    const texteDate = `${dateJour}`;
+    page.drawText(texteVaccin, { x: specialiteTop.left + 5, y: ySpecialiteTop, size, font });
+    page.drawText(texteDate, { x: dateTop.left + 5, y: yDateTop, size, font });
 
     // Second cadre si injection cochée
-    if (avecInjection) {    
-      page.drawText(texteDate, {x: dateBot.left + 5,y: yDateBot,size,font});
+    if (avecInjection) {
+      page.drawText(texteDate, { x: dateBot.left + 5, y: yDateBot, size, font });
     }
 
     formPdf.flatten();

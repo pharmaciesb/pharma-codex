@@ -1,0 +1,91 @@
+<!-- Cleaned and optimized trombinoscope.html -->
+<div id="vueTrombinoscope" data-load-key="vueTrombinoscope">
+  <div class="fr-tabs">
+    <ul class="fr-tabs__list" role="tablist" aria-label="trombinoscope-tabs">
+      <li role="presentation">
+        <button type="button" id="tab-automatique" class="fr-tabs__tab" tabindex="0" role="tab" aria-selected="true"
+          aria-controls="tab-automatique-panel">💾 Automatique</button>
+      </li>
+      <li role="presentation">
+        <button type="button" id="tab-manuel" class="fr-tabs__tab" tabindex="-1" role="tab" aria-selected="false"
+          aria-controls="tab-manuel-panel">✒️ Manuel</button>
+      </li>
+    </ul>
+    <div id="tab-automatique-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel"
+      aria-labelledby="tab-1" tabindex="0">
+      <template hx-get="./views/bellevue/trombinoscope/forms/form-automatique.html" hx-trigger="load"
+        hx-swap="outerHTML"></template>
+    </div>
+    <div id="tab-manuel-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tab-2" tabindex="0">
+      <template hx-get="./views/bellevue/trombinoscope/forms/form-manuel.html" hx-trigger="load"
+        hx-swap="outerHTML"></template>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="fr-mt-6v">
+    <button id="btnPreview" type="button" class="fr-btn fr-btn--secondary">🔄 Aperçu</button>
+    <button id="btnGenerate" type="button" class="fr-btn fr-ml-2v">Générer le PDF</button>
+  </div>
+
+  <!-- Liste + Aperçu -->
+  <div class="fr-tabs fr-mt-6v">
+    <ul class="fr-tabs__list" role="tablist" aria-label="apercu-tabs">
+      <li role="presentation">
+        <button type="button" id="tab-liste" class="fr-tabs__tab" tabindex="0" role="tab" aria-selected="true"
+          aria-controls="tab-liste-panel">📋 Liste</button>
+      </li>
+      <li role="presentation">
+        <button type="button" id="tab-apercu" class="fr-tabs__tab" tabindex="-1" role="tab" aria-selected="false"
+          aria-controls="tab-apercu-panel">📅 Aperçu</button>
+      </li>
+    </ul>
+
+    <!-- PANEL : LISTE -->
+    <div id="tab-liste-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel"
+      aria-labelledby="tab-liste" tabindex="0">
+
+      <div class="fr-callout fr-callout--pink-macaron fr-mt-4v">
+        <h3 class="fr-callout__title">Liste Actuelle</h3>
+
+        <div class="fr-callout__text">
+          <div class="fr-table">
+            <div class="fr-table__wrapper">
+              <div class="fr-table__container">
+                <div class="fr-table__content">
+
+                  <table>
+                    <thead>
+                      <tr>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Prénom</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="data-list"></tbody>
+                  </table>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PANEL : APERÇU -->
+    <div id="tab-apercu-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tab-apercu" tabindex="0">
+
+      <div id="trombinoscope-output" class="fr-container"
+        style="background:#f5f5f5;padding:1rem;border-radius:8px;min-height:420px;overflow:auto;">
+        <small>Aperçu du PDF ici</small>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Zone PDF -->
+  <div id="trombinoscope-pdf-wrapper" style="display:none;"></div>
+</div>
+<script type="module" src="./views/bellevue/trombinoscope/js/view-trombinoscope.js"></script>
