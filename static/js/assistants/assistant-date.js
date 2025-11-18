@@ -11,37 +11,63 @@ export async function definirAujourdhui() {
     }
 }
 
+function normalizeDate(d) {
+    if (typeof d === "string") {
+        d = new Date(d);
+    }
+    if (!(d instanceof Date) || isNaN(d)) {
+        throw new Error("Date invalide");
+    }
+    return d;
+}
+
 export async function obtenirIntervalle(d = new Date(), jours = -22) {
     try {
-        const targetDate = new Date(d);
+        const date = normalizeDate(d);
+
+        const targetDate = new Date(date); // clone propre
         targetDate.setDate(targetDate.getDate() + jours);
+
         return targetDate;
+
     } catch (error) {
         console.error('assitant-date: echec sur obtenirIntervalle', error);
+        return null;
     }
 }
 
 export async function formatFR(d = new Date()) {
     try {
-        const dd = String(d.getDate()).padStart(2, '0');
-        const mm = String(d.getMonth() + 1).padStart(2, '0');
-        const yyyy = d.getFullYear();
+        const date = normalizeDate(d);
+
+        const dd = String(date.getDate()).padStart(2, '0');
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const yyyy = date.getFullYear();
+
         return `${dd}/${mm}/${yyyy}`;
+
     } catch (error) {
         console.error('assitant-date: echec sur formatFR', error);
+        return "";
     }
 }
 
 export async function formatISO(d = new Date()) {
     try {
-        const yyyy = d.getFullYear();
-        const mm = String(d.getMonth() + 1).padStart(2, '0');
-        const dd = String(d.getDate()).padStart(2, '0');
+        const date = normalizeDate(d);
+
+        const yyyy = date.getFullYear();
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const dd = String(date.getDate()).padStart(2, '0');
+
         return `${yyyy}-${mm}-${dd}`;
+
     } catch (error) {
         console.error('assitant-date: echec sur formatISO', error);
+        return "";
     }
 }
+
 export async function parseLoose(s) {
     // accepte dd/mm/yyyy, yyyy-mm-dd, ddmmyyyy
     if (!s) return null;

@@ -1,5 +1,5 @@
 // -- Vue Assistants
-import { definirAujourdhui } from '/pharma-codex/static/js/assistants/assistant-date.js';
+import { definirAujourdhui , formatFR } from '/pharma-codex/static/js/assistants/assistant-date.js';
 // -- Vue DomloadManager
 AppManagers.DomloadManager.registerHandler('vueFacture', {
   presetVariableOnload(element, key) {
@@ -157,13 +157,13 @@ AppManagers.FormManager.registerHandler('formFacture', async function (data, for
         return `${day}/${month}/${year}`;
       };
 
-      btnRenseignee.onclick = () => {
+      btnRenseignee.onclick = async () => {
         const facture = document.getElementById('facture-pdf');
         if (!facture) return alert("Veuillez d'abord générer la facture !");
         const clone = facture.cloneNode(true);
         const dateEl = clone.querySelector('#facture-pdf-date input');
         if (dateEl) {
-          const dateFr = formatDate(dateEl.value);
+          const dateFr = await formatFR(dateEl.value);
           clone.querySelector('#facture-pdf-date').innerHTML = 'À MARSEILLE, le : ' + dateFr;
         }
 
