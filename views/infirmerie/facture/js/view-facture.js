@@ -152,11 +152,6 @@ AppManagers.FormManager.registerHandler('formFacture', async function (data, for
     if (btnRenseignee) {
       btnRenseignee.disabled = false;
 
-      const formatDate = (isoDate) => {
-        const [year, month, day] = isoDate.split('-');
-        return `${day}/${month}/${year}`;
-      };
-
       btnRenseignee.onclick = async () => {
         const facture = document.getElementById('facture-pdf');
         if (!facture) return alert("Veuillez d'abord générer la facture !");

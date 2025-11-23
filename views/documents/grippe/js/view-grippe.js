@@ -1,3 +1,9 @@
+import { parseGS1 } from '/pharma-codex/static/js/assistants/assistant-datamatrix.js';
+// Déclarer des variables à la portée du module (hors des handlers)
+let PDFLib = window.PDFLib; // Assumant que PDFLib est une variable globale
+let templatePdfBytes = null;
+let vaccinsData = []; // Stockage des données de vaccins
+
 // -- Vue DomloadManager
 AppManagers.DomloadManager.registerHandler('vueGrippe', {
   presetVariableOnload: function (element, key) {
@@ -8,19 +14,113 @@ AppManagers.DomloadManager.registerHandler('vueGrippe', {
 
   methodeOnload: async function () {
     AppManagers.log('vueGrippe', 'success', 'Méthode onload OK - Vue grippe prête.');
+    // --- NOUVEAU : Chargement unique des ressources PDF ---
+    try {
+      // 1. Récupération de PDFLib (si non global)
+      // (Si PDFLib est chargé par <script>, cette ligne est juste une vérification)
+      if (!PDFLib && window.PDFLib) {
+        PDFLib = window.PDFLib;
+      }
+      if (!PDFLib) {
+        // Gérer le chargement asynchrone si nécessaire, mais si c'est une lib globale, ça devrait être OK.
+        AppManagers.log('vueGrippe', 'error', 'PDFLib non trouvé.');
+        return;
+      }
+
+      // 2. Chargement du modèle PDF (UNE SEULE FOIS)
+      if (!templatePdfBytes) {
+        AppManagers.log('vueGrippe', 'info', 'Chargement asynchrone du modèle PDF...');
+        const pdfUrl = `./views/documents/grippe/pdf/610d.pdf`;
+        const response = await fetch(pdfUrl);
+        if (!response.ok) throw new Error("Échec du chargement du modèle PDF.");
+        templatePdfBytes = await response.arrayBuffer();
+        AppManagers.log('vueGrippe', 'success', 'Modèle PDF chargé et mis en cache.');
+      }
+
+      // 3. Chargement des données de vaccins (UNE SEULE FOIS)// 2. Chargement des données de vaccins (NOUVEAU)
+      if (vaccinsData.length === 0) {
+        AppManagers.log('vueGrippe', 'info', 'Chargement des données vaccins...');
+        const dataUrl = `./views/documents/grippe/json/vaccins.json`;
+        const response = await fetch(dataUrl);
+        if (!response.ok) throw new Error(`Échec du chargement des données vaccins : ${dataUrl}`);
+        vaccinsData = await response.json();
+        AppManagers.log('vueGrippe', 'success', `${vaccinsData.length} vaccins chargés.`);
+      }
+
+    } catch (err) {
+      AppManagers.log('vueGrippe', 'error', 'Erreur de chargement des dépendances PDF/Data:', err);
+    }
+    // 4. Gestion du scan Data Matrix (NOUVEAU)
+    const datamatrixInput = document.getElementById('datamatrix-input');
+    if (datamatrixInput) {
+      datamatrixInput.addEventListener('change', handleDatamatrixScan);
+      // NOUVEAU : Événement 'keydown' pour bloquer la soumission par 'Enter'
+      datamatrixInput.addEventListener('keydown', blockFormSubmissionOnEnter);
+    }
   }
 });
+/**
+ * Empêche l'appui sur la touche Entrée de soumettre le formulaire.
+ * @param {KeyboardEvent} e 
+ */
+function blockFormSubmissionOnEnter(e) {
+  // Vérifie si la touche pressée est 'Enter' (code 13 ou 'Enter')
+  if (e.key === 'Enter' || e.keyCode === 13) {
+    AppManagers.log('vueGrippe', 'action', 'Soumission du formulaire bloquée par Entrée sur champ scan.');
+
+    // Annule l'action par défaut de la touche Entrée (qui est de soumettre le formulaire)
+    e.preventDefault();
+
+    // Pour garantir que le 'change' est bien déclenché si ce n'est pas déjà le cas :
+    // (Le scanner déclenche souvent 'change' juste avant le 'Enter')
+    e.target.dispatchEvent(new Event('change'));
+  }
+}
+/**
+ * Gère le changement dans le champ de scan GS1
+ * @param {Event} e 
+ */
+function handleDatamatrixScan(e) {
+  const gs1Code = e.target.value.trim();
+  const lotInput = document.getElementById('lot');
+  const denominationEl = document.getElementById('vaccin-denomination');
+
+  if (!gs1Code) return;
+
+  const result = parseGS1(gs1Code);
+
+  if (result) {
+    // 1. Trouver la dénomination
+    const cip13 = result.ean;
+    const vaccin = vaccinsData.find(v => v.code_cip === cip13);
+
+    // 2. Mettre à jour les champs du formulaire
+    lotInput.value = result.lot;
+
+    // 3. Afficher la dénomination
+    if (vaccin) {
+      denominationEl.textContent = `Vaccin détecté: ${vaccin.denomination} (Lot: ${result.lot}, Exp: ${result.expiration})`;
+      // Mettre à jour le champ "specialite" si vous l'avez dans le formulaire
+      const specialiteInput = document.querySelector('[name="specialite"]');
+      if (specialiteInput) specialiteInput.value = vaccin.denomination;
+    } else {
+      denominationEl.textContent = `Vaccin inconnu (CIP: ${cip13}). Lot: ${result.lot}`;
+    }
+
+    AppManagers.log('vueGrippe', 'success', `Scan GS1 OK. Lot: ${result.lot}`);
+  } else {
+    lotInput.value = '';
+    denominationEl.textContent = 'Erreur: Format GS1 non reconnu.';
+    AppManagers.log('vueGrippe', 'error', 'Format GS1 invalide.');
+  }
+}
 
 // -- FormManager : remplissage précis des champs PDF du formulaire grippe
 AppManagers.FormManager.registerHandler('formGrippe', async function (data, form, codex, manager, validator) {
   try {
-    // Champs requis de base
-    const required = ["nom", "prenom", "dateNaissance", "immatriculation", "codeOrganisme"];
-    for (const f of required) {
-      if (!data.get(f) || data.get(f).trim() === "") {
-        manager.addResultMessage(codex, 'error', `Le champ "${f}" est obligatoire.`);
-        return;
-      }
+    if (!templatePdfBytes || !PDFLib) {
+      manager.addResultMessage(codex, 'error', 'Erreur: Les ressources PDF ne sont pas chargées. Veuillez recharger la page.');
+      return;
     }
 
     // Récupération des données
@@ -31,6 +131,11 @@ AppManagers.FormManager.registerHandler('formGrippe', async function (data, form
     const immat = data.get("immatriculation").trim();
     const codeOrganisme = data.get("codeOrganisme").trim();
     const specialite = data.get("specialite") || "Influvac";
+    const lot = data.get("lot").trim();
+    if (!lot) {
+      manager.addResultMessage(codex, 'error', 'Le numéro de lot est manquant.');
+      return;
+    }
     const avecInjection = data.get("avecInjection") === "on";
 
     // Date du jour auto
@@ -47,7 +152,7 @@ AppManagers.FormManager.registerHandler('formGrippe', async function (data, form
     manager.addResultMessage(codex, 'info', 'Remplissage du document en cours...');
 
     // Chargement du modèle
-    const existingPdfBytes = await fetch('./views/documents/grippe/pdf/610d.pdf').then(r => r.arrayBuffer());
+    const existingPdfBytes = templatePdfBytes;
     const { PDFDocument } = PDFLib;
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
     const formPdf = pdfDoc.getForm();
@@ -95,18 +200,25 @@ AppManagers.FormManager.registerHandler('formGrippe', async function (data, form
       width: 0.300000 * pageWidth,
       height: 0.060000 * pageHeight
     };
+    const lotBot = {
+      left: 0.250000 * pageWidth,
+      top: 0.808000 * pageHeight,
+      width: 0.300000 * pageWidth,
+      height: 0.060000 * pageHeight
+    };
 
     // Convertir top% en coordonnées PDF (origine en bas à gauche)
     const ySpecialiteTop = pageHeight - specialiteTop.top - 25;
     const yDateTop = pageHeight - dateTop.top - 25;
     const yDateBot = pageHeight - dateBot.top - 25;
-
+    // NOUVEAU : Cadre Lot (estimation: sous le champ "Code Organisme")
+    const yLotBot = pageHeight - lotBot.top - 25;
     // Texte : "Influvac  06/11/2025"
     const texteVaccin = `${specialite.toUpperCase()}`;
     const texteDate = `${dateJour}`;
     page.drawText(texteVaccin, { x: specialiteTop.left + 5, y: ySpecialiteTop, size, font });
     page.drawText(texteDate, { x: dateTop.left + 5, y: yDateTop, size, font });
-
+    page.drawText(lot, { x: lotBot.left + 5, y: yLotBot, size, font });
     // Second cadre si injection cochée
     if (avecInjection) {
       page.drawText(texteDate, { x: dateBot.left + 5, y: yDateBot, size, font });

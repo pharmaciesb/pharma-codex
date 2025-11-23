@@ -140,11 +140,18 @@
         init: function () {
             document.addEventListener('submit', async (e) => {
                 if (!e.target || !e.target.matches('form')) return;
+                
+                const form = e.target;
+
+                if (!form.checkValidity()) {
+                    return;
+                }
+                
                 e.preventDefault();
 
-                const form = e.target;
                 const data = new FormData(form);
                 const handler = this.handlers[form.id];
+                
                 if (!handler) {
                     log('FormManager', 'warn', `Aucun handler pour ${form.id}`);
                     return;
