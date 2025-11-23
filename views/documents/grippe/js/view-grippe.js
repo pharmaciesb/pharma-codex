@@ -1,4 +1,5 @@
 import { parseGS1 } from '/pharma-codex/static/js/assistants/assistant-datamatrix.js';
+
 // Déclarer des variables à la portée du module (hors des handlers)
 let PDFLib = window.PDFLib; // Assumant que PDFLib est une variable globale
 let templatePdfBytes = null;

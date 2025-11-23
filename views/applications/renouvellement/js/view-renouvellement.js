@@ -59,8 +59,8 @@ AppManagers.DomloadManager.registerHandler('vueRenouvellement', {
     return dates;
   },
 
-  initDates: async function () {
-    document.getElementById('dateDerniereFacturation').textContent = await formatFR(await obtenirIntervalle(new Date(), -22));
+  initDates: function () {
+    document.getElementById('dateDerniereFacturation').textContent = formatFR(obtenirIntervalle(new Date(), -22));
   },
 
   presetVariableOnload: function (element, key) {
@@ -71,8 +71,8 @@ AppManagers.DomloadManager.registerHandler('vueRenouvellement', {
 
   methodeOnload: async function () {
     await this.chargerJoursFeries();
-    await definirAujourdhui();
-    await this.initDates();
+    definirAujourdhui();
+    this.initDates();
 
     AppManagers.log('vueRenouvellement', 'success', 'Méthode onload OK');
   }

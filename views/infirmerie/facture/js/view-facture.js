@@ -14,7 +14,7 @@ AppManagers.DomloadManager.registerHandler('vueFacture', {
 
   methodeOnload: async function () {
     AppManagers.log('vueFacture', 'success', 'Méthode onload déclenchée');
-    await definirAujourdhui();
+    definirAujourdhui();
 
     // Récupération boutons
     const btnRenseignee = document.getElementById('pdf-renseignee');
@@ -158,7 +158,7 @@ AppManagers.FormManager.registerHandler('formFacture', async function (data, for
         const clone = facture.cloneNode(true);
         const dateEl = clone.querySelector('#facture-pdf-date input');
         if (dateEl) {
-          const dateFr = await formatFR(dateEl.value);
+          const dateFr = formatFR(dateEl.value);
           clone.querySelector('#facture-pdf-date').innerHTML = 'À MARSEILLE, le : ' + dateFr;
         }
 

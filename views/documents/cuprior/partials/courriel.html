@@ -1,82 +1,36 @@
-<div id="cuprior-courriel" class="fr-container fr-mt-4v">
-
-  <!-- Titre -->
-  <div class="fr-callout fr-callout--pink-macaron">
-    <h3 class="fr-callout__title">Courriel à envoyer</h3>
-    <p class="fr-callout__text">Voici le mail prérempli. Vous pouvez copier chaque partie individuellement.</p>
-  </div>
-
-  <!-- DESTINATAIRE -->
-  <div class="fr-input-group fr-mt-4v">
-    <label class="fr-label" for="cuprior-mail-to">Destinataire</label>
-    <div class="fr-input-wrap fr-input-wrap--addon">
-      <input id="cuprior-mail-to" class="fr-input" readonly value="zink13013@gmail.com">
-      <div class="fr-input__addon">
-        <button type="button" class="fr-btn fr-btn--secondary fr-btn--sm" data-copy="#cuprior-mail-to">
-          Copier
-        </button>
-      </div>
+<div class="fr-input-group fr-mt-4v">
+  <label class="fr-label" for="cuprior-mail-subject">Objet</label>
+  <div class="fr-input-wrap fr-input-wrap--addon">
+    <input id="cuprior-mail-subject" class="fr-input" readonly
+      value="Cuprior — Bon de Commande du ${date_jour}">
+    <div class="fr-input__addon">
+      <button type="button" class="fr-btn fr-btn--secondary fr-btn--sm" data-copy="#cuprior-mail-subject">
+        Copier
+      </button>
     </div>
   </div>
-
-  <!-- OBJET -->
-  <div class="fr-input-group fr-mt-4v">
-    <label class="fr-label" for="cuprior-mail-subject">Objet</label>
-    <div class="fr-input-wrap fr-input-wrap--addon">
-      <input id="cuprior-mail-subject" class="fr-input" readonly
-        value="Cuprior — Bon de Commande du [[DATE_JOUR]]">
-      <div class="fr-input__addon">
-        <button type="button" class="fr-btn fr-btn--secondary fr-btn--sm" data-copy="#cuprior-mail-subject">
-          Copier
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- CORPS -->
-  <div class="fr-input-group fr-mt-4v">
-    <label class="fr-label" for="cuprior-mail-body">Contenu du courriel</label>
-
-    <div class="fr-input-wrap fr-input-wrap--addon">
-      <textarea id="cuprior-mail-body" class="fr-input" rows="10" readonly>
-Bonjour,
-
-Veuillez trouver ci-joint le bon de commande pour 2 Cuprior.
-
-Cordialement,
-GIUDICELLI Philippe
-PHARMACIE SAINT BARTHELEMY II
-19, Avenue Claude Monet
-13014 Marseille
-      </textarea>
-
-      <div class="fr-input__addon">
-        <button type="button" class="fr-btn fr-btn--secondary fr-btn--sm" data-copy="#cuprior-mail-body">
-          Copier
-        </button>
-      </div>
-    </div>
-  </div>
-
 </div>
 
-<script>
-  // --- Copy to clipboard ---
-  document.querySelectorAll("[data-copy]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const target = document.querySelector(btn.dataset.copy);
-      if (!target) return;
+<div class="fr-input-group fr-mt-4v">
+  <label class="fr-label" for="cuprior-mail-body">Contenu du courriel</label>
 
-      navigator.clipboard.writeText(target.value || target.innerText)
-        .then(() => {
-          btn.classList.add("fr-btn--success");
-          btn.textContent = "Copié !";
-          setTimeout(() => {
-            btn.classList.remove("fr-btn--success");
-            btn.textContent = "Copier";
-          }, 1500);
-        })
-        .catch(() => alert("Impossible de copier dans le presse-papier."));
-    });
-  });
-</script>
+  <div class="fr-input-wrap fr-input-wrap--addon">
+    <textarea id="cuprior-mail-body" class="fr-input" rows="10" readonly>
+Bonjour,
+
+Veuillez trouver ci-joint le bon de commande pour ${quantite} Cuprior.
+
+Cordialement,
+${contact}
+${etablissement}
+${adresse}
+${code_postale}
+    </textarea>
+
+    <div class="fr-input__addon">
+      <button type="button" class="fr-btn fr-btn--secondary fr-btn--sm" data-copy="#cuprior-mail-body">
+        Copier
+      </button>
+    </div>
+  </div>
+</div>
