@@ -3,6 +3,8 @@ export async function loadComponentsFromConfig(configPath = './composants/config
   try {
     const config = await fetch(configPath).then(r => r.json());
     const { env, components } = config;
+    
+    const dsfrPath = env.dsfrPath;
 
     // Nettoyage des chemins pour éviter les doubles slashes
     const cleanBase = env.basePath.replace(/\/+$/, '');
@@ -27,7 +29,7 @@ export async function loadComponentsFromConfig(configPath = './composants/config
         if (!customElements.get(name)) {
           class AutoComponent extends componentClass {
             constructor() {
-              super({ htmlPath, cssPath });
+              super({ htmlPath, cssPath  });
               if (env.debug) console.log(`Composant "${name}" instancié`);
             }
           }

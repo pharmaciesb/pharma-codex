@@ -1,0 +1,33 @@
+<div data-load-key="vuePurificateur" id="vuePurificateur">
+    <div class="fr-callout fr-icon-info-line">
+        <h3 class="fr-callout__title">Purificateur de Bon de Livraison BL</h3>
+        <p class="fr-callout__text">
+            Ce module permet d'extraire et de simplifier les données d'un bon de livraison (BL) au format PDF, ne conservant que le tableau pour l'impression ou l'archivage.
+        </p>
+    </div>
+
+    <form id="formPurificateur" class="fr-form-group fr-mt-4v">
+        <fieldset class="fr-fieldset" aria-labelledby="purificateur-legend">
+            <legend class="fr-fieldset__legend" id="purificateur-legend">
+                Sélection du Bon de Livraison PDF
+                <span class="fr-hint-text">
+                    Téléchargez un bon de livraison (format `BLxxxxxxxxxxxxxxxx.pdf`).
+                </span>
+            </legend>
+
+            <div class="fr-fieldset__element fr-upload-group">
+                <label class="fr-label" for="file-upload">
+                    Ajouter le fichier PDF
+                    <span class="fr-hint-text">Formats supportés : .pdf</span>
+                </label>
+                <input class="fr-upload fr-input" type="file" id="fileinput" name="fileinput" accept="application/pdf" required>
+            </div>
+
+            <button type="submit" class="fr-btn fr-mt-2v">🧹 Purifier le PDF</button>
+        </fieldset>
+    </form>
+    
+    <iframe id="purificateurPreview" style="width:100%;height:450px;border:1px solid #ddd;margin-top:2rem;display:none;"></iframe>
+</div>
+
+<script type="module" src="./views/bellevue/purificateur/js/view-purificateur.js"></script>

@@ -1,10 +1,19 @@
 import { BaseComponent } from '../base-component.js';
 
+const TYPE_TO_ICON = {
+  info: 'fr-icon-info-fill',
+  success: 'fr-icon-success-fill',
+  error: 'fr-icon-error-fill',
+  warning: 'fr-icon-warning-fill'
+};
+
 export class CodexMissives extends BaseComponent {
+
   constructor() {
     super({
       htmlPath: './composants/codex-missives/codex-missives.html',
-      cssPath: './composants/codex-missives/codex-missives.css'
+      cssPath: './composants/codex-missives/codex-missives.css',
+      globalCssPath: '/pharma-codex/dsfr-v1.14.2/dist/dsfr.min.css'
     });
 
     this._pendingMessages = [];
@@ -17,11 +26,13 @@ export class CodexMissives extends BaseComponent {
     this._panel = this.shadowRoot.querySelector('.history-panel');
     this._historyList = this.shadowRoot.querySelector('.history-list');
     this._btnJournal = this.shadowRoot.querySelector('[part=journal-btn]');
+    this._btnClear = this.shadowRoot.querySelector('[part=clear-btn]');
     this._counter = this.shadowRoot.querySelector('.counter');   // ← compteur ajouté
 
     this._small = this.getAttribute('small') === 'true';
 
     this._btnJournal.addEventListener('click', () => this._togglePanel());
+    this._btnClear.addEventListener('click', () => this.clearMessages());
     this._flushPending();
   }
 
@@ -36,8 +47,11 @@ export class CodexMissives extends BaseComponent {
 
     // afficher uniquement le dernier
     this._container.innerHTML = '';
+
+    const iconClass = TYPE_TO_ICON[type] || TYPE_TO_ICON.info; // Sécurise le type
+
     const alertDiv = document.createElement('div');
-    alertDiv.className = `fr-alert fr-alert--${type}`;
+    alertDiv.className = `fr-alert fr-alert--${type} ${iconClass}`;
     if (this._small) {
       alertDiv.classList.add('fr-alert--sm');
       alertDiv.innerHTML = `<p>${message}</p>`;
@@ -73,7 +87,7 @@ export class CodexMissives extends BaseComponent {
   _refreshHistoryList() {
     this._historyList.innerHTML = this._history
       .map(h => `
-        <div class="fr-alert fr-alert--${h.type} fr-alert--sm">
+        <div class="fr-alert fr-alert--${h.type} ${TYPE_TO_ICON[h.type] || TYPE_TO_ICON.info} fr-alert--sm">
           <p>${h.message}</p>
         </div>
       `)
