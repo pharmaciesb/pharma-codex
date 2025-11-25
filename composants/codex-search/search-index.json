@@ -1,0 +1,22 @@
+[
+  { "id": "officine", "title": "Accueil Officine", "keywords": "accueil, dashboard, officine, pharmacie, messageries, laboratoires, orthopedie, fournitures, mutuelles, tiers-payant", "route": "#views/officine/officine.html" },
+
+  { "id": "documents", "title": "Accueil Documents", "keywords": "accueil, dashboard,  documents, pdf, bons de commande, fiches techniques, vaccins, grippe, cuprior", "route": "#views/documents/documents.html" },
+  { "id": "grippe", "title": "Grippe", "keywords": "grippe, bon, pdf, documents", "route": "#views/documents/grippe/grippe.html" },
+  { "id": "vaccin", "title": "Vaccin", "keywords": "vaccin, bon, pdf, documents", "route": "#views/documents/vaccin/vaccin.html" },  
+  { "id": "cuprior", "title": "Cuprior", "keywords": "cuprior, trientine, bon, pdf, documents, commande, traitement", "route": "#views/documents/cuprior/cuprior.html" },
+
+  { "id": "applications", "title": "Accueil Applications", "keywords": "accueil, dashboard,  applications, utilitaires, outils, gestion, calcul, assistant, aide", "route": "#views/applications/applications.html" },
+  { "id": "calculazen", "title": "Calculazen", "keywords": "calculazen, utilitaires, outils, gestion, calcul, assistant, aide, remise, posologie, boites, boîtes, délivrance", "route": "#views/applications/calculazen/calculazen.html" },
+  { "id": "calculanir", "title": "Calculanir", "keywords": "calculanir, utilitaires, outils, gestion, calcul, assistant, aide, numéro, secu, vitale, nir, ins, cle, clé", "route": "#views/applications/calculanir/calculanir.html" },
+  { "id": "renouvellement", "title": "Renouvellement", "keywords": "renouvellement, utilitaires, outils, gestion, calcul, assistant, aide, jours, feries, fériés, attente, date, vacances", "route": "#views/applications/renouvellement/renouvellement.html" },
+  { "id": "datamatrix", "title": "Datamatrix", "keywords": "datamatrix, utilitaires, outils, gestion, assistant, aide, qr code, qrcode, barre", "route": "#views/applications/datamatrix/datamatrix.html" },
+
+  {"id": "infirmerie", "title": "Accueil Infirmerie", "keywords": "accueil, dashboard, infirmerie, soins, patients, dossiers, facture, ordonnance, ordonnancier", "route": "#views/infirmerie/infirmerie.html" },
+  {"id": "facture", "title": "Facture produits pharmaceutiques", "keywords": "infirmerie, facture, produits, pharmaceutiques", "route": "#views/infirmerie/facture/facture.html" },
+  {"id": "ordonnancier", "title": "Ordonnancier IDE", "keywords": "infirmerie, ordonnancier, ordonnance, pansemants", "route": "#views/infirmerie/ordonnancier/ordonnancier.html" },
+
+  { "id": "bellevue", "title": "Accueil Bellevue", "keywords": "accueil, dashboard, bellevue", "route": "#views/bellevue/bellevue.html" },
+  { "id": "trombinoscope", "title": "Trombinoscope PDA", "keywords": "trombinoscope, pda, vignettes, qr code, qrcode, barre, bellevue", "route": "#views/bellevue/trombinoscope/trombinoscope.html" },
+  { "id": "purificateur", "title": "Purificateur PDA", "keywords": "purificateur, pda, bon de livraison, nettoyer, simplifier, bellevue", "route": "#views/bellevue/purificateur/purificateur.html" }
+]

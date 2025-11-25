@@ -102,5 +102,7 @@ export class CodexMissives extends BaseComponent {
   }
 }
 
-customElements.define('codex-missives', CodexMissives);
+if (!customElements.get('codex-missives')) {
+  customElements.define('codex-missives', CodexMissives);
+}
 window.CodexMissives = CodexMissives;
