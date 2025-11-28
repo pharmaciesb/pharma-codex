@@ -126,7 +126,7 @@ AppManagers.FormManager.registerHandler('formFacture', async function (data, for
     }
 
     // Validation de base
-    const required = ["nom", "date", "total"];
+    const required = ["date", "total"];
     for (const f of required) {
       const val = data.get(f)?.trim();
       if (!val) {
