@@ -1,0 +1,59 @@
+<link rel="stylesheet" href="./views/vaccination/css/vaccination.css">
+<div data-load-key="vueVaccination" id="vueVaccination">
+    <div class="fr-tabs">
+        <ul class="fr-tabs__list" role="tablist" aria-label="hub de liens">
+            <li role="presentation">
+                <button type="button" id="presentation"
+                    class="fr-tabs__tab fr-icon-calendar-line fr-tabs__tab--icon-left" tabindex="0" role="tab"
+                    aria-selected="true" aria-controls="presentation-panel">Présentation</button>
+            </li>
+            <li role="presentation">
+                <button type="button" id="prescription"
+                    class="fr-tabs__tab fr-icon-syringe-line fr-tabs__tab--icon-left" tabindex="-1" role="tab"
+                    aria-selected="false" aria-controls="prescription-panel">Prescription</button>
+            </li>
+            <li role="presentation">
+                <button type="button" id="details" class="fr-tabs__tab fr-icon-feedback-line fr-tabs__tab--icon-left"
+                    tabindex="-1" role="tab" aria-selected="false" aria-controls="details-panel">Détails</button>
+            </li>
+        </ul>
+
+        <div id="presentation-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel"
+            aria-labelledby="hub-1" tabindex="0">
+            <template hx-get="./views/vaccination/partials/tableau-global.html" hx-trigger="load"
+                hx-swap="outerHTML"></template>
+        </div>
+        <div id="prescription-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="hub-2" tabindex="0">
+            <template hx-get="./views/vaccination/partials/prescription.html" hx-trigger="load"
+                hx-swap="outerHTML"></template>
+        </div>
+        <div id="details-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="hub-3" tabindex="0">
+            <template hx-get="./views/vaccination/partials/details-global.html" hx-trigger="load"
+                hx-swap="outerHTML"></template>
+        </div>
+    </div>
+    <dialog id="vaccination-modal" class="fr-modal" aria-labelledby="modal-content-title" aria-modal="true">
+        <div class="fr-container fr-container--fluid fr-container-md">
+            <div class="fr-grid-row fr-grid-row--center">
+                <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
+                    <div class="fr-modal__body">
+                        <div class="fr-modal__header">
+                            <button id="modal-close-btn" aria-controls="vaccination-modal" title="Fermer" type="button"
+                                class="fr-btn--close fr-btn">Fermer</button>
+                        </div>
+                        <div class="fr-modal__content">
+                            <h2 id="modal-content-title" class="fr-modal__title">
+                                <span class="fr-icon-arrow-right-line fr-icon--lg" aria-hidden="true"></span>
+                                Titre par défaut
+                            </h2>
+                            <div id="modal-content-body">
+                                Contenu initial (sera écrasé)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </dialog>
+</div>
+<script type="module" src="./views/vaccination/js/view-vaccination.js"></script>

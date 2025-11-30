@@ -1,0 +1,49 @@
+table.vaccination-table > thead th,
+table.vaccination-table > tbody td{
+    text-align: center !important; 
+}
+table.vaccination-table > tbody td:first-child {
+    text-align: left !important; 
+}
+.mandatoire {
+    text-align: center !important;
+}
+.mandatoire th {
+    text-align: center !important;
+}
+.dtp-coq-hib {
+    background-color: #4DBF9D !important; color: #FFFFFF !important;
+}
+.hepatite-b {
+    background-color: #FDC210 !important; 
+}
+.pneumo-acwy-b {
+    background-color: #EE61A4 !important; color: #FFFFFF !important;
+}
+.ror {
+    background-color: #ED314A !important; color: #FFFFFF !important;
+}
+.rotavirus {
+    background-color: #C59552 !important; color: #FFFFFF !important;
+}
+.rotavirus-blur{
+    background-color: #C5955299 !important; color: #FFFFFF !important;
+}
+.hpv {
+    background-color: #F48221 !important; color: #FFFFFF !important;
+}
+.bcg {
+    background-color: #B256A1 !important; color: #FFFFFF !important;
+}
+.zona {
+    background-color: #A56653 !important; color: #FFFFFF !important;
+}
+.vrs {
+    background-color: #008F4D !important; color: #FFFFFF !important;
+}
+.covid {
+    background-color: #4B4FA2 !important; color: #FFFFFF !important;
+}
+.grippe {
+    background-color: #1EC4F4 !important; color: #FFFFFF !important;
+}
