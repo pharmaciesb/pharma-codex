@@ -16,7 +16,7 @@
   {"id": "facture", "title": "Facture produits pharmaceutiques", "keywords": "infirmerie, facture, produits, pharmaceutiques", "route": "#views/infirmerie/facture/facture.html" },
   {"id": "ordonnancier", "title": "Ordonnancier IDE", "keywords": "infirmerie, ordonnancier, ordonnance, pansemants", "route": "#views/infirmerie/ordonnancier/ordonnancier.html" },
 
-  { "id": "bellevue", "title": "Accueil Bellevue", "keywords": "accueil, dashboard, bellevue", "route": "#views/bellevue/bellevue.html" },
-  { "id": "trombinoscope", "title": "Trombinoscope PDA", "keywords": "trombinoscope, pda, vignettes, qr code, qrcode, barre, bellevue", "route": "#views/bellevue/trombinoscope/trombinoscope.html" },
-  { "id": "purificateur", "title": "Purificateur PDA", "keywords": "purificateur, pda, bon de livraison, nettoyer, simplifier, bellevue", "route": "#views/bellevue/purificateur/purificateur.html" }
+  { "id": "atelier", "title": "Accueil atelier", "keywords": "accueil, dashboard, atelier", "route": "#views/atelier/atelier.html" },
+  { "id": "trombinoscope", "title": "Trombinoscope PDA", "keywords": "trombinoscope, pda, vignettes, qr code, qrcode, barre, atelier", "route": "#views/atelier/trombinoscope/trombinoscope.html" },
+  { "id": "purificateur", "title": "Purificateur PDA", "keywords": "purificateur, pda, bon de livraison, nettoyer, simplifier, atelier", "route": "#views/atelier/purificateur/purificateur.html" }
 ]

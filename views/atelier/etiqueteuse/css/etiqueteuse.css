@@ -1,0 +1,81 @@
+/* Styles spécifiques à l'étiqueteuse */
+
+/* Conteneur principal qui définit la taille de l'étiquette */
+.etiquette-container {
+    /* Dimensions cibles : 2.5cm x 5cm (laisser un peu de marge) */
+    width: 5.0cm; /* Largeur de l'étiquette */
+    height: 2.6cm; /* Hauteur de l'étiquette */
+    border: 1px solid #000000;
+    margin: 1rem auto;
+    background-color: #ffffff;
+    padding: 0.1cm;
+    box-sizing: border-box; /* Inclusion du padding et de la bordure dans la taille */
+    display: flex;
+    flex-direction: column;
+    font-family: 'Marianne', Arial, sans-serif;
+    font-size: 0.25cm; /* Taille de police très petite */
+    transform: rotate(-90deg); /* Rotation pour l'encoche */
+    transform-origin: 50% 50%; /* Rotation centrée */
+}
+
+/* Zone pour le nom de la souche et le dosage (le cadre supérieur de l'étiquette) */
+.etiquette-header {
+    width: 4.8cm;
+    height: 1.2cm;
+    border: 1px solid #000000;
+    text-align: center;
+    padding: 0.05cm 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1; /* Pour serrer les lignes */
+    overflow: hidden; /* Pour ne pas déborder */
+}
+
+.souche {
+    font-weight: normal;
+    font-size: 0.35cm;
+    text-transform: uppercase;
+}
+
+.dilution {
+    font-weight: bold;
+    font-size: 0.5cm;
+}
+
+/* Zone pour le code-barre et la forme */
+.etiquette-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end; /* Alignement en bas */
+    flex-grow: 1; /* Prend l'espace restant */
+    padding-top: 0.1cm;
+}
+
+/* Style de l'image (Datamatrix généré) */
+.datamatrix-container {
+    width: 1.0cm;
+    height: 1.0cm;
+    flex-shrink: 0;
+}
+
+.datamatrix-container img {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.specialite {
+    font-size: 0.3cm;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: right;
+    flex-grow: 1;
+}
+
+/* Aperçu non tourné pour la génération */
+.apercu-etiquette {
+    border: 1px dashed #ccc;
+    padding: 1rem;
+}

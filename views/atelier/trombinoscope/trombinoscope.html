@@ -1,5 +1,6 @@
 <!-- Cleaned and optimized trombinoscope.html -->
 <div id="vueTrombinoscope" data-load-key="vueTrombinoscope">
+  <h4>Trombinoscope</h4>
   <div class="fr-tabs">
     <ul class="fr-tabs__list" role="tablist" aria-label="trombinoscope-tabs">
       <li role="presentation">
@@ -13,11 +14,11 @@
     </ul>
     <div id="tab-automatique-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel"
       aria-labelledby="tab-1" tabindex="0">
-      <template hx-get="./views/bellevue/trombinoscope/forms/form-automatique.html" hx-trigger="load"
+      <template hx-get="./views/atelier/trombinoscope/forms/form-automatique.html" hx-trigger="load"
         hx-swap="outerHTML"></template>
     </div>
     <div id="tab-manuel-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tab-2" tabindex="0">
-      <template hx-get="./views/bellevue/trombinoscope/forms/form-manuel.html" hx-trigger="load"
+      <template hx-get="./views/atelier/trombinoscope/forms/form-manuel.html" hx-trigger="load"
         hx-swap="outerHTML"></template>
     </div>
   </div>
@@ -88,4 +89,4 @@
   <!-- Zone PDF -->
   <div id="trombinoscope-pdf-wrapper" style="display:none;"></div>
 </div>
-<script type="module" src="./views/bellevue/trombinoscope/js/view-trombinoscope.js"></script>
+<script type="module" src="./views/atelier/trombinoscope/js/view-trombinoscope.js"></script>

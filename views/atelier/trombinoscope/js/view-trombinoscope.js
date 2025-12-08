@@ -21,7 +21,7 @@ AppManagers.DomloadManager.registerHandler('vueTrombinoscope', {
 
     // --- 0) PRÉ-CHARGEMENT DU TEMPLATE HTML (Amélioration Performance) ---
     try {
-      const tplUrl = `/pharma-codex/views/bellevue/trombinoscope/partials/trombinoscope.html`;
+      const tplUrl = `/pharma-codex/views/atelier/trombinoscope/partials/trombinoscope.html`;
       const response = await fetch(tplUrl);
       if (!response.ok) throw new Error("Échec du chargement du template HTML.");
       trombiTemplate = await response.text();
@@ -256,7 +256,7 @@ AppManagers.DomloadManager.registerHandler('vueTrombinoscope', {
     // 4) GÉNÉRATION DU PDF
     // =====================================================================
 
-    // /views/bellevue/trombinoscope/js/view-trombinoscope.js (Remplacer la fonction generatePDF)
+    // /views/atelier/trombinoscope/js/view-trombinoscope.js (Remplacer la fonction generatePDF)
 
     /**
      * Génère le contenu HTML pour le PDF, puis utilise html2pdf pour le convertir.

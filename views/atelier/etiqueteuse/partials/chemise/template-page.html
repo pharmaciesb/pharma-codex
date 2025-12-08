@@ -1,0 +1,83 @@
+<template id="template-page">
+    <div class="pdf-page">
+        <div class="page-grid" id="page-grid"></div>
+    </div>
+
+    <style>
+        .pdf-page {
+            width: 200mm;
+            min-height: 270mm;
+            height: auto;
+            padding: 10mm 5mm;
+            background: white;
+            color: black;
+            box-sizing: border-box;
+        }
+
+        .page-grid {
+            display: grid;
+            gap: 4mm;
+        }
+
+        .etiquette-item {
+            margin: 0 !important;
+            padding: 0 !important;
+            border: 1px dashed #d0d0d0 !important;
+            background: white;
+            text-align: center;
+            height: 48mm;
+            width: 23mm;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Titre visible */
+        .etiquette-visible-header {
+            margin: 0 !important;
+            padding: 0 !important;
+            display: flex;
+            flex-direction: column;
+            max-height: 20mm;
+            height: auto;
+            overflow: hidden;
+            line-height: 80%;
+        }
+
+        .etiquette-visible-header .souche {
+            margin-top: 1px;
+            font-size: 9pt;
+            text-align: center;
+            font-weight: bold;
+            flex: 1;
+            align-self: stretch;
+            overflow: hidden;            
+        }
+
+        .etiquette-visible-header .dilution {
+            font-size: 9pt;
+            text-align: center;
+
+            flex: 0 0 auto;
+            align-self: center;
+        }
+
+        .etiquette-hidden-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .etiquette-hidden-body .control-text {
+            flex: 0 0 auto;
+            font-size: 8pt;
+        }
+
+        .datamatrix-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 4px;
+        }
+    </style>
+</template>

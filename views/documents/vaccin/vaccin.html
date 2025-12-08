@@ -1,8 +1,8 @@
 <div data-load-key="vueVaccin" id="vueVaccin">
-    <h1>Bon de Prise en Charge – Vaccination (Hors grippe et COVID)</h1>
+    <h4>Bon de Prise en Charge – Vaccination (Hors grippe et COVID)</h4>
 
     <div class="fr-callout fr-callout--info fr-mb-3w">
-        <h3 class="fr-callout__title">Téléchargement du formulaire vierge</h3>
+        <h5 class="fr-callout__title">Téléchargement du formulaire vierge</h5>
         <p class="fr-callout__text">
             Ce formulaire permet de générer un bon de prise en charge personnalisé à partir du modèle officiel.
         </p>
@@ -14,7 +14,7 @@
     <template hx-get="./views/documents/vaccin/forms/form-vaccin.html" hx-trigger="load" hx-swap="outerHTML"></template>
 
     <div id="previewContainer" class="fr-mt-4w fr-hidden">
-        <h3>Prévisualisation du PDF généré</h3>
+        <h5>Prévisualisation du PDF généré</h5>
         <iframe id="pdfPreview" width="100%" height="500px" class="fr-mt-2w"></iframe>
     </div>
 </div>

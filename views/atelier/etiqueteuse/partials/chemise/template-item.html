@@ -1,0 +1,15 @@
+<template id="template-item">
+    <div class="item">
+        <div class="etiquette-item">
+            <div class="etiquette-visible-header">
+                <span class="souche">${item.denomination}</span>
+                <span class="dilution">${item.dosage}</span>
+            </div>
+
+            <div class="etiquette-hidden-body">
+                <div class="datamatrix-container">${item.dataMatrixHtml}</div>
+                <div class="control-text">${item.codeBarre ? item.codeBarre : 'N/A'}</div>
+            </div>
+        </div>
+    </div>
+</template>

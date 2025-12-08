@@ -1,0 +1,61 @@
+<div id="vueEtiqueteuse" data-load-key="vueEtiqueteuse">
+    <h4>Étiqueteuse Homéopathique</h4>
+    <template hx-get="./views/atelier/etiqueteuse/forms/form-etiquette.html" hx-trigger="load" hx-swap="outerHTML"></template>
+
+    <div class="fr-mt-4v">
+        <button id="btnPreview" type="button" class="fr-btn fr-btn--secondary">🔄 Aperçu (PDF)</button>
+        <button id="btnGenerate" type="button" class="fr-btn fr-ml-2v" disabled>🖨️ Imprimer la Planche</button>
+        <button id="btnClear" type="button"
+            class="fr-btn fr-btn--secondary fr-ml-2v fr-btn--icon-left fr-icon-delete-line">Vider la Liste</button>
+    </div>
+
+    <div class="fr-tabs fr-mt-6v">
+        <ul class="fr-tabs__list" role="tablist" aria-label="apercu-tabs">
+            <li role="presentation">
+                <button type="button" id="tab-liste" class="fr-tabs__tab" tabindex="0" role="tab" aria-selected="true"
+                    aria-controls="tab-liste-panel">📋 Liste des Souches (<span id="count-items">0</span>)</button>
+            </li>
+            <li role="presentation">
+                <button type="button" id="tab-apercu" class="fr-tabs__tab" tabindex="-1" role="tab"
+                    aria-selected="false" aria-controls="tab-apercu-panel">📅 Aperçu du PDF</button>
+            </li>
+        </ul>
+
+        <div id="tab-liste-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel"
+            aria-labelledby="tab-liste" tabindex="0">
+            <div class="fr-table fr-mt-4v">
+                <div class="fr-table__wrapper">
+                    <div class="fr-table__container">
+                        <div class="fr-table__content">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Dénomination</th>
+                                        <th scope="col">Dosage</th>
+                                        <th scope="col">Code-Barre</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="data-list">
+                                    <tr>
+                                        <td colspan="4" class="fr-text--center">Aucune souche ajoutée.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-apercu-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tab-apercu" tabindex="0">
+            <div id="etiqueteuse-messagerie" class="fr-container"></div>
+            <div id="etiqueteuse-output" class="fr-container"
+                style="background:#f5f5f5;padding:1rem;border-radius:8px;min-height:420px;overflow:auto;">
+                <small>Cliquez sur "Aperçu (PDF)" pour prévisualiser la planche.</small>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script type="module" src="./views/atelier/etiqueteuse/js/view-etiqueteuse.js"></script>

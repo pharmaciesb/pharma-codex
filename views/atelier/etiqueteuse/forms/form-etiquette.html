@@ -1,0 +1,49 @@
+<form id="formEtiquette" class="fr-form-group fr-mt-4v">
+    <fieldset class="fr-fieldset" aria-labelledby="etiqueteuse-legend">
+        <legend class="fr-fieldset__legend" id="etiqueteuse-legend">Rédiger une liste personnalisée
+            <span class="fr-hint-text">
+                Ajoutez manuellement des entrées à la planche.
+            </span>
+        </legend>
+
+        <div class="fr-fieldset__element">
+            <div class="fr-input-group">
+                <label class="fr-label" for="denomination">Dénomination (*)</label>
+                <input class="fr-input" type="text" id="denomination" name="denomination" required>
+            </div>
+        </div>
+
+        <div class="fr-fieldset__element">
+            <div class="fr-input-group">
+                <label class="fr-label" for="dosage">Dosage (*)</label>
+                <input class="fr-input" type="text" id="dosage" name="dosage" required autocomplete="off" list="dosages">
+                <datalist id="dosages">
+                    <option value="1 DH">
+                    <option value="1 CH">
+                    <option value="2 CH">
+                    <option value="3 CH">
+                    <option value="4 CH">
+                    <option value="5 CH">
+                    <option value="7 CH">
+                    <option value="9 CH">
+                    <option value="12 CH">
+                    <option value="15 CH">
+                    <option value="30 CH">
+                    <option value="40 CH">
+                    <option value="200 CH">
+                </datalist>
+            </div>
+        </div>
+
+        <div class="fr-fieldset__element">
+            <div class="fr-input-group">
+                <label class="fr-label" for="codeBarre">Code EAN13 (DataMatrix)</label>
+                <input class="fr-input" type="text" id="codeBarre" name="codeBarre" pattern="^\d{13}$"
+                    title="Doit être un EAN13 (13 chiffres)">
+            </div>
+        </div>
+
+        <button type="submit"
+            class="fr-btn fr-btn--secondary fr-mt-2v fr-btn--icon-left fr-icon-add-line">Ajouter</button>
+    </fieldset>
+</form>
