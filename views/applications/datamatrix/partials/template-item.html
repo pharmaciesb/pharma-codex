@@ -1,0 +1,10 @@
+<template>
+    <div class="datamatrix-item" style="text-align: center; border: 0.1mm solid #eee; padding: 5px;">
+        <div class="barcode-svg">
+            ${item.svgHtml}
+        </div>
+        <p style="font-size: 0.5rem; line-height: 1rem; margin: 0 0 1.25rem;">
+            ${item.ean}<br>LOT: ${item.lot}<br>DLU: ${item.dlu}
+        </p>
+    </div>
+</template>

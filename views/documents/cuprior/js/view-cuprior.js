@@ -67,11 +67,12 @@ AppManagers.FormManager.registerHandler('formCuprior',
     try {
       // NOUVEAU : Vérification de la librairie PDF-LIB
       if (typeof PDFLib === 'undefined') {
-        manager.addResultMessage(codex, 'error', 'La librairie PDF-LIB est manquante. Impossible de générer le PDF.');
+        
+        AppManagers.CodexManager.show('error', 'La librairie PDF-LIB est manquante. Impossible de générer le PDF.');
         return;
       }
 
-      manager.addResultMessage(codex, 'info', 'Remplissage du bon Cuprior en cours...');
+      AppManagers.CodexManager.show('info', 'Remplissage du bon Cuprior en cours...');
 
       // --- Récupération des valeurs du formulaire
       const champs = {
@@ -92,7 +93,7 @@ AppManagers.FormManager.registerHandler('formCuprior',
 
       // --- Charger le PDF existant
       if (!templatePdfBytes || !PDFLib) {
-        manager.addResultMessage(codex, 'error', 'Ressources PDF non chargées. Réessayez.');
+        AppManagers.CodexManager.show('error', 'Ressources PDF non chargées. Réessayez.');
         return;
       }
 
@@ -198,7 +199,7 @@ AppManagers.FormManager.registerHandler('formCuprior',
         outputEl.appendChild(tempDiv);
       }
       
-      manager.addResultMessage(codex, 'success', 'Bon Cuprior généré avec succès.');
+      AppManagers.CodexManager.show('success', 'Bon Cuprior généré avec succès.');
 
       // NOUVEAU : Affichage du courriel
       await AppManagers.TemplateManager.renderInto(
@@ -225,7 +226,7 @@ AppManagers.FormManager.registerHandler('formCuprior',
       await initCopyListeners(AppManagers.log);
     } catch (err) {
       console.error(err);
-      manager.addResultMessage(codex, 'error', 'Erreur Cuprior : ' + err);
+      AppManagers.CodexManager.show('error', 'Erreur Cuprior : ' + err);
     }
   }
 );

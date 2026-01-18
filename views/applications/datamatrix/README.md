@@ -41,7 +41,7 @@ AppManagers.DomloadManager.registerHandler('vueDatamatrix', {
 AppManagers.FormManager.registerHandler('formDatamatrix', async (data, form, codex, manager) => {
   const ean = data.get('ean');
   // ... ton traitement
-  manager.addResultMessage(codex, 'success', 'Opération terminée');
+  AppManagers.CodexManager.show('success', 'Opération terminée');
 });
 ```
 

@@ -1,7 +1,7 @@
-<div data-load-key="vueRenouvellement" id="vueRenouvellement">
+<div data-load-key="viewRenouvellement" id="viewRenouvellement">
     <h4>Planification des Dates de Renouvellement</h4>
-    <template hx-get="./views/applications/renouvellement/forms/form-renouvellement.html" hx-trigger="load"
-        hx-swap="outerHTML"></template>
+    
+    <div data-include="./views/applications/renouvellement/forms/form-renouvellement.html"></div>
 
     <div class="fr-table">
         <div class="fr-table__wrapper">
@@ -53,6 +53,4 @@
     </div>
     <div id="modalesContainer"></div>
 </div>
-
 <script src="./static/js/libs/qrious.min@4.0.2.js"></script>
-<script type="module" src="./views/applications/renouvellement/js/view-renouvellement.js"></script>

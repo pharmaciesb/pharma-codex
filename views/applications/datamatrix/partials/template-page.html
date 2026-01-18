@@ -1,0 +1,57 @@
+<template>
+    <style>
+        @media print {
+
+            /* Cache tout sauf la zone du PDF */
+            body * {
+                visibility: hidden;
+            }
+
+            .pdf-page,
+            .pdf-page * {
+                visibility: visible;
+            }
+
+            .pdf-page {
+                position: absolute;
+                left: 0;
+                top: 0;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Cache la barre d'outils à l'impression */
+            .fr-background-alt--blue-france {
+                display: none !important;
+            }
+        }
+
+        .pdf-page {
+            width: 200mm;
+            min-height: 287mm;
+            padding: 5mm;
+            background: white;
+            color: black;
+            font-family: sans-serif;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 5mm;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .page-grid {
+            display: grid;
+            gap: 4mm;
+        }
+    </style>
+    <div class="pdf-page">
+        <div class="page-header">
+            <h4>DATAMATRIX – GÉNÉRATION AUTO</h4>
+            <p style="font-size: 8pt;">À découper et coller sur les boîtes.</p>
+        </div>
+        <div class="page-grid">
+        </div>
+    </div>
+</template>

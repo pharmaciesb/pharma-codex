@@ -29,10 +29,10 @@
 </head>
 
 <body>
-    <template hx-get="./layout/header.html" hx-trigger="load" hx-swap="outerHTML"></template>
+    <div data-include="./layout/header.html"></div>
     <main id="main" role="main" class="fr-container fr-my-4w">
-        <template hx-get="./layout/fil-ariane.html" hx-trigger="load" hx-swap="outerHTML"></template>
-        <template hx-get="./layout/codex-missives.html" hx-trigger="load" hx-swap="outerHTML"></template>
+        <div data-include="./layout/fil-ariane.html"></div>
+        <div data-include="./layout/codex-missives.html"></div>
         <div id="router"></div>
     </main>
     <!-- Script DSFR en version es6 module et nomodule pour les navigateurs le ne supportant pas -->
@@ -51,7 +51,7 @@
     <script src="./static/js/libs/pizzip@3.2.0.js"></script>
     <script src="./static/js/libs/pizzip-utils@3.2.0.js"></script>
     <script src="./static/js/libs/FileSaver.min@2.0.5.js"></script>
-    <script src="./static/js/libs/htmx.min@2.0.7.js"></script>
+    <!-- <script src="./static/js/libs/htmx.min@2.0.7.js"></script> -->
 </body>
 
 </html>

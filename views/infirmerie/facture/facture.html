@@ -2,8 +2,7 @@
   <!-- ===== FORMULAIRE FACTURE ===== -->
   <div class="fr-col-12">
     <div data-load-key="vueFacture" id="vueFacture">
-      <template hx-get="./views/infirmerie/facture/forms/form-facture.html" hx-trigger="load"
-        hx-swap="outerHTML"></template>
+      <div data-include="./views/infirmerie/facture/forms/form-facture.html"></div>
     </div>
   </div>
 
@@ -35,7 +34,7 @@
 </div>
 
 <!-- ===== TEMPLATE PARTIAL HTMX ===== -->
-<template hx-get="./views/infirmerie/facture/satisfait.html" hx-target="#facture-output" hx-trigger="customEvent"
-  hx-swap="outerHTML" hx-vals='js:{"facture": data}'></template>
+<div data-include="./views/infirmerie/facture/satisfait.html"></div>
+<!-- <template hx-get="./views/infirmerie/facture/satisfait.html" hx-target="#facture-output" hx-trigger="customEvent" hx-swap="outerHTML" hx-vals='js:{"facture": data}'></template> -->
 
 <script type="module" src="./views/infirmerie/facture/js/view-facture.js"></script>

@@ -1,149 +1,217 @@
-// -- Vue Assistants
-import { definirAujourdhui, formatFR, obtenirIntervalle } from '/pharma-codex/static/js/assistants/assistant-date.js';
-// -- Vue DomloadManager
-AppManagers.DomloadManager.registerHandler('vueRenouvellement', {
-  joursFeries: [],
-  anneeEnCours: new Date().getFullYear(),
+/// <reference path="../../../../static/js/types.js" />
 
-  chargerJoursFeries: async function () {
+import { definirAujourdhui, formatFR, obtenirIntervalle } from '/pharma-codex/static/js/assistants/assistant-date.js';
+import { initCopyListeners } from '/pharma-codex/static/js/assistants/assistant-clipboard.js';
+
+/**
+ * Handler pour la vue Renouvellement
+ * @extends {AppManagers.ViewHandler}
+ */
+class RenouvellementHandler extends AppManagers.ViewHandler {
+  constructor() {
+    super('viewRenouvellement');
+
+    // État interne
+    this.joursFeries = [];
+    this.anneeEnCours = new Date().getFullYear();
+  }
+
+  async onload() {
+    // 1. Charge les jours fériés depuis l'API
+    await this.chargerJoursFeries();
+    // 2. Initialise la date du jour dans les inputs
+    definirAujourdhui();
+    // 3. Initialise les dates affichées
+    this.initDates();
+    // 4. Enregistre le handler de formulaire
+    this.registerForm('formRenouvellement', this.handleFormSubmit);
+  }
+
+  /**
+   * Charge les jours fériés depuis l'API gouv.fr
+   */
+  async chargerJoursFeries() {
+    const tbody = this.getElement('joursFeries');
+    if (!tbody) return;
+
     try {
-      const response = await fetch(`https://calendrier.api.gouv.fr/jours-feries/metropole/${this.anneeEnCours}.json`);
+      const response = await fetch(
+        `https://calendrier.api.gouv.fr/jours-feries/metropole/${this.anneeEnCours}.json`
+      );
+
       if (!response.ok) throw new Error('API indisponible');
+
       const data = await response.json();
 
-      this.joursFeries = Object.keys(data).map(dateStr => {
-        const [year, monthStr, dayStr] = dateStr.split('-');
-        return {
-          date: new Date(parseInt(year), parseInt(monthStr) - 1, parseInt(dayStr)),
-          libelle: data[dateStr]
-        };
-      }).sort((a, b) => a.date - b.date);
+      // Parse et trie les dates
+      this.joursFeries = Object.keys(data)
+        .map(dateStr => {
+          const [year, month, day] = dateStr.split('-');
+          return {
+            date: new Date(parseInt(year), parseInt(month) - 1, parseInt(day)),
+            libelle: data[dateStr]
+          };
+        })
+        .sort((a, b) => a.date - b.date);
 
-      const tbody = document.getElementById("joursFeries");
-      tbody.innerHTML = '';
-      this.joursFeries.forEach(jour => {
-        const jourSemaine = jour.date.toLocaleDateString("fr-FR", { weekday: 'long' });
-        const row = `<tr>
-          <td>${jour.date.toLocaleDateString("fr-FR")}</td>
-          <td>${jour.libelle}</td>
-          <td>${jourSemaine.charAt(0).toUpperCase() + jourSemaine.slice(1)}</td>
-        </tr>`;
-        tbody.insertAdjacentHTML('beforeend', row);
-      });
+      // Affiche dans le tableau
+      tbody.innerHTML = this.joursFeries.map(jour => {
+        const jourSemaine = jour.date.toLocaleDateString('fr-FR', { weekday: 'long' });
+        const jourCapitalized = jourSemaine.charAt(0).toUpperCase() + jourSemaine.slice(1);
+
+        return `
+                    <tr>
+                        <td>${jour.date.toLocaleDateString('fr-FR')}</td>
+                        <td>${jour.libelle}</td>
+                        <td>${jourCapitalized}</td>
+                    </tr>
+                `;
+      }).join('');
+
+      AppManagers.log(this.key, 'success', `${this.joursFeries.length} jours fériés chargés`);
 
     } catch (err) {
-      AppManagers.log('vueRenouvellement', 'error', 'Erreur chargement jours fériés:', err);
-      document.getElementById("joursFeries").innerHTML =
-        '<tr><td colspan="3" class="fr-text--danger">Erreur chargement fériés (mode offline).</td></tr>';
+      AppManagers.log(this.key, 'error', 'Erreur chargement jours fériés:', err);
+      tbody.innerHTML = '<tr><td colspan="3" class="fr-error-text">Erreur chargement fériés (mode offline).</td></tr>';
     }
-  },
+  }
 
-  EstJourFerie: function (date) {
+  /**
+   * Vérifie si une date est un jour férié
+   * @param {Date} date
+   * @returns {boolean}
+   */
+  estJourFerie(date) {
     return this.joursFeries.some(j => j.date.toDateString() === date.toDateString());
-  },
+  }
 
-  AjusterSiJourFerieOuDimanche: function (date) {
-    while (this.EstJourFerie(date) || date.getDay() === 0) {
+  /**
+   * Ajuste une date si elle tombe un dimanche ou un jour férié
+   * @param {Date} date
+   * @returns {Date}
+   */
+  ajusterSiJourFerieOuDimanche(date) {
+    while (this.estJourFerie(date) || date.getDay() === 0) {
       date.setDate(date.getDate() + 1);
     }
     return date;
-  },
+  }
 
-  CalculerRenouvellements: function (dateInitiale, quantite, intervalle) {
-    let dates = [], dateCourante = new Date(dateInitiale);
+  /**
+   * Calcule les dates de renouvellement
+   * @param {Date} dateInitiale
+   * @param {number} quantite
+   * @param {number} intervalle
+   * @returns {Date[]}
+   */
+  calculerRenouvellements(dateInitiale, quantite, intervalle) {
+    const dates = [];
+    let dateCourante = new Date(dateInitiale);
+
     for (let i = 0; i < quantite; i++) {
       dateCourante.setDate(dateCourante.getDate() + intervalle);
-      dateCourante = this.AjusterSiJourFerieOuDimanche(dateCourante);
+      dateCourante = this.ajusterSiJourFerieOuDimanche(dateCourante);
       dates.push(new Date(dateCourante));
     }
+
     return dates;
-  },
-
-  initDates: function () {
-    document.getElementById('dateDerniereFacturation').textContent = formatFR(obtenirIntervalle(new Date(), -22));
-  },
-
-  presetVariableOnload: function (element, key) {
-    window.currentView = key;
-    element.setAttribute('data-loaded', 'true');
-    AppManagers.log('vueRenouvellement', 'info', 'Preset onload');
-  },
-
-  methodeOnload: async function () {
-    await this.chargerJoursFeries();
-    definirAujourdhui();
-    this.initDates();
-
-    AppManagers.log('vueRenouvellement', 'success', 'Méthode onload OK');
   }
-});
 
-// -- FormManager
-AppManagers.FormManager.registerHandler('formRenouvellement', async (data, form, codex, manager, validator) => {
-  try {
-    const handlerObj = AppManagers.DomloadManager.handlers['vueRenouvellement'];
-
-    let dateInitiale = new Date(data.get('dateInitiale'));
-    let quantite = parseInt(data.get('nombreRenouvellements'));
-    let intervalle = parseInt(data.get('intervalleRenouvellement'));
-
-    if (isNaN(dateInitiale) || quantite < 1 || intervalle < 7) {
-      manager.addResultMessage(codex, 'error', 'Inputs invalides : date valide, quantité ≥1, intervalle ≥7.');
-      return;
+  /**
+   * Initialise les dates affichées dans la page
+   */
+  initDates() {
+    const dateEl = this.getElement('dateDerniereFacturation', false);
+    if (dateEl) {
+      dateEl.textContent = formatFR(obtenirIntervalle(new Date(), -22));
     }
+  }
 
-    const dates = handlerObj.CalculerRenouvellements(dateInitiale, quantite, intervalle);
-    const tableBody = document.getElementById('renouvellementTable');
+  /**
+   * Gère la soumission du formulaire
+   * @param {FormData} data
+   * @param {HTMLFormElement} form
+   */
+  async handleFormSubmit(data, form) {
+    try {
+      // Récupération et validation des données
+      const dateInitiale = new Date(data.get('dateInitiale'));
+      const quantite = parseInt(data.get('nombreRenouvellements'));
+      const intervalle = parseInt(data.get('intervalleRenouvellement'));
+
+      if (isNaN(dateInitiale.getTime()) || quantite < 1 || intervalle < 7) {
+        await AppManagers.CodexManager.show('error', 'Données invalides : date valide, quantité ≥1, intervalle ≥7.');
+        return;
+      }
+
+      // Calcul des dates
+      const dates = this.calculerRenouvellements(dateInitiale, quantite, intervalle);
+
+      // Affichage dans le tableau
+      this.afficherRenouvellements(dates);
+      await AppManagers.CodexManager.show('success', `${dates.length} renouvellement(s) généré(s)`);
+
+    } catch (err) {
+      AppManagers.log(this.key, 'error', 'Erreur calcul renouvellements:', err);
+      await AppManagers.CodexManager.show('error', err.message || 'Erreur lors du calcul des dates.');
+    }
+  }
+
+  /**
+   * Affiche les dates de renouvellement dans le tableau avec modales QR code
+   * @param {Date[]} dates
+   */
+  async afficherRenouvellements(dates) {
+    const tableBody = this.getElement('renouvellementTable');
+    if (!tableBody) return;
+
     tableBody.innerHTML = '';
 
-    dates.forEach((date, index) => {
-      const jourSemaine = date.toLocaleDateString("fr-FR", { weekday: 'long' });
-      const dateStr = `${date.toLocaleDateString("fr-FR")} (${jourSemaine.charAt(0).toUpperCase() + jourSemaine.slice(1)})`;
+    const templatePath = './views/applications/renouvellement/partials/renouvellement-row.html';
+
+    // ✅ Prépare toutes les données
+    const rendersData = dates.map((date, index) => {
+      const jourSemaine = date.toLocaleDateString('fr-FR', { weekday: 'long' });
+      const jourCapitalized = jourSemaine.charAt(0).toUpperCase() + jourSemaine.slice(1);
+      const dateStr = `${date.toLocaleDateString('fr-FR')} (${jourCapitalized})`;
       const modalId = `modal-qr-R${index + 1}`;
-      const titreModal = `R${index + 1} = ${date.toLocaleDateString("fr-FR")} - ${jourSemaine}`;
+      const texteCopie = `R${index + 1} = ${date.toLocaleDateString('fr-FR')} - ${jourSemaine}`;
 
-      const rowHTML = `
-        <tr>
-          <td>R${index + 1}</td>
-          <td>${dateStr}</td>
-          <td>
-            <button class="fr-btn fr-btn--tertiary" type="button" title="Copier" 
-              onclick="navigator.clipboard.writeText('R${index + 1} = ${date.toLocaleDateString("fr-FR")} - ${jourSemaine}')">📋</button>
-            <button class="fr-btn fr-btn--tertiary" type="button" data-fr-opened="false" aria-controls="${modalId}" title="QRCode">⛆</button>
-
-            <dialog id="${modalId}" class="fr-modal" aria-labelledby="${modalId}-title">
-              <div class="fr-modal__body">
-                <div class="fr-modal__content">
-                  <div class="fr-modal__header">
-                    <h2 id="${modalId}-title" class="fr-modal__title">${titreModal}</h2>
-                    <button class="fr-btn--close fr-btn" type="button" aria-controls="${modalId}" title="Fermer">Fermer</button>
-                  </div>
-                  <div class="fr-modal__content">
-                    <p id="qrcode-${index + 1}"></p>
-                  </div>
-                </div>
-              </div>
-            </dialog>
-          </td>
-        </tr>
-      `;
-      tableBody.insertAdjacentHTML('beforeend', rowHTML);
-
-      // Génération QR code
-      const qrcodePlaceholder = document.getElementById(`qrcode-${index + 1}`);
-      if (qrcodePlaceholder) {
-        const qrcode = new QRious({
-          element: qrcodePlaceholder,
-          value: `R${index + 1} = ${date.toLocaleDateString("fr-FR")} - ${jourSemaine}`,
-          size: 120
-        });
-        qrcodePlaceholder.appendChild(qrcode.image);
-      }
+      return { numero: index + 1, dateStr, modalId, texteCopie };
     });
 
-    manager.addResultMessage(codex, 'success', `Dates générées : ${dates.length} renouvellements.`);
-  } catch (err) {
-    AppManagers.log('FormManager', 'error', 'Erreur handler formRenouvellement', err);
-    manager.addResultMessage(codex, 'error', err.message || 'Erreur lors du calcul des dates.');
+    // ✅ Rend tous les templates en parallèle
+    await Promise.all(
+      rendersData.map(data =>
+        AppManagers.TemplateManager.renderInto(templatePath, data, tableBody, false)
+      )
+    );
+
+    // ✅ Génère les QR codes après le rendu
+    rendersData.forEach(data => {
+      this.genererQRCode(data.numero, data.texteCopie);
+    });
+
+    // ✅ Attache les listeners
+    await initCopyListeners(AppManagers.log);
   }
-});
+
+  /**
+   * Génère un QR code dans le canvas
+   * @param {number} index
+   * @param {string} texte
+   */
+  genererQRCode(index, texte) {
+    const canvas = document.getElementById(`qrcode-${index}`);
+    if (!canvas || !window.QRious) return;
+
+    new QRious({
+      element: canvas,
+      value: texte,
+      size: 200
+    });
+  }
+}
+
+// ✅ Enregistrement
+new RenouvellementHandler().register();

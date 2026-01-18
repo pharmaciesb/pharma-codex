@@ -18,7 +18,7 @@ AppManagers.FormManager.registerHandler('formVaccin', async function (data, form
     const required = ["nom", "prenom", "dateNaissance", "immatriculation", "codeOrganisme"];
     for (const f of required) {
       if (!data.get(f) || data.get(f).trim() === "") {
-        manager.addResultMessage(codex, 'error', `Le champ "${f}" est obligatoire.`);
+        AppManagers.CodexManager.show('error', `Le champ "${f}" est obligatoire.`);
         return;
       }
     }
@@ -48,7 +48,7 @@ AppManagers.FormManager.registerHandler('formVaccin', async function (data, form
       dateJourForPdf = dateJour.split('/').join('');
     }
 
-    manager.addResultMessage(codex, 'info', 'Remplissage du document en cours...');
+    AppManagers.CodexManager.show('info', 'Remplissage du document en cours...');
 
     // Chargement du modèle
     const existingPdfBytes = await fetch('./views/documents/vaccin/pdf/611.pdf').then(r => r.arrayBuffer());
@@ -124,9 +124,9 @@ AppManagers.FormManager.registerHandler('formVaccin', async function (data, form
     a.download = `bon_vaccin_${nom}_${prenom}.pdf`;
     a.click();
 
-    manager.addResultMessage(codex, 'success', 'Le bon de prise en charge a été généré avec succès.');
+    AppManagers.CodexManager.show('success', 'Le bon de prise en charge a été généré avec succès.');
   } catch (err) {
     AppManagers.log('formVaccin', 'error', 'Erreur génération PDF', err);
-    manager.addResultMessage(codex, 'error', 'Erreur lors de la génération : ' + (err.message || err));
+    AppManagers.CodexManager.show('error', 'Erreur lors de la génération : ' + (err.message || err));
   }
 });

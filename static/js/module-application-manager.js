@@ -1,227 +1,362 @@
+// #module-application-manager.js
+import { PdfAssistant } from "./assistants/assistant-pdf.js";
+
 (function () {
     if (window.AppManagers) return;
 
-    window.AppDebug = false; // <- true pour activer les logs
+    window.AppDebug = true;
 
     const log = (manager, type, ...args) => {
         if (!window.AppDebug) return;
-        const styles = {
-            info: 'color: #00f; font-weight: bold',
-            success: 'color: #0a0; font-weight: bold',
-            warn: 'color: #f90; font-weight: bold',
-            error: 'color: #f00; font-weight: bold',
-            action: 'color: #09f; font-weight: bold'
-        };
-        console.log(`%c[${manager}][${type}]`, styles[type] || '', ...args);
+        const colors = { info: '#00f', success: '#0a0', warn: '#f90', error: '#f00', action: '#09f' };
+        console.log(`%c[${manager}][${type}]`, `color: ${colors[type] || '#888'}; font-weight: bold`, ...args);
     };
 
-    // -------------------- DomloadManager --------------------
+    // --- CodexManager : Notifications ---
+    const CodexManager = {
+        _selector: '#codexGlobal',
+        show: async function (type, message) {
+            log('CodexManager', type, message);
+            await customElements.whenDefined('codex-missives');
+            const codex = document.querySelector(this._selector);
+            if (codex?.addMessage) codex.addMessage(type, message);
+        }
+    };
+
+    // --- Events : Gestion sécurisée des listeners ---
+    const Events = {
+        safeListen: function (element, eventType, callback, options = {}) {
+            if (!element) {
+                console.warn('[Events] Element null/undefined fourni à safeListen');
+                return;
+            }
+            
+            // ✅ Lock spécifique au TYPE d'événement (permet plusieurs types sur le même élément)
+            const lockAttr = `listener_${eventType.replace(/[^a-z0-9]/gi, '_')}_attached`;
+            
+            if (element.dataset[lockAttr] === 'true') {
+                log('Events', 'info', `Listener ${eventType} déjà attaché, skip`);
+                return;
+            }
+
+            element.addEventListener(eventType, callback, options);
+            element.dataset[lockAttr] = 'true';
+            log('Events', 'success', `Listener ${eventType} attaché`);
+        },
+        
+        // ✅ NOUVEAU : Méthode pour détacher proprement
+        safeRemove: function (element, eventType, callback) {
+            if (!element) return;
+            
+            const lockAttr = `listener_${eventType.replace(/[^a-z0-9]/gi, '_')}_attached`;
+            
+            if (element.dataset[lockAttr] === 'true') {
+                element.removeEventListener(eventType, callback);
+                delete element.dataset[lockAttr];
+                log('Events', 'info', `Listener ${eventType} détaché`);
+            }
+        }
+    };
+
+    // --- DomloadManager : Initialisation robuste ---
     const DomloadManager = {
         handlers: {},
         _initialized: false,
-        _pendingHandlers: new Set(),
+
+        // ✅ Convention pour charger auto les scripts
+        _loadModuleScript: async function (key) {
+            const currentRoute = window.location.hash.replace('#', '');
+            
+            if (!currentRoute) {
+                log('DomloadManager', 'warn', 'Pas de route dans le hash');
+                return;
+            }
+
+            const pathParts = currentRoute.split('/');
+            const htmlFile = pathParts[pathParts.length - 1];
+            const moduleName = htmlFile.replace('.html', '');
+            const basePath = pathParts.slice(0, -1).join('/');
+
+            const scriptPath = `${window.BASE_URL}/${basePath}/js/view-${moduleName}.js`;
+
+            try {
+                await import(scriptPath);
+                log('DomloadManager', 'success', `Script chargé : ${scriptPath}`);
+            } catch (err) {
+                log('DomloadManager', 'warn', `Script non trouvé : ${scriptPath}`);
+            }
+        },
 
         registerHandler: function (key, handler) {
             this.handlers[key] = handler;
-            log('DomloadManager', 'info', `Handler enregistré pour: ${key}`);
-            if (this._initialized) this._executeHandlerWithRetry(key, 3);
-            else this._pendingHandlers.add(key);
+            log('DomloadManager', 'info', `Handler enregistré : ${key}`);
+            if (this._initialized) this._executeWithRetry(key);
+        },
+
+        _executeWithRetry: async function (key, retries = 5) {
+            const handler = this.handlers[key];
+
+            if (!handler) {
+                log('DomloadManager', 'info', `Pas de handler pour ${key}, tentative de chargement du script`);
+                await this._loadModuleScript(key);
+
+                const newHandler = this.handlers[key];
+                if (!newHandler) {
+                    log('DomloadManager', 'warn', `Aucun handler après load script : ${key}`);
+                    return;
+                }
+                return this._executeWithRetry(key, retries);
+            }
+
+            for (let i = 1; i <= retries; i++) {
+                const el = document.querySelector(`[data-load-key="${key}"]`) || document.getElementById(key);
+
+                if (el) {
+                    try {
+                        if (handler.presetVariableOnload) handler.presetVariableOnload(el, key);
+                        if (handler.methodeOnload) {
+                            const result = handler.methodeOnload(el, key);
+                            if (result instanceof Promise) await result;
+                        }
+                        log('DomloadManager', 'success', `Initialisé : ${key}`);
+                        return;
+                    } catch (err) {
+                        log('DomloadManager', 'error', `Erreur dans ${key}:`, err);
+                        return;
+                    }
+                }
+                await new Promise(r => setTimeout(r, 50 * i));
+            }
+            log('DomloadManager', 'warn', `Cible ${key} non trouvée après ${retries} essais.`);
         },
 
         init: function () {
             if (this._initialized) return;
             this._initialized = true;
-            log('DomloadManager', 'success', 'Initialisé');
 
-            const safeExecute = () => {
-                requestAnimationFrame(() => setTimeout(() => {
-                    this._executeHandlersWithRetry(3);
-                    this._pendingHandlers.forEach(key => this._executeHandlerWithRetry(key, 3));
-                    this._pendingHandlers.clear();
-                }, 50));
+            const runAll = () => {
+                requestAnimationFrame(() => {
+                    Object.keys(this.handlers).forEach(k => this._executeWithRetry(k));
+                });
             };
 
-            if (document.readyState === 'loading')
-                document.addEventListener('DOMContentLoaded', safeExecute);
-            else
-                safeExecute();
-
-            if (typeof htmx !== 'undefined') {
-                document.body.addEventListener('htmx:afterSwap', (e) => {
-                    const targetKey =
-                        e.detail.target.getAttribute('data-load-key') ||
-                        e.detail.target.id;
-                    if (targetKey)
-                        requestAnimationFrame(() =>
-                            setTimeout(() => this._executeHandlerWithRetry(targetKey, 3), 50)
-                        );
-                });
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', runAll);
+            } else {
+                runAll();
             }
         },
 
-        _executeHandlersWithRetry: function (maxRetries = 3) {
-            Object.keys(this.handlers).forEach(key =>
-                this._executeHandlerWithRetry(key, maxRetries)
-            );
-        },
+        // ✅ Méthode publique pour le Router
+        initModule: async function (key) {
+            return this._executeWithRetry(key);
+        }
+    };
 
-        _executeHandlerWithRetry: async function (key, retries = 3) {
-            const handler = this.handlers[key];
-            if (!handler) {
-                log('DomloadManager', 'warn', `Handler manquant pour ${key}`);
+    // --- FormManager : Soumission propre ---
+    const FormManager = {
+        handlers: {},
+        
+        registerHandler: function (id, callback) { 
+            this.handlers[id] = callback;
+            log('FormManager', 'info', `Handler enregistré : ${id}`);
+        },
+        
+        // ✅ NOUVEAU : Cleanup automatique de tous les handlers
+        clearAllHandlers: function () {
+            const handlerKeys = Object.keys(this.handlers);
+            if (handlerKeys.length > 0) {
+                handlerKeys.forEach(key => delete this.handlers[key]);
+                log('FormManager', 'info', `🧹 ${handlerKeys.length} handler(s) nettoyé(s): ${handlerKeys.join(', ')}`);
+            }
+        },
+        
+        init: function () {
+            document.addEventListener('submit', async (e) => {
+                const form = e.target;
+                const handler = this.handlers[form.id];
+
+                if (handler) {
+                    e.preventDefault();
+                    log('FormManager', 'action', `Submit: ${form.id}`);
+
+                    if (!form.checkValidity()) {
+                        form.reportValidity();
+                        return;
+                    }
+
+                    try {
+                        await handler(new FormData(form), form, document.getElementById('codexGlobal'), this, window.Validator);
+                    } catch (err) {
+                        CodexManager.show('error', err.message);
+                        log('FormManager', 'error', `Erreur dans ${form.id}:`, err);
+                    }
+                } else {
+                    log('FormManager', 'warn', `Pas de handler pour: ${form.id}`);
+                }
+            });
+        }
+    };
+
+    // --- TemplateManager : Rendu de chaîne ---
+    const TemplateManager = {
+        _cache: new Map(),
+        async load(url) {
+            if (this._cache.has(url)) return this._cache.get(url);
+            const resp = await fetch(url);
+            const html = await resp.text();
+            this._cache.set(url, html);
+            return html;
+        },
+        renderString(tpl, data = {}) {
+            return tpl.replace(/\$\{(.*?)\}/g, (m, key) => {
+                const val = key.split('.').reduce((acc, k) => acc?.[k], data);
+                return val !== undefined ? val : m;
+            });
+        },
+        async renderInto(url, data, target, replace = true) {
+            const tpl = await this.load(url);
+            const html = this.renderString(tpl, data);
+            const el = typeof target === 'string' ? document.querySelector(target) : target;
+            if (el) {
+                if (replace) el.innerHTML = html;
+                else el.insertAdjacentHTML('beforeend', html);
+            }
+            return el;
+        }
+    };
+
+    // --- IncludeLoader : Remplace les <template hx-get> ---
+    const IncludeLoader = {
+        async loadIncludes(container = document, depth = 0) {
+            if (depth > 5) {
+                log('IncludeLoader', 'warn', 'Profondeur max atteinte (boucle infinie ?)');
                 return;
             }
 
-            for (let attempt = 1; attempt <= retries; attempt++) {
-                const element =
-                    document.querySelector(`[data-load-key="${key}"]`) ||
-                    document.getElementById(key);
-                if (element) {
-                    await this._executeHandler(key);
-                    return;
-                }
-                if (attempt < retries)
-                    await new Promise(r => setTimeout(r, 100 * attempt));
-            }
-            log('DomloadManager', 'error', `Onload ${key} : échec après ${retries} tentatives`);
-        },
+            const includes = container.querySelectorAll('[data-include]');
+            if (includes.length === 0) return;
 
-        _executeHandler: async function (key) {
-            const handler = this.handlers[key];
-            if (!handler) return;
-            const element =
-                document.querySelector(`[data-load-key="${key}"]`) ||
-                document.getElementById(key);
-            if (!element) return;
+            await Promise.all(
+                Array.from(includes).map(async (el) => {
+                    const url = el.getAttribute('data-include');
+                    if (!url) return;
 
+                    try {
+                        const response = await fetch(url);
+                        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                        const html = await response.text();
+                        el.outerHTML = html;
+
+                        log('IncludeLoader', 'success', `Chargé (depth ${depth}): ${url}`);
+                    } catch (error) {
+                        log('IncludeLoader', 'error', `Erreur: ${url}`, error);
+                        el.innerHTML = '<p class="fr-error-text">Erreur de chargement</p>';
+                    }
+                })
+            );
+
+            await this.loadIncludes(container, depth + 1);
+        }
+    };
+
+    // --- ViewHandler : Classe de base pour créer des handlers propres ---
+    class ViewHandler {
+        constructor(key) {
+            this.key = key;
+            this.elements = {};
+            this.listeners = [];
+            this.formHandlers = [];
+        }
+        
+        // À override dans les sous-classes
+        async onload() {
+            log(this.key, 'warn', 'Aucune méthode onload() définie');
+        }
+        
+        // Méthode appelée par DomloadManager
+        async methodeOnload() {
             try {
-                if (typeof handler.presetVariableOnload === 'function')
-                    handler.presetVariableOnload(element, key);
-
-                if (typeof handler.methodeOnload === 'function') {
-                    const result = handler.methodeOnload(element, key);
-                    if (result instanceof Promise) await result;
-                }
+                await this.onload();
+                log(this.key, 'success', 'Handler initialisé');
             } catch (err) {
-                log('DomloadManager', 'error', `Erreur onload pour ${key}:`, err);
+                log(this.key, 'error', 'Erreur dans onload:', err);
+                throw err;
             }
-        },
-
-        waitForCodex: async function (selector = '#codexGlobal', timeout = 2000) {
-            const start = performance.now();
-            while (performance.now() - start < timeout) {
-                const codex = document.querySelector(selector);
-                if (codex && codex.shadowRoot && codex.shadowRoot.querySelector('.missives')) {
-                    return codex;
-                }
-                await new Promise(r => setTimeout(r, 50));
-            }
-            console.warn(`[DomloadManager] Codex ${selector} non prêt après ${timeout}ms`);
-            return document.querySelector(selector);
         }
-    };
-
-    // -------------------- FormManager --------------------
-    const FormManager = {
-        handlers: {},
-
-        registerHandler: function (formId, handler) {
-            this.handlers[formId] = handler;
-            log('FormManager', 'info', `Handler enregistré pour: ${formId}`);
-        },
-
-        addResultMessage: async function (codex, type, message) {
-            if (!codex) return;
-            const readyCodex = await AppManagers.DomloadManager.waitForCodex(`#${codex.id}`);
-            readyCodex.addMessage(type, message);
-            log('FormManager', 'success', `Message ajouté: [${type}] ${message}`);
-        },
-
-        init: function () {
-            document.addEventListener('submit', async (e) => {
-                if (!e.target || !e.target.matches('form')) return;
-                
-                const form = e.target;
-
-                if (!form.checkValidity()) {
-                    return;
-                }
-                
-                e.preventDefault();
-
-                const data = new FormData(form);
-                const handler = this.handlers[form.id];
-                
-                if (!handler) {
-                    log('FormManager', 'warn', `Aucun handler pour ${form.id}`);
-                    return;
-                }
-
-                const globalCodex = document.getElementById('codexGlobal');
-
-                try {
-                    await handler(data, form, globalCodex, this, window.Validator);
-                } catch (err) {
-                    log('FormManager', 'error', `Erreur dans handler pour ${form.id}:`, err);
-                    await this.addResultMessage(globalCodex, 'error', err.message || 'Erreur inconnue');
+        
+        // Helper : Ajoute un listener avec tracking automatique
+        addListener(element, event, handler, options = {}) {
+            if (!element) {
+                log(this.key, 'warn', `Element null pour listener ${event}`);
+                return;
+            }
+            
+            const boundHandler = handler.bind(this);
+            Events.safeListen(element, event, boundHandler, options);
+            this.listeners.push({ element, event, handler: boundHandler });
+            
+            return boundHandler;
+        }
+        
+        // Helper : Enregistre un form handler avec tracking
+        registerForm(formId, handler) {
+            const boundHandler = handler.bind(this);
+            FormManager.registerHandler(formId, boundHandler);
+            this.formHandlers.push(formId);
+            
+            return boundHandler;
+        }
+        
+        // Helper : Récupère et stocke un élément
+        getElement(id, required = true) {
+            const el = document.getElementById(id);
+            if (!el && required) {
+                log(this.key, 'warn', `Element #${id} non trouvé`);
+            }
+            this.elements[id] = el;
+            return el;
+        }
+        
+        // Cleanup automatique de tous les listeners
+        cleanup() {
+            // Détache tous les listeners
+            this.listeners.forEach(({ element, event, handler }) => {
+                if (element) {
+                    Events.safeRemove(element, event, handler);
                 }
             });
-
-            log('FormManager', 'success', 'Initialisé avec codex global');
+            this.listeners = [];
+            
+            // Nettoie les form handlers (fait automatiquement par le Router, mais on garde la référence)
+            this.formHandlers = [];
+            
+            // Reset les éléments
+            this.elements = {};
+            
+            log(this.key, 'info', 'Cleanup effectué');
         }
+        
+        // Enregistre le handler auprès du DomloadManager
+        register() {
+            DomloadManager.registerHandler(this.key, this);
+            return this;
+        }
+    }
+
+    window.AppManagers = {
+        DomloadManager,
+        FormManager,
+        CodexManager,
+        Events,
+        TemplateManager,
+        PdfAssistant,
+        IncludeLoader,
+        ViewHandler,  // ✅ Expose la classe
+        log
     };
 
-    // -------------------- TemplateManager --------------------
-    const TemplateManager = {
-        _cache: new Map(),
-
-        async load(url) {
-            if (this._cache.has(url)) return this._cache.get(url);
-            const response = await fetch(url);
-            if (!response.ok) throw new Error(`Échec du chargement du template : ${url}`);
-            const html = await response.text();
-            this._cache.set(url, html);
-            log('TemplateManager', 'info', `Template chargé : ${url}`);
-            return html;
-        },
-
-        /**
-         * Remplace les variables du type ${variable} dans un template HTML
-         * @param {string} template - le contenu du template HTML
-         * @param {object} data - les données à injecter
-         * @returns {string} - le HTML rendu
-         */
-        renderString(template, data = {}) {
-            return template.replace(/\$\{(.*?)\}/g, (match, key) => {
-                const value = key.split('.').reduce((acc, k) => acc?.[k], data);
-                return value ?? match;
-            });
-        },
-
-        /**
-         * Charge, compile et insère le template rendu dans une cible du DOM
-         * @param {string} url - chemin du template HTML
-         * @param {object} data - données à injecter
-         * @param {Element|string} target - élément cible ou sélecteur
-         * @param {boolean} replace - si true, remplace entièrement le contenu
-         */
-        async renderInto(url, data, target, replace = true) {
-            const tpl = await this.load(url);
-            const rendered = this.renderString(tpl, data);
-            const element = typeof target === 'string' ? document.querySelector(target) : target;
-            if (!element) throw new Error(`Cible introuvable : ${target}`);
-            if (replace) element.innerHTML = rendered;
-            else element.insertAdjacentHTML('beforeend', rendered);
-            log('TemplateManager', 'success', `Template inséré dans ${target}`);
-            return element;
-        }
-    };
-
-    // -------------------- Export global --------------------
-    window.AppManagers = { DomloadManager, FormManager, TemplateManager, log };
-
-    window.addEventListener('load', () => {
-        DomloadManager.init();
-        FormManager.init();
-    });
+    DomloadManager.init();
+    FormManager.init();
 })();

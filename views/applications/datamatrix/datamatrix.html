@@ -5,30 +5,17 @@
 <div class="fr-grid-row fr-grid-row--gutters">
 
   <!-- ===== FORMULAIRE DATAMATRIX ===== -->
-  <div class="fr-col-6">
+  <div class="fr-col-12 fr-col-md-4">
     <div data-load-key="vueDatamatrix" id="vueDatamatrix">
-      <template hx-get="./views/applications/datamatrix/forms/form-datamatrix.html" hx-trigger="load"
-        hx-swap="outerHTML">
+      <div data-include="./views/applications/datamatrix/forms/form-datamatrix.html"></div>
       </template>
     </div>
   </div>
 
-  <!-- ===== INFOS & SORTIE ===== -->
-  <div class="fr-col-6">
-    <div class="fr-callout fr-callout--pink-macaron">
-      <h3 class="fr-callout__title">Votre application de référence</h3>
-      <p class="fr-callout__text">
-        Générez et imprimez des étiquettes Datamatrix à coller sur vos boîtes.<br>
-        Le PDF se télécharge automatiquement après validation du formulaire.
-      </p>
-      <p class="fr-hint-text fr-mt-2v">
-        ⚠️ Vérifiez vos paramètres d’impression : format A4, marges nulles, fond blanc.
-      </p>
-    </div>
+  <!-- Zone de rendu HTMX (prévisualisation + rendu PDF temporaire) -->
+  <div class="fr-col-12 fr-col-md-8" id="datamatrix-output">
 
-    <!-- Zone de rendu HTMX (prévisualisation + rendu PDF temporaire) -->
-    <div class="fr-container fr-mt-3w" id="datamatrix-output"></div>
   </div>
+</div>
 
 </div>
-<script type="module" src="./views/applications/datamatrix/js/view-datamatrix.js"></script>

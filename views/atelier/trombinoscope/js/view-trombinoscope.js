@@ -82,7 +82,7 @@ AppManagers.DomloadManager.registerHandler('vueTrombinoscope', {
       try {
         const input = document.getElementById('fileinput');
         if (!input.files?.length) {
-          manager.addResultMessage(codex, 'warning', 'Veuillez sélectionner un fichier.');
+          AppManagers.CodexManager.show('warning', 'Veuillez sélectionner un fichier à importer.');
           return;
         }
 
@@ -98,17 +98,16 @@ AppManagers.DomloadManager.registerHandler('vueTrombinoscope', {
           reader.onload = (e) => handleExcel(e, manager, codex);
           reader.readAsArrayBuffer(file);
         }
-
-        manager.addResultMessage(codex, 'success', 'Données importées.');
+        AppManagers.CodexManager.show('success', 'Données importées.');
       } catch (err) {
-        manager.addResultMessage(codex, 'error', '[Auto] Erreur : ' + (err?.message || err));
+        AppManagers.CodexManager.show('error', '[Auto] Erreur : ' + (err?.message || err));
       }
     });
 
     function handleExcel(e, manager, codex) {
       // Vérification de la dépendance (NOUVEAU)
       if (typeof XLSX === 'undefined') {
-        manager.addResultMessage(codex, "error", "La librairie XLSX (SheetJS) est manquante pour l'import Excel.");
+        AppManagers.CodexManager.show('error', "La librairie XLSX (SheetJS) est manquante pour l'import Excel.");
         return;
       }
 
@@ -140,8 +139,7 @@ AppManagers.DomloadManager.registerHandler('vueTrombinoscope', {
 
       // ❌ Aucune feuille valide trouvée
       if (!validSheet) {
-        manager.addResultMessage(codex, "warning",
-          "Aucune feuille valide trouvée contenant les colonnes NOM et PRÉNOM.");
+        AppManagers.CodexManager.show('warning', "Aucune feuille valide trouvée contenant les colonnes NOM et PRÉNOM.");
         return;
       }
 
@@ -154,8 +152,7 @@ AppManagers.DomloadManager.registerHandler('vueTrombinoscope', {
         .filter((x) => x.NOM && x.PRENOM);
 
       if (!extracted.length) {
-        manager.addResultMessage(codex, "warning",
-          "Aucune donnée valide trouvée dans la feuille détectée.");
+        AppManagers.CodexManager.show('warning', "Aucune donnée valide trouvée dans la feuille détectée.");
         return;
       }
 
@@ -163,14 +160,11 @@ AppManagers.DomloadManager.registerHandler('vueTrombinoscope', {
       const sheetName = workbook.SheetNames.find(
         (s) => workbook.Sheets[s] === validSheet
       );
-
-      manager.addResultMessage(codex, "info",
-        `${extracted.length} entrées détectées dans « ${sheetName} ». Import en cours...`);
+      AppManagers.CodexManager.show('info',
+        `${extracted.length} entrées détectées dans la feuille « ${sheetName} ».`);
 
       mergeData(extracted);
-
-      manager.addResultMessage(codex, "success",
-        `${extracted.length} entrées ont été ajoutées à la liste.`);
+      AppManagers.CodexManager.show('success', `${extracted.length} entrées ont été ajoutées à la liste.`);
     }
 
 
@@ -183,16 +177,15 @@ AppManagers.DomloadManager.registerHandler('vueTrombinoscope', {
         const prenom = data.get('prenom').trim();
 
         if (!nom || !prenom) {
-          manager.addResultMessage(codex, 'warning', 'Merci de renseigner nom + prénom');
+          AppManagers.CodexManager.show('warning', 'Merci de renseigner nom + prénom');
           return;
         }
 
         items.push({ NOM: nom.toUpperCase(), PRENOM: prenom });
         renderList();
-
-        manager.addResultMessage(codex, 'success', 'Entrée ajoutée.');
+        AppManagers.CodexManager.show('success', 'Entrée ajoutée.');
       } catch (err) {
-        manager.addResultMessage(codex, 'error', '[Manuel] Erreur : ' + (err?.message || err));
+        AppManagers.CodexManager.show('error', '[Manuel] Erreur : ' + (err?.message || err));
       }
     });
 

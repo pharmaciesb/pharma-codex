@@ -1,0 +1,37 @@
+<tr>
+    <td>R${numero}</td>
+    <td>${dateStr}</td>
+    <td>
+        <span id="clipboard-${numero}" style="display: none;">${texteCopie}</span>
+        <button class="fr-btn fr-btn--tertiary fr-btn--sm" type="button" title="Copier" data-copy="#clipboard-${numero}">
+            📋
+        </button>
+        <button class="fr-btn fr-btn--tertiary fr-btn--sm" type="button" data-fr-opened="false"
+            aria-controls="${modalId}" title="QR Code">
+            ⛆
+        </button>
+
+        <dialog id="${modalId}" class="fr-modal" aria-labelledby="${modalId}-title">
+            <div class="fr-container fr-container--fluid fr-container-md">
+                <div class="fr-grid-row fr-grid-row--center">
+                    <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
+                        <div class="fr-modal__body">
+                            <div class="fr-modal__header">
+                                <button class="fr-btn--close fr-btn" type="button" aria-controls="${modalId}"
+                                    title="Fermer">
+                                    Fermer
+                                </button>
+                            </div>
+                            <div class="fr-modal__content">
+                                <h2 id="${modalId}-title" class="fr-modal__title">${texteCopie}</h2>
+                                <div class="fr-px-4w fr-py-2w" style="text-align: center;">
+                                    <canvas id="qrcode-${numero}"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </dialog>
+    </td>
+</tr>

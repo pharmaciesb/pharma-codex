@@ -120,7 +120,7 @@ function handleDatamatrixScan(e) {
 AppManagers.FormManager.registerHandler('formGrippe', async function (data, form, codex, manager, validator) {
   try {
     if (!templatePdfBytes || !PDFLib) {
-      manager.addResultMessage(codex, 'error', 'Erreur: Les ressources PDF ne sont pas chargées. Veuillez recharger la page.');
+      AppManagers.CodexManager.show('error', 'Erreur: Les ressources PDF ne sont pas chargées. Veuillez recharger la page.');
       return;
     }
 
@@ -134,7 +134,7 @@ AppManagers.FormManager.registerHandler('formGrippe', async function (data, form
     const specialite = data.get("specialite") || "Influvac";
     const lot = data.get("lot").trim();
     if (!lot) {
-      manager.addResultMessage(codex, 'error', 'Le numéro de lot est manquant.');
+      AppManagers.CodexManager.show('error', 'Le numéro de lot est manquant.');
       return;
     }
     const avecInjection = data.get("avecInjection") === "on";
@@ -150,7 +150,7 @@ AppManagers.FormManager.registerHandler('formGrippe', async function (data, form
       dateForPdf = `${d}/${m}/${y}`;
     }
 
-    manager.addResultMessage(codex, 'info', 'Remplissage du document en cours...');
+    AppManagers.CodexManager.show('info', 'Remplissage du document en cours...');
 
     // Chargement du modèle
     const existingPdfBytes = templatePdfBytes;
@@ -246,9 +246,9 @@ AppManagers.FormManager.registerHandler('formGrippe', async function (data, form
     a.download = `bon_grippe_${nom}_${prenom}.pdf`;
     a.click();
 
-    manager.addResultMessage(codex, 'success', 'Le bon de prise en charge a été généré avec succès.');
+    AppManagers.CodexManager.show('success', 'Le bon de prise en charge a été généré avec succès.');
   } catch (err) {
     AppManagers.log('formGrippe', 'error', 'Erreur génération PDF', err);
-    manager.addResultMessage(codex, 'error', 'Erreur lors de la génération : ' + (err.message || err));
+    AppManagers.CodexManager.show('error', 'Erreur lors de la génération : ' + (err.message || err));
   }
 });

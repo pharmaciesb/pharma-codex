@@ -1,0 +1,55 @@
+<div data-load-key="viewUberml" id="viewUberml">
+    <div class="fr-callout fr-icon-attachment-line">
+        <h3 class="fr-callout__title">UberML - Générateur de commande OCP</h3>
+        <p class="fr-callout__text">
+            Extrait les produits d'un PDF de commande PharmaML et génère un message formaté pour <a
+                href="https://moncompte.ocp.fr/mes-demandes" target="_blank"
+                class="fr-link fr-icon-arrow-right-line fr-link--icon-right fr-link--lg">la plateforme OCP</a>
+        </p>
+    </div>
+    <div class="fr-grid-row fr-grid-row--gutters">
+        <div class="fr-col-4">
+
+            <form id="formUberml" class="fr-form-group fr-mt-2v">
+                <fieldset class="fr-fieldset" aria-labelledby="uberml-legend">
+                    <legend class="fr-fieldset__legend" id="uberml-legend">
+                        Sélection du fichier de commande
+                        <span class="fr-hint-text">
+                            Format attendu : "Détail de la commande_Date_Heure.pdf"
+                        </span>
+                    </legend>
+
+                    <div class="fr-fieldset__element fr-upload-group">
+                        <label class="fr-label" for="fileinput">
+                            Fichier PDF de commande
+                            <span class="fr-hint-text">Format : .pdf</span>
+                        </label>
+                        <input class="fr-upload fr-input" type="file" id="fileinput" name="fileinput"
+                            accept="application/pdf" required>
+                    </div>
+
+                    <button type="submit" class="fr-btn fr-btn--secondary fr-mt-2v">
+                        📄 Extraire la commande
+                    </button>
+                </fieldset>
+            </form>
+        </div>
+        <div class="fr-col-8">
+            <!-- Résultat -->
+            <div id="uberml-result" class="fr-mt-4v" style="display: none;">
+                <div class="fr-form-group">
+                    <div class="fr-input-group" id="input-group-1">
+                        <label class="fr-label" for="uberml-output">
+                            Message généré
+                            <span class="fr-hint-text" id="uberml-count"></span>
+                        </label>
+                        <button type="button" class="fr-btn fr-btn--secondary fr-mt-2v" data-copy="#uberml-output">
+                            📋
+                        </button>
+                    </div>
+                    <textarea class="fr-input" id="uberml-output" rows="15" readonly style="font-family: monospace;"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

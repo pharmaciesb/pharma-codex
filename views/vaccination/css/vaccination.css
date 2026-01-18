@@ -5,6 +5,9 @@ table.vaccination-table > tbody td{
 table.vaccination-table > tbody td:first-child {
     text-align: left !important; 
 }
+table.vaccination-table > tbody td[data-vaccination-trigger] {
+    cursor: pointer !important;
+}
 .mandatoire {
     text-align: center !important;
 }

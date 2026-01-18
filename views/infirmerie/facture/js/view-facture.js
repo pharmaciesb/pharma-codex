@@ -121,7 +121,7 @@ AppManagers.FormManager.registerHandler('formFacture', async function (data, for
     const btnRenseignee = document.getElementById('pdf-renseignee');
 
     if (!outputDiv) {
-      manager.addResultMessage(codex, 'error', 'Zone de prévisualisation introuvable.');
+      AppManagers.CodexManager.show('error', 'Zone de prévisualisation introuvable.');
       return;
     }
 
@@ -130,7 +130,7 @@ AppManagers.FormManager.registerHandler('formFacture', async function (data, for
     for (const f of required) {
       const val = data.get(f)?.trim();
       if (!val) {
-        manager.addResultMessage(codex, 'error', `Le champ "${f}" est obligatoire.`);
+        AppManagers.CodexManager.show('error', `Le champ "${f}" est obligatoire.`);
         return;
       }
     }
@@ -141,7 +141,7 @@ AppManagers.FormManager.registerHandler('formFacture', async function (data, for
       total: data.get("total").trim(),
     };
 
-    manager.addResultMessage(codex, 'info', 'Génération de la prévisualisation...');
+    AppManagers.CodexManager.show('info', 'Génération de la prévisualisation...');
     await AppManagers.TemplateManager.renderInto(
       './views/infirmerie/facture/partials/satisfait.html',
       { facture: factureData },
@@ -190,10 +190,10 @@ AppManagers.FormManager.registerHandler('formFacture', async function (data, for
       };
     }
 
-    manager.addResultMessage(codex, 'success', 'Prévisualisation générée avec succès.');
+    AppManagers.CodexManager.show('success', 'Prévisualisation générée avec succès.');
     AppManagers.log('formFacture', 'success', 'Facture renseignée OK');
   } catch (err) {
     AppManagers.log('formFacture', 'error', 'Erreur génération facture', err);
-    manager.addResultMessage(codex, 'error', 'Erreur lors de la génération : ' + (err.message || err));
+    AppManagers.CodexManager.show('error', 'Erreur lors de la génération : ' + (err.message || err));
   }
 });

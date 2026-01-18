@@ -1,22 +1,43 @@
 <template id="template-page">
-    <div class="pdf-page">
-        <div class="page-grid" id="page-grid"></div>
-    </div>
-
     <style>
+        /* --- LOGIQUE D'IMPRESSION --- */
+        @media print {
+            /* 1. On cache absolument tout l'interface (DSFR, Menus, Forms) */
+            body * {
+                visibility: hidden;
+            }
+
+            /* 2. On n'affiche que le conteneur du PDF et ses enfants */
+            .pdf-page,
+            .pdf-page * {
+                visibility: visible;
+            }
+
+            /* 3. On plaque le PDF en haut à gauche pour éviter les marges blanches parasites */
+            .pdf-page {
+                position: absolute;
+                left: 0;
+                top: 0;
+                margin: 0;
+                padding: 0;
+            }
+        }
+
+        /* --- STYLES DE L'APERÇU ÉCRAN & RENDU --- */
         .pdf-page {
             width: 200mm;
-            min-height: 270mm;
-            height: auto;
-            padding: 10mm 5mm;
+            min-height: 287mm;
+            padding: 5mm;
             background: white;
-            color: black;
             box-sizing: border-box;
+            font-family: sans-serif;
+            margin: 0 auto; /* Centré à l'écran */
+            color: black;
         }
 
         .page-grid {
             display: grid;
-            gap: 4mm;
+            gap: 2mm; 
         }
 
         .etiquette-item {
@@ -79,5 +100,14 @@
             justify-content: center;
             margin-top: 4px;
         }
+        
+        .datamatrix-container svg {
+            width: 8mm;
+            height: 8mm;
+        }
     </style>
+
+    <div class="pdf-page">
+        <div class="page-grid"></div>
+    </div>
 </template>

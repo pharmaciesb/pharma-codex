@@ -1,4 +1,5 @@
-<div class="fr-tabs">
+<link rel="stylesheet" href="./views/officine/css/officine.css">
+<div class="fr-tabs" data-load-key="viewOfficine">
   <ul class="fr-tabs__list" role="tablist" aria-label="hub de liens">
     <li role="presentation">
       <button type="button" id="hub-1" class="fr-tabs__tab fr-icon-mail-unread-line fr-tabs__tab--icon-left"
@@ -20,19 +21,15 @@
 
   <div id="hub-1-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="hub-1"
     tabindex="0">
-    <template hx-get="./views/officine/partials/messageries/messageries.html" hx-trigger="load"
-      hx-swap="outerHTML"></template>
+    <div data-include="./views/officine/partials/messageries/messageries.html"></div>
   </div>
   <div id="hub-2-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="hub-2" tabindex="0">
-    <template hx-get="./views/officine/partials/laboratoires/laboratoires.html" hx-trigger="load"
-      hx-swap="outerHTML"></template>
+    <div data-include="./views/officine/partials/laboratoires/laboratoires.html"></div>
   </div>
   <div id="hub-3-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="hub-3" tabindex="0">
-    <template hx-get="./views/officine/partials/fournitures/fournitures.html" hx-trigger="load"
-      hx-swap="outerHTML"></template>
+    <div data-include="./views/officine/partials/fournitures/fournitures.html"></div>
   </div>
   <div id="hub-4-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="hub-4" tabindex="0">
-    <template hx-get="./views/officine/partials/mutuelles/mutuelles.html" hx-trigger="load"
-      hx-swap="outerHTML"></template>
+    <div data-include="./views/officine/partials/mutuelles/mutuelles.html"></div>
   </div>
 </div>

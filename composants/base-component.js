@@ -1,5 +1,3 @@
-// codex-missives.zip/base-component.js
-
 export class BaseComponent extends HTMLElement {
   // Accepte globalCssPath
   constructor({ htmlPath, cssPath, globalCssPath } = {}) { 
