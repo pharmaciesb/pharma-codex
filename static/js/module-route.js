@@ -1,4 +1,4 @@
-// module-route.js - Router vanilla sans HTMX
+// module-route.js - Router vanilla sans HTMX (retiré de pharma-codex)
 (function() {
   const Router = {
     defaultRoute: "views/officine/officine.html",
