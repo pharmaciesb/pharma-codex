@@ -227,6 +227,7 @@ class UberMLHandler extends AppManagers.ViewHandler {
         
         if (compteur) {
             compteur.textContent = `${nbProduits} produit(s) extrait(s)`;
+            textarea.rows = 5+ nbProduits;
         }
         
         // ✅ CORRECTION : Affiche la div de résultat
