@@ -1,7 +1,7 @@
 <form id="formGrippe">
     <fieldset class="fr-fieldset">
         <legend class="fr-fieldset__legend">Informations du bénéficiaire</legend>
-        
+
         <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-md-6">
                 <div class="fr-input-group">
@@ -40,41 +40,57 @@
 
     <fieldset class="fr-fieldset fr-mt-3w">
         <legend class="fr-fieldset__legend">Vaccin, Lot et Injection</legend>
-        
+
         <div class="fr-grid-row fr-grid-row--gutters">
-            
+
+            <div class="fr-col-12">
+                <div class="fr-callout fr-callout--green-emeraude fr-mb-3w">
+                    <h6 class="fr-callout__title">📷 Scan du DataMatrix</h6>
+                    <p class="fr-callout__text fr-text--sm">
+                        Utilisez votre douchette pour scanner le code 2D sur la boîte du vaccin.
+                        Le lot et le vaccin seront détectés automatiquement.
+                    </p>
+                </div>
+            </div>
+
             <div class="fr-col-12 fr-col-md-6">
                 <div class="fr-input-group">
                     <label class="fr-label" for="datamatrix-input">
-                        Scan Data Matrix (GS1)
-                        <span class="fr-hint-text">Scanner le code barre 2D pour préremplir le Lot.</span>
+                        🔍 Scanner le DataMatrix (GS1)
+                        <span class="fr-hint-text">Format: 01(EAN)17(Date)10(Lot)</span>
                     </label>
-                    <input class="fr-input" type="text" id="datamatrix-input" 
-                           placeholder="0134009...10ABC..." />
+                    <input class="fr-input" type="text" id="datamatrix-input" placeholder="0134009...10ABC..."
+                        autocomplete="off" />
                 </div>
             </div>
 
             <div class="fr-col-12 fr-col-md-6">
                 <div class="fr-input-group">
                     <label class="fr-label" for="lot">
-                        N° de Lot
-                        <span class="fr-hint-text">Champ auto-rempli avec le scanner.</span>
+                        📦 N° de Lot
+                        <span class="fr-hint-text">Rempli automatiquement après scan</span>
                     </label>
-                    <input class="fr-input" type="text" id="lot" name="lot" required />
+                    <input class="fr-input" type="text" id="lot" name="lot" required placeholder="Ex: XJ1012" />
                 </div>
             </div>
-            
-            <div class="fr-col-12">
-                <p id="vaccin-denomination" class="fr-text--info fr-text--sm fr-mt-1w">
-                    Aucun vaccin scanné.
-                </p>
+
+            <div class="fr-col-12 fr-col-md-3">
+                <div id="vaccin-denomination" class="fr-text--sm fr-mt-1w">
+                    ⏳ En attente du scan...
+                </div>
                 <hr class="fr-hr" />
             </div>
-
+            <div class="fr-col-12 fr-col-md-3">
+                <div class="fr-checkbox-group">
+                    <input type="checkbox" id="avecInjection" name="avecInjection" checked=""
+                        data-fr-js-checkbox-input="true">
+                    <label class="fr-label" for="avecInjection">Avec injection</label>
+                </div>
+            </div>
             <div class="fr-col-12 fr-col-md-6">
                 <div class="fr-select-group">
                     <label class="fr-label" for="specialite">Spécialité</label>
-                    <select id="specialite" name="specialite" class="fr-select" required>
+                    <select id="specialite" name="specialite" class="fr-select" required="">
                         <option value="Influvac">Influvac</option>
                         <option value="Vaxigrip">Vaxigrip</option>
                         <option value="Flucelvax">Flucelvax</option>
@@ -83,14 +99,6 @@
                     </select>
                 </div>
             </div>
-
-            <div class="fr-col-12 fr-col-md-6 fr-mt-2w">
-                <div class="fr-checkbox-group">
-                    <input type="checkbox" id="avecInjection" name="avecInjection" checked />
-                    <label class="fr-label" for="avecInjection">Avec injection</label>
-                </div>
-            </div>
-
         </div>
     </fieldset>
 
