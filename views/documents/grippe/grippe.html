@@ -1,41 +1,43 @@
 <div data-load-key="viewGrippe" id="viewGrippe">
   <h4>🦠 Bon de Prise en Charge – Vaccination Grippale</h4>
-
-  <div class="fr-callout fr-callout--blue-ecume fr-mb-3w">
-    <h5 class="fr-callout__title">🚀 Workflow optimisé</h5>
-    <div class="fr-callout__text">
-      <ol class="fr-pl-4w">
-        <li><strong>Scannez</strong> le DataMatrix du vaccin (remplissage auto du lot)</li>
-        <li><strong>Complétez</strong> les informations du bénéficiaire</li>
-        <li><strong>Générez</strong> le bon pré-rempli instantanément</li>
-      </ol>
-      <p class="fr-text--sm fr-mb-0">
-        <strong>💡 Astuce :</strong> Le scanner détecte automatiquement le vaccin et son lot.
-      </p>
+  <div class="fr-container--fluid">
+    <div class="fr-grid-row fr-grid-row--bottom">
+      <div class="fr-col-12 fr-col-md-7">
+        <div class="fr-callout fr-callout--blue-ecume fr-mr-2v">
+          <h5 class="fr-callout__title">🚀 Workflow optimisé</h5>
+          <div class="fr-callout__text">
+            <ol class="fr-pl-4w">
+              <li><strong>Scannez</strong> le DataMatrix du vaccin (remplissage auto du lot)</li>
+              <li><strong>Complétez</strong> les informations du bénéficiaire</li>
+              <li><strong>Générez</strong> le bon pré-rempli instantanément</li>
+            </ol>
+            <p class="fr-text--sm fr-mb-0">
+              <strong>💡 Astuce :</strong> Le scanner détecte automatiquement le vaccin et son lot.
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- Téléchargement du formulaire vierge -->
+      <div class="fr-col-12 fr-col-md-5">
+        <div class="fr-callout fr-callout--pink-macaron fr-ml-2v">
+          <h5 class="fr-callout__title">📄 Formulaire vierge</h5>
+          <p class="fr-callout__text">
+            Pour une utilisation papier, téléchargez le modèle officiel vierge.
+          </p>
+          <a class="fr-btn fr-btn--secondary fr-btn--sm" href="./views/documents/grippe/pdf/610d-vierge.pdf" download>
+            Télécharger le PDF vierge
+          </a>
+        </div>
+      </div>
     </div>
   </div>
-
-  <!-- Téléchargement du formulaire vierge -->
-  <div class="fr-callout fr-callout--pink-macaron fr-mb-3w">
-    <h5 class="fr-callout__title">📄 Formulaire vierge</h5>
-    <p class="fr-callout__text">
-      Pour une utilisation papier, téléchargez le modèle officiel vierge.
-    </p>
-    <a class="fr-btn fr-btn--secondary fr-btn--sm" href="./views/documents/grippe/pdf/610d-vierge.pdf" download>
-      Télécharger le PDF vierge
-    </a>
-  </div>
-
   <!-- Formulaire de génération -->
   <div data-include="./views/documents/grippe/forms/form-grippe.html"></div>
 
   <!-- Zone de prévisualisation (masquée par défaut) -->
   <div id="previewContainer" class="fr-mt-4w fr-hidden">
     <h5 class="fr-mb-2v">📄 Prévisualisation du bon généré</h5>
-    <iframe id="pdfPreview" 
-            width="100%" 
-            height="500px" 
-            class="fr-mt-2w"
-            style="border: 1px solid var(--border-default-grey); border-radius: 0.25rem;"></iframe>
+    <iframe id="pdfPreview" width="100%" height="500px" class="fr-mt-2w"
+      style="border: 1px solid var(--border-default-grey); border-radius: 0.25rem;"></iframe>
   </div>
 </div>

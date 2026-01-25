@@ -1,86 +1,99 @@
-<form id="formCuprior" class="fr-form-group">
+<div class="fr-container">
+    <form id="formCuprior" class="fr-form-group">
+        <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-md-4">
+                <fieldset class="fr-fieldset" aria-labelledby="cuprior-legend">
+                    <legend class="fr-fieldset__legend" id="cuprior-legend">
+                        Formulaire de Bon de Commande Cuprior
+                        <span class="fr-hint-text">Vérifiez les informations ci-dessous, changez les informations si
+                            besoin.</span>
+                    </legend>
 
-    <fieldset class="fr-fieldset" aria-labelledby="cuprior-legend">
-        <legend class="fr-fieldset__legend" id="cuprior-legend">
-            Formulaire de Bon de Commande Cuprior
-            <span class="fr-hint-text">Vérifiez les informations ci-dessous, changez les informations si besoin.</span>
-        </legend>
+                    <div class="fr-fieldset__element fr-fieldset__element--inline">
+                        <div class="fr-input-group">
+                            <label class="fr-label" for="date">Date</label>
+                            <input class="fr-input" id="date" name="date" type="date" data-init="aujourdhui" required>
+                        </div>
 
-        <div class="fr-fieldset__element fr-fieldset__element--inline">
-            <div class="fr-input-group">
-                <label class="fr-label" for="date">Date</label>
-                <input class="fr-input" id="date" name="date" type="date" data-init="aujourdhui" required>
+                        <div class="fr-fieldset__element fr-fieldset__element--inline">
+                            <label class="fr-label" for="quantite">Nombre de boîte</label>
+                            <input class="fr-input" id="quantite" name="quantite" type="number" value="2">
+                        </div>
+
+                        <button class="fr-btn fr-mt-3v" type="submit">Générer PDF</button>
+                    </div>
+                </fieldset>
             </div>
 
-            <div class="fr-fieldset__element fr-fieldset__element--inline">
-                <label class="fr-label" for="quantite">Nombre de boîte</label>
-                <input class="fr-input" id="quantite" name="quantite" type="number" value="2">
+
+            <div class="fr-col-12 fr-col-md-8">
+                <fieldset class="fr-fieldset">
+                    <legend class="fr-fieldset__legend"> Établissement </legend>
+
+                    <div class="fr-fieldset__element fr-fieldset__element--inline">
+                        <label class="fr-label" for="etablissement">Raison Sociale</label>
+                        <input class="fr-input" id="etablissement" name="etablissement"
+                            value="PHARMACIE SAINT BARTHELEMY II">
+                    </div>
+
+                    <div class="fr-fieldset__element fr-fieldset__element--inline">
+                        <label class="fr-label" for="pharmacien_rpps">N° RPPS</label>
+                        <input class="fr-input" id="pharmacien_rpps" name="pharmacien_rpps" value="10002058799">
+                    </div>
+
+                    <div class="fr-fieldset__element fr-fieldset__element--inline">
+                        <label class="fr-label" for="pharmacien_nom">Nom du Pharmacien</label>
+                        <input class="fr-input" id="pharmacien_nom" name="pharmacien_nom" value="GIUDICELLI Philippe">
+                    </div>
+
+                    <div class="fr-fieldset__element fr-fieldset__element--inline">
+                        <label class="fr-label" for="contact">Contact</label>
+                        <input class="fr-input" id="contact" name="contact" value="GIUDICELLI Philippe">
+                    </div>
+
+                    <div class="fr-fieldset__element fr-fieldset__element--inline">
+                        <label class="fr-label" for="code_postale"> Code postal </label>
+                        <input class="fr-input" name="code_postale" id="code_postale" type="text"
+                            value="13014 Marseille">
+                    </div>
+
+                    <div class="fr-fieldset__element fr-fieldset__element--inline">
+                        <label class="fr-label" for="adresse"> Adresse </label>
+                        <input class="fr-input" name="adresse" id="adresse" type="text" value="19, Avenue Claude Monet">
+                    </div>
+
+                    <div class="fr-fieldset__element fr-fieldset__element--inline">
+                        <label class="fr-label" for="mail">Adresse mail</label>
+                        <input class="fr-input" id="mail" name="mail" value="pharmaciesb@hotmail.com">
+                    </div>
+
+                    <div class="fr-fieldset__element fr-fieldset__element--inline">
+                        <label class="fr-label" for="fax">Fax</label>
+                        <input class="fr-input" id="fax" name="fax" value="09 86 26 06 16">
+                    </div>
+
+                    <div class="fr-fieldset__element fr-fieldset__element--inline">
+                        <label class="fr-label" for="telephone">Téléphone</label>
+                        <input class="fr-input" id="telephone" name="telephone" value="04 91 94 02 41">
+                    </div>
+
+                    <div class="fr-fieldset__element fr-fieldset__element--inline">
+                        <label class="fr-label" for="numero_tva">Numéro TVA</label>
+                        <input class="fr-input" id="numero_tva" name="numero_tva" value="FR 108 431 231 91">
+                    </div>
+
+                    <div class="fr-fieldset__element fr-fieldset__element--inline">
+                        <label class="fr-label" for="commentaire">Commentaire</label>
+                        <input class="fr-input" id="commentaire" name="commentaire" value="Fermeture le dimanche">
+                    </div>
+                </fieldset>
             </div>
 
-            <button class="fr-btn fr-mt-3v" type="submit">Générer PDF</button>
-        </div>
-    </fieldset>
-
-    <fieldset class="fr-fieldset">
-        <legend class="fr-fieldset__legend"> Établissement </legend>
-
-        <div class="fr-fieldset__element fr-fieldset__element--inline">
-            <label class="fr-label" for="etablissement">Raison Sociale</label>
-            <input class="fr-input" id="etablissement" name="etablissement" value="PHARMACIE SAINT BARTHELEMY II">
         </div>
 
-        <div class="fr-fieldset__element fr-fieldset__element--inline">
-            <label class="fr-label" for="pharmacien_rpps">N° RPPS</label>
-            <input class="fr-input" id="pharmacien_rpps" name="pharmacien_rpps" value="10002058799">
-        </div>
+    </form>
+</div>
 
-        <div class="fr-fieldset__element fr-fieldset__element--inline">
-            <label class="fr-label" for="pharmacien_nom">Nom du Pharmacien</label>
-            <input class="fr-input" id="pharmacien_nom" name="pharmacien_nom" value="GIUDICELLI Philippe">
-        </div>
-        
-        <div class="fr-fieldset__element fr-fieldset__element--inline">
-            <label class="fr-label" for="contact">Contact</label>
-            <input class="fr-input" id="contact" name="contact" value="GIUDICELLI Philippe">
-        </div>
-
-        <div class="fr-fieldset__element fr-fieldset__element--inline">
-            <label class="fr-label" for="code_postale"> Code postal </label>
-            <input class="fr-input" name="code_postale" id="code_postale" type="text" value="13014 Marseille">
-        </div>
-
-        <div class="fr-fieldset__element fr-fieldset__element--inline">
-            <label class="fr-label" for="adresse"> Adresse </label>
-            <input class="fr-input" name="adresse" id="adresse" type="text" value="19, Avenue Claude Monet">
-        </div>
-
-        <div class="fr-fieldset__element fr-fieldset__element--inline">
-            <label class="fr-label" for="mail">Adresse mail</label>
-            <input class="fr-input" id="mail" name="mail" value="pharmaciesb@hotmail.com">
-        </div>
-
-        <div class="fr-fieldset__element fr-fieldset__element--inline">
-            <label class="fr-label" for="fax">Fax</label>
-            <input class="fr-input" id="fax" name="fax" value="09 86 26 06 16">
-        </div>
-
-        <div class="fr-fieldset__element fr-fieldset__element--inline">
-            <label class="fr-label" for="telephone">Téléphone</label>
-            <input class="fr-input" id="telephone" name="telephone" value="04 91 94 02 41">
-        </div>
-
-        <div class="fr-fieldset__element fr-fieldset__element--inline">
-            <label class="fr-label" for="numero_tva">Numéro TVA</label>
-            <input class="fr-input" id="numero_tva" name="numero_tva" value="FR 108 431 231 91">
-        </div>
-
-        <div class="fr-fieldset__element fr-fieldset__element--inline">
-            <label class="fr-label" for="commentaire">Commentaire</label>
-            <input class="fr-input" id="commentaire" name="commentaire" value="Fermeture le dimanche">
-        </div>
-    </fieldset>
-
-</form>
 
 <div id="cuprior-output" class="fr-container fr-mt-4v" style="background:#f5f5f5;padding:1rem;border-radius:8px;"></div>
 
