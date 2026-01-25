@@ -1,23 +1,42 @@
-<div data-load-key="vueVaccin" id="vueVaccin">
-    <h4>Bon de Prise en Charge – Vaccination (Hors grippe et COVID)</h4>
+<div data-load-key="viewVaccin" id="viewVaccin">
+    <h4>💉 Bon de Prise en Charge – Vaccination</h4>
+    <p class="fr-text--sm fr-mb-3w">Hors grippe et COVID-19</p>
 
-    <div class="fr-callout fr-callout--info fr-mb-3w">
-        <h5 class="fr-callout__title">Téléchargement du formulaire vierge</h5>
+    <div class="fr-callout fr-callout--blue-ecume fr-mb-3w">
+        <h5 class="fr-callout__title">📋 Comment ça marche ?</h5>
+        <div class="fr-callout__text">
+            <ol class="fr-pl-4w">
+                <li>Renseignez les informations du bénéficiaire</li>
+                <li>Sélectionnez le vaccin dans la liste</li>
+                <li>Générez le bon pré-rempli au format PDF</li>
+            </ol>
+            <p class="fr-text--sm fr-mb-0">
+                <strong>💡 Astuce :</strong> Le modèle vierge est disponible en téléchargement ci-dessous.
+            </p>
+        </div>
+    </div>
+
+    <!-- Téléchargement du formulaire vierge -->
+    <div class="fr-callout fr-callout--pink-macaron fr-mb-3w">
+        <h5 class="fr-callout__title">📄 Formulaire vierge</h5>
         <p class="fr-callout__text">
-            Ce formulaire permet de générer un bon de prise en charge personnalisé à partir du modèle officiel.
+            Pour une utilisation papier traditionnelle, téléchargez le modèle officiel vierge.
         </p>
-        <a class="fr-btn fr-btn--secondary" href="./views/documents/vaccin/pdf/611.pdf" download>
+        <a class="fr-btn fr-btn--secondary fr-btn--sm" href="./views/documents/vaccin/pdf/611.pdf" download>
             Télécharger le PDF vierge
         </a>
     </div>
 
+    <!-- Formulaire de génération -->
     <div data-include="./views/documents/vaccin/forms/form-vaccin.html"></div>
 
+    <!-- Zone de prévisualisation (masquée par défaut) -->
     <div id="previewContainer" class="fr-mt-4w fr-hidden">
-        <h5>Prévisualisation du PDF généré</h5>
-        <iframe id="pdfPreview" width="100%" height="500px" class="fr-mt-2w"></iframe>
+        <h5 class="fr-mb-2v">📄 Prévisualisation du bon généré</h5>
+        <iframe id="pdfPreview" 
+                width="100%" 
+                height="500px" 
+                class="fr-mt-2w"
+                style="border: 1px solid var(--border-default-grey); border-radius: 0.25rem;"></iframe>
     </div>
 </div>
-
-<script src="./static/js/libs/pdf-lib@1.17.1.js"></script>
-<script src="./views/documents/vaccin/js/view-vaccin.js"></script>

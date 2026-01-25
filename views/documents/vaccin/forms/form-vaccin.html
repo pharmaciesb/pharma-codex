@@ -1,51 +1,71 @@
 <form id="formVaccin">
     <fieldset class="fr-fieldset">
-        <legend class="fr-fieldset__legend">Informations du bénéficiaire</legend>
+        <legend class="fr-fieldset__legend">
+            👤 Informations du bénéficiaire
+            <span class="fr-hint-text">Tous les champs sont obligatoires</span>
+        </legend>
 
-        <div class="fr-fieldset__element">
-            <div class="fr-input-group">
-                <label class="fr-label" for="nom">Nom</label>
-                <input class="fr-input" type="text" name="nom" id="nom" required />
+        <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-md-6">
+                <div class="fr-input-group">
+                    <label class="fr-label" for="nom">
+                        Nom
+                    </label>
+                    <input class="fr-input" type="text" name="nom" id="nom" required placeholder="DUPONT"
+                        style="text-transform: uppercase;" />
+                </div>
             </div>
-        </div>
 
-        <div class="fr-fieldset__element">
-            <div class="fr-input-group">
-                <label class="fr-label" for="prenom">Prénom</label>
-                <input class="fr-input" type="text" name="prenom" id="prenom" required />
+            <div class="fr-col-12 fr-col-md-6">
+                <div class="fr-input-group">
+                    <label class="fr-label" for="prenom">Prénom</label>
+                    <input class="fr-input" type="text" name="prenom" id="prenom" required placeholder="Jean" />
+                </div>
             </div>
-        </div>
 
-        <div class="fr-fieldset__element">
-            <div class="fr-input-group">
-                <label class="fr-label" for="dateNaissance">Date de naissance</label>
-                <input class="fr-input" type="date" name="dateNaissance" id="dateNaissance" required />
+            <div class="fr-col-12 fr-col-md-6">
+                <div class="fr-input-group">
+                    <label class="fr-label" for="dateNaissance">Date de naissance</label>
+                    <input class="fr-input" type="date" name="dateNaissance" id="dateNaissance" required />
+                </div>
             </div>
-        </div>
 
-        <div class="fr-fieldset__element">
-            <div class="fr-input-group">
-                <label class="fr-label" for="immatriculation">N° d'immatriculation</label>
-                <input class="fr-input" type="text" name="immatriculation" id="immatriculation" required />
+            <div class="fr-col-12 fr-col-md-6">
+                <div class="fr-input-group">
+                    <label class="fr-label" for="immatriculation">
+                        N° d'immatriculation
+                    </label>
+                    <input class="fr-input" type="text" name="immatriculation" id="immatriculation" required
+                        pattern="\d{15}" placeholder="123456789012345" title="15 chiffres (NIR + clé)" />
+                </div>
             </div>
-        </div>
 
-        <div class="fr-fieldset__element">
-            <div class="fr-input-group">
-                <label class="fr-label" for="codeOrganisme">Code organisme</label>
-                <input class="fr-input" type="text" name="codeOrganisme" id="codeOrganisme" required />
+            <div class="fr-col-12">
+                <div class="fr-input-group">
+                    <label class="fr-label" for="codeOrganisme">
+                        Code de l'organisme de sécurité sociale
+                    </label>
+                    <input class="fr-input" type="text" name="codeOrganisme" id="codeOrganisme" required
+                        placeholder="Ex: 01 131 0421" />
+                </div>
             </div>
         </div>
     </fieldset>
 
     <fieldset class="fr-fieldset fr-mt-3w">
-        <legend class="fr-fieldset__legend">Vaccin</legend>
-
-        <div class="fr-fieldset__element">
-            <div class="fr-select-group">
-                <label class="fr-label" for="specialite">Spécialité</label>
+        <legend class="fr-fieldset__legend">
+            💉 Vaccin
+            <span class="fr-hint-text">Recherchez le vaccin par son nom</span>
+        </legend>
+        <div class="fr-col-12 fr-col-md-6">
+            <div class="fr-input-group">
+                <label class="fr-label" for="specialite">
+                    Spécialité pharmaceutique
+                    <span class="fr-hint-text">Tapez pour filtrer la liste</span>
+                </label>
                 <input class="fr-input" type="text" name="specialite" id="specialite" required autocomplete="off"
-                    list="vaccins" />
+                    list="vaccins" placeholder="Ex: GARDASIL 9" />
+
                 <datalist id="vaccins">
                     <option value="ABRYSVO">
                     <option value="AREXVY">
@@ -113,5 +133,9 @@
         </div>
     </fieldset>
 
-    <button class="fr-btn" type="submit" id="submitVaccin">Générer le bon PDF</button>
+    <div class="fr-mt-3w">
+        <button class="fr-btn" type="submit" id="submitVaccin">
+            Générer le bon de prise en charge
+        </button>
+    </div>
 </form>
