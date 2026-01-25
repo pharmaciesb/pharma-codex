@@ -1,4 +1,4 @@
-/// <reference path="../../../static/js/types.js" />
+/// <reference path="../../../../static/js/types.js" />
 
 import { getDocument } from '/pharma-codex/static/js/libs/pdf@5.4.394.js';
 import { initCopyListeners } from '/pharma-codex/static/js/assistants/assistant-clipboard.js';
