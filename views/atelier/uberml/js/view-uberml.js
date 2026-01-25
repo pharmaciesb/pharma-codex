@@ -16,9 +16,7 @@ class UberMLHandler extends AppManagers.ViewHandler {
         this.configurerPdfWorker();
         this.registerForm('formUberml', this.handleFormSubmit);
         
-        await initCopyListeners((msg, type) => {
-            AppManagers.log(this.key, type || 'info', msg);
-        });
+        await initCopyListeners((msg, type) => { AppManagers.log(this.key, type || 'info', msg); });
     }
     
     configurerPdfWorker() {

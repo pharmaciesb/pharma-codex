@@ -1,3 +1,4 @@
+/// <reference path="../../../../static/js/types.js" />
 import { toTitleCase } from '/pharma-codex/static/js/assistants/assistant-string.js';
 
 let items = [];
@@ -8,7 +9,7 @@ let items = [];
  */
 class EtiqueteuseHandler extends AppManagers.ViewHandler {
     constructor() {
-        super('vueEtiqueteuse');
+        super('viewEtiqueteuse');
     }
     
     async onload() {
