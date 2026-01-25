@@ -27,19 +27,19 @@ class CupriorHandler extends AppManagers.ViewHandler {
   };
 
   PDF_POSITIONS = {
-    date:           [{ x: 160, y: 660 }, { x: 250, y: 25 }],
-    etablissement:  [{ x: 160, y: 570 }],
+    date: [{ x: 160, y: 660 }, { x: 250, y: 25 }],
+    etablissement: [{ x: 160, y: 570 }],
     pharmacien_nom: [{ x: 160, y: 515 }],
-    pharmacien_rpps:[{ x: 160, y: 495 }],
-    numero_tva:     [{ x: 160, y: 535 }],
-    contact:        [{ x: 160, y: 415 }],
-    adresse:        [{ x: 160, y: 390 }],
-    code_postale:   [{ x: 160, y: 370 }],
-    telephone:      [{ x: 160, y: 345 }],
-    fax:            [{ x: 160, y: 320 }],
-    mail:           [{ x: 160, y: 295 }],
-    quantite:       [{ x: 75,  y: 170 }],
-    commentaire:    [{ x: 75,  y: 120 }],
+    pharmacien_rpps: [{ x: 160, y: 495 }],
+    numero_tva: [{ x: 160, y: 535 }],
+    contact: [{ x: 160, y: 415 }],
+    adresse: [{ x: 160, y: 390 }],
+    code_postale: [{ x: 160, y: 370 }],
+    telephone: [{ x: 160, y: 345 }],
+    fax: [{ x: 160, y: 320 }],
+    mail: [{ x: 160, y: 295 }],
+    quantite: [{ x: 75, y: 170 }],
+    commentaire: [{ x: 75, y: 120 }],
   };
 
   // =============================================================
@@ -47,27 +47,23 @@ class CupriorHandler extends AppManagers.ViewHandler {
   // =============================================================
   async onload() {
     try {
-      // 1. Chargement des deux templates en parallèle
-      await Promise.all([
-        this.loadPdfTemplate(),
-        this.loadEmailTemplate(),
-      ]);
-
-      // 2. Date par défaut
+      // 1. Date par défaut (synchrone, pas besoin d'attendre)
       definirAujourdhui();
 
-      // 3. Enregistrement du formulaire principal
-      this.registerForm('formCuprior', this.handleFormSubmit.bind(this));
+      // 2. Enregistrement du formulaire (ne dépend pas des templates)
+      this.registerForm('formCuprior', this.handleFormSubmit);
 
-      // 4. Activation des boutons "copier" (même après rendu dynamique)
+      // 3. Activation des boutons copier
       await initCopyListeners((msg, type) => {
         AppManagers.log(this.key, type || 'info', msg);
       });
 
+      // 4. Chargement lazy des templates (au submit, pas au load)
+      // Gain : page s'affiche instantanément, PDF chargé à la demande
       AppManagers.log(this.key, 'success', 'Module Cuprior initialisé');
     } catch (err) {
       AppManagers.log(this.key, 'error', 'Échec initialisation Cuprior', err);
-      AppManagers.CodexManager.show('error', 'Erreur au chargement du module Cuprior');
+      await AppManagers.CodexManager.show('error', 'Erreur au chargement du module Cuprior');
     }
   }
 
@@ -110,6 +106,11 @@ class CupriorHandler extends AppManagers.ViewHandler {
     try {
       AppManagers.CodexManager.show('info', 'Génération du bon Cuprior…');
 
+      await Promise.all([
+        this.loadPdfTemplate(),
+        this.loadEmailTemplate(),
+      ]);
+
       const data = this.extractData(formData);
 
       // Optionnel : validation minimale
@@ -121,7 +122,7 @@ class CupriorHandler extends AppManagers.ViewHandler {
 
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const blobUrl = URL.createObjectURL(blob);
-      const filename = `bon_cuprior_${new Date().toISOString().slice(0,10)}.pdf`;
+      const filename = `bon_cuprior_${new Date().toISOString().slice(0, 10)}.pdf`;
 
       // 1. Aperçu
       this.showPdfPreview(blobUrl);
@@ -144,19 +145,19 @@ class CupriorHandler extends AppManagers.ViewHandler {
   // =============================================================
   extractData(formData) {
     return {
-      date:           formatFR(formData.get('date')),
-      etablissement:  formData.get('etablissement')?.trim() || '',
+      date: formatFR(formData.get('date')),
+      etablissement: formData.get('etablissement')?.trim() || '',
       pharmacien_nom: formData.get('pharmacien_nom')?.trim() || '',
-      pharmacien_rpps:formData.get('pharmacien_rpps')?.trim() || '',
-      numero_tva:     formData.get('numero_tva')?.trim() || '',
-      contact:        formData.get('contact')?.trim() || '',
-      adresse:        formData.get('adresse')?.trim() || '',
-      code_postale:   formData.get('code_postale')?.trim() || '',
-      telephone:      formData.get('telephone')?.trim() || '',
-      fax:            formData.get('fax')?.trim() || '',
-      mail:           formData.get('mail')?.trim() || '',
-      quantite:       formData.get('quantite')?.trim() || '1',
-      commentaire:    formData.get('commentaire')?.trim() || '',
+      pharmacien_rpps: formData.get('pharmacien_rpps')?.trim() || '',
+      numero_tva: formData.get('numero_tva')?.trim() || '',
+      contact: formData.get('contact')?.trim() || '',
+      adresse: formData.get('adresse')?.trim() || '',
+      code_postale: formData.get('code_postale')?.trim() || '',
+      telephone: formData.get('telephone')?.trim() || '',
+      fax: formData.get('fax')?.trim() || '',
+      mail: formData.get('mail')?.trim() || '',
+      quantite: formData.get('quantite')?.trim() || '1',
+      commentaire: formData.get('commentaire')?.trim() || '',
     };
   }
 
@@ -209,11 +210,11 @@ class CupriorHandler extends AppManagers.ViewHandler {
 
     // Option 1 : utilisation de TemplateManager (recommandé)
     const html = AppManagers.TemplateManager.renderString(this.courrielTemplate, {
-      date_jour:    data.date,
-      quantite:     data.quantite,
-      contact:      data.contact || data.pharmacien_nom,
-      etablissement:data.etablissement,
-      adresse:      data.adresse,
+      date_jour: data.date,
+      quantite: data.quantite,
+      contact: data.contact || data.pharmacien_nom,
+      etablissement: data.etablissement,
+      adresse: data.adresse,
       code_postale: data.code_postale,
     });
 

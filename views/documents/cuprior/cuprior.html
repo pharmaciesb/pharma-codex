@@ -1,15 +1,19 @@
 <div id="viewCuprior" data-load-key="viewCuprior">
     <div class="fr-callout fr-icon-info-line">
-        <h5 class="fr-callout__title">Commande de Cuprior</h5>
+        <h5 class="fr-callout__title">📦 Commande de Cuprior</h5>
         <p class="fr-callout__text">
-            Ce module permet de faciliter la commande de Cuprior à partir du formulaire prérempli.
-        <ol>
-            <li>Remplir le formulaire avec les informations demandées <b><i>préremplies</i></b>.</li>
-            <li>Générer le PDF du bon de commande <b><i>en validant le formulaire</i></b>.</li>
-            <li>Envoyer le bon de commande par <b><i>courriel</i></b>.</li>
-        </ol>
+            Générez automatiquement votre bon de commande en 3 étapes :
         </p>
+        <ol class="fr-pl-4w">
+            <li>Vérifiez et complétez les informations préremplies</li>
+            <li>Générez le PDF du bon de commande</li>
+            <li>Copiez l'email prêt à envoyer</li>
+        </ol>
     </div>
+
+    <!-- Formulaire -->
     <div data-include="./views/documents/cuprior/forms/form-cuprior.html"></div>
-    <iframe id="cupriorPreview" style="width:100%;height:450px;border:1px solid #ddd;margin-top:2rem;"></iframe>
+
+    <!-- Zone de résultat (masquée par défaut) -->
+    <div id="cuprior-output" class="fr-mt-4v"></div>
 </div>

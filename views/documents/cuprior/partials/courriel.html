@@ -1,32 +1,76 @@
-<div class="fr-input-group fr-mt-4v">
-  <label class="fr-label" for="cuprior-mail-subject">Objet</label>
-  <div class="fr-input-wrap fr-input-wrap--addon">
-    <input id="cuprior-mail-subject" class="fr-input" readonly
-      value="Cuprior — Bon de Commande du ${date_jour}">
-    <div class="fr-input__addon">
-      <button class="fr-btn fr-btn--tertiary fr-btn--sm" type="button" title="Copier" data-copy="#cuprior-mail-subject"> 📋 </button>
+<div class="fr-grid-row fr-grid-row--gutters">
+  <div class="fr-col-12 fr-col-md-6">
+    <div class="fr-input-group">
+      <label class="fr-label" for="cuprior-mail-to">
+        Destinataire
+        <span class="fr-hint-text">Prêt à copier dans votre messagerie</span>
+      </label>
+      <div class="fr-input-wrap fr-input-wrap--addon">
+        <input id="cuprior-mail-to" class="fr-input" readonly
+          value="orphalan@health-logistics.com">
+        <div class="fr-input__addon">
+          <button class="fr-btn fr-btn--tertiary fr-btn--sm" type="button" 
+                  title="Copier l'objet" data-copy="#cuprior-mail-to">
+            📋
+          </button>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="fr-input-group fr-mt-4v">
-  <label class="fr-label" for="cuprior-mail-body">Contenu du courriel</label>
+  <div class="fr-col-12 fr-col-md-6">
+    <div class="fr-input-group">
+      <label class="fr-label" for="cuprior-mail-subject">
+        Objet
+        <span class="fr-hint-text">Prêt à copier dans votre messagerie</span>
+      </label>
+      <div class="fr-input-wrap fr-input-wrap--addon">
+        <input id="cuprior-mail-subject" class="fr-input" readonly
+          value="Cuprior — Bon de Commande du ${date_jour}">
+        <div class="fr-input__addon">
+          <button class="fr-btn fr-btn--tertiary fr-btn--sm" type="button" 
+                  title="Copier l'objet" data-copy="#cuprior-mail-subject">
+            📋
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <div class="fr-input-wrap fr-input-wrap--addon">
-    <textarea id="cuprior-mail-body" class="fr-input" rows="10" readonly>
-Bonjour,
+  <div class="fr-col-12">
+    <div class="fr-input-group">
+      <label class="fr-label" for="cuprior-mail-body">
+        Corps
+        <span class="fr-hint-text">Message prérempli avec vos informations</span>
+      </label>
 
-Veuillez trouver ci-joint le bon de commande pour ${quantite} Cuprior.
+      <div class="fr-input-wrap fr-input-wrap--addon">
+        <textarea id="cuprior-mail-body" class="fr-input" rows="10" readonly>Bonjour,
+
+Veuillez trouver ci-joint le bon de commande pour ${quantite} boîte(s) de Cuprior.
 
 Cordialement,
 ${contact}
 ${etablissement}
 ${adresse}
-${code_postale}
-    </textarea>
+${code_postale}</textarea>
 
-    <div class="fr-input__addon">
-      <button class="fr-btn fr-btn--tertiary fr-btn--sm" type="button" title="Copier" data-copy="#cuprior-mail-body"> 📋 </button>
+        <div class="fr-input__addon">
+          <button class="fr-btn fr-btn--tertiary fr-btn--sm" type="button" 
+                  title="Copier le message" data-copy="#cuprior-mail-body">
+            📋
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fr-col-12">
+    <div class="fr-callout fr-callout--blue-ecume">
+      <p class="fr-callout__text">
+        <strong>📧 Prochaine étape :</strong> Copiez l'adresse du destinataire, l'objet et le corps du message, 
+        puis ouvrez votre messagerie pour envoyer le bon de commande en pièce jointe.
+      </p>
     </div>
   </div>
 </div>
