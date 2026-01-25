@@ -1,0 +1,43 @@
+<template id="template-page">
+    <style>
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .pdf-page,
+            .pdf-page * {
+                visibility: visible;
+            }
+            .pdf-page {
+                position: absolute;
+                left: 0;
+                top: 0;
+                margin: 0;
+                padding: 0;
+            }
+        }
+        
+        .pdf-page {
+            width: 200mm;
+            min-height: 287mm;
+            padding: 5mm;
+            background: white;
+            box-sizing: border-box;
+            margin: 0 auto;
+            color: black;
+        }
+        
+        .page-grid {
+            display: grid;
+            gap: 5mm;
+        }
+        
+        .trombi-item svg {
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+    <div class="pdf-page">
+        <div class="page-grid"></div>
+    </div>
+</template>

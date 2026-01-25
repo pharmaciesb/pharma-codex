@@ -18,12 +18,7 @@ class EtiqueteuseHandler extends AppManagers.ViewHandler {
         this.registerForm('formEtiquette', this.handleFormSubmit);
         
         // ✅ Récupère et stocke le bouton
-        const btnClear = this.getElement('btnClear');
-        
-        if (btnClear) {
-            // ✅ Ajoute le listener avec tracking automatique
-            this.addListener(btnClear, 'click', this.handleClear);
-        }
+        this.bindElement('btnClear', 'click', this.handleClear);
     }
     
     async handleFormSubmit(data, form) {
@@ -41,7 +36,7 @@ class EtiqueteuseHandler extends AppManagers.ViewHandler {
     
     async handleClear(e) {
         e.preventDefault();
-        if (items.length > 0 && confirm('Confirmez-vous la suppression de toutes les souches ?')) {
+        if (items.length > 0 && confirm('Vider toute la liste ?')) {
             items = [];
             await this.refreshAll();
             AppManagers.CodexManager?.show('info', 'Liste vidée');
@@ -65,7 +60,7 @@ class EtiqueteuseHandler extends AppManagers.ViewHandler {
                 <td class="fr-col--xs">${it.dosage}</td>
                 <td class="fr-col--sm">${it.codeBarre || '-'}</td>
                 <td class="fr-col--xs">
-                    <button class="fr-btn fr-btn--tertiary-no-outline fr-btn--sm fr-icon-delete-line delete-item" data-idx="${idx}"></button>
+                    <button data-idx="${idx}" class="delete-item fr-btn fr-icon-delete-bin-line fr-btn--tertiary fr-mt-0">Supprimer</button>
                 </td>
             </tr>
         `).join('');

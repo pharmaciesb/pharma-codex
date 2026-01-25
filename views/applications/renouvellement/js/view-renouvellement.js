@@ -213,5 +213,4 @@ class RenouvellementHandler extends AppManagers.ViewHandler {
   }
 }
 
-// ✅ Enregistrement
 new RenouvellementHandler().register();

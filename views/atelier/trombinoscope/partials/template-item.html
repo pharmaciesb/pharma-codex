@@ -1,0 +1,12 @@
+<template id="template-item">
+    <div class="item">
+        <div class="trombi-item" style="text-align: center;">
+            <svg width="270" height="270">
+                <circle cx="135" cy="135" r="110" stroke="black" stroke-width="4" fill="white"/>
+                <text x="135" y="90" text-anchor="middle" font-size="16" font-weight="bold">${item.NOM}</text>
+                <text x="135" y="115" text-anchor="middle" font-size="14">${item.PRENOM}</text>
+                <image width="63" height="63" x="103.5" y="150" href="${item.qrCodeDataUrl}"/>
+            </svg>
+        </div>
+    </div>
+</template>

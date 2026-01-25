@@ -30,10 +30,10 @@ import { PdfAssistant } from "./assistants/assistant-pdf.js";
                 console.warn('[Events] Element null/undefined fourni à safeListen');
                 return;
             }
-            
+
             // ✅ Lock spécifique au TYPE d'événement (permet plusieurs types sur le même élément)
             const lockAttr = `listener_${eventType.replace(/[^a-z0-9]/gi, '_')}_attached`;
-            
+
             if (element.dataset[lockAttr] === 'true') {
                 log('Events', 'info', `Listener ${eventType} déjà attaché, skip`);
                 return;
@@ -43,13 +43,13 @@ import { PdfAssistant } from "./assistants/assistant-pdf.js";
             element.dataset[lockAttr] = 'true';
             log('Events', 'success', `Listener ${eventType} attaché`);
         },
-        
+
         // ✅ NOUVEAU : Méthode pour détacher proprement
         safeRemove: function (element, eventType, callback) {
             if (!element) return;
-            
+
             const lockAttr = `listener_${eventType.replace(/[^a-z0-9]/gi, '_')}_attached`;
-            
+
             if (element.dataset[lockAttr] === 'true') {
                 element.removeEventListener(eventType, callback);
                 delete element.dataset[lockAttr];
@@ -66,7 +66,7 @@ import { PdfAssistant } from "./assistants/assistant-pdf.js";
         // ✅ Convention pour charger auto les scripts
         _loadModuleScript: async function (key) {
             const currentRoute = window.location.hash.replace('#', '');
-            
+
             if (!currentRoute) {
                 log('DomloadManager', 'warn', 'Pas de route dans le hash');
                 return;
@@ -156,12 +156,12 @@ import { PdfAssistant } from "./assistants/assistant-pdf.js";
     // --- FormManager : Soumission propre ---
     const FormManager = {
         handlers: {},
-        
-        registerHandler: function (id, callback) { 
+
+        registerHandler: function (id, callback) {
             this.handlers[id] = callback;
             log('FormManager', 'info', `Handler enregistré : ${id}`);
         },
-        
+
         // ✅ NOUVEAU : Cleanup automatique de tous les handlers
         clearAllHandlers: function () {
             const handlerKeys = Object.keys(this.handlers);
@@ -170,7 +170,7 @@ import { PdfAssistant } from "./assistants/assistant-pdf.js";
                 log('FormManager', 'info', `🧹 ${handlerKeys.length} handler(s) nettoyé(s): ${handlerKeys.join(', ')}`);
             }
         },
-        
+
         init: function () {
             document.addEventListener('submit', async (e) => {
                 const form = e.target;
@@ -269,12 +269,12 @@ import { PdfAssistant } from "./assistants/assistant-pdf.js";
             this.listeners = [];
             this.formHandlers = [];
         }
-        
+
         // À override dans les sous-classes
         async onload() {
             log(this.key, 'warn', 'Aucune méthode onload() définie');
         }
-        
+
         // Méthode appelée par DomloadManager
         async methodeOnload() {
             try {
@@ -285,30 +285,30 @@ import { PdfAssistant } from "./assistants/assistant-pdf.js";
                 throw err;
             }
         }
-        
+
         // Helper : Ajoute un listener avec tracking automatique
         addListener(element, event, handler, options = {}) {
             if (!element) {
                 log(this.key, 'warn', `Element null pour listener ${event}`);
                 return;
             }
-            
+
             const boundHandler = handler.bind(this);
             Events.safeListen(element, event, boundHandler, options);
             this.listeners.push({ element, event, handler: boundHandler });
-            
+
             return boundHandler;
         }
-        
+
         // Helper : Enregistre un form handler avec tracking
         registerForm(formId, handler) {
             const boundHandler = handler.bind(this);
             FormManager.registerHandler(formId, boundHandler);
             this.formHandlers.push(formId);
-            
+
             return boundHandler;
         }
-        
+
         // Helper : Récupère et stocke un élément
         getElement(id, required = true) {
             const el = document.getElementById(id);
@@ -318,7 +318,14 @@ import { PdfAssistant } from "./assistants/assistant-pdf.js";
             this.elements[id] = el;
             return el;
         }
-        
+
+        // Helper : Associer un listener avec un élément
+        bindElement(id, event, handler, required = true) {
+            const el = this.getElement(id, required);
+            if (!el) return;
+            this.addListener(el,event,handler);
+        }
+
         // Cleanup automatique de tous les listeners
         cleanup() {
             // Détache tous les listeners
@@ -328,16 +335,16 @@ import { PdfAssistant } from "./assistants/assistant-pdf.js";
                 }
             });
             this.listeners = [];
-            
+
             // Nettoie les form handlers (fait automatiquement par le Router, mais on garde la référence)
             this.formHandlers = [];
-            
+
             // Reset les éléments
             this.elements = {};
-            
+
             log(this.key, 'info', 'Cleanup effectué');
         }
-        
+
         // Enregistre le handler auprès du DomloadManager
         register() {
             DomloadManager.registerHandler(this.key, this);

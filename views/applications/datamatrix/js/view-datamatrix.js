@@ -13,10 +13,7 @@ class DataMatrixHandler extends AppManagers.ViewHandler {
         AppManagers.PdfAssistant.reset();
         
         // 1. Récupère et configure l'input DLU
-        const dluInput = this.getElement('dlu');
-        if (dluInput) {
-            this.addListener(dluInput, 'input', this.handleDLUFormatting);
-        }
+        this.bindElement('dlu', 'input', this.handleDLUFormatting);
         
         // 2. Enregistre le handler de formulaire
         this.registerForm('formDatamatrix', this.handleFormSubmit);
