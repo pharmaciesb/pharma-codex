@@ -8,18 +8,17 @@
         <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-md-6">
                 <div class="fr-input-group">
-                    <label class="fr-label" for="nom">
-                        Nom
-                    </label>
-                    <input class="fr-input" type="text" name="nom" id="nom" required placeholder="DUPONT"
-                        style="text-transform: uppercase;" />
+                    <label class="fr-label" for="nom">Nom</label>
+                    <input class="fr-input" type="text" name="nom" id="nom" required 
+                           placeholder="DUPONT" style="text-transform: uppercase;" />
                 </div>
             </div>
-
+            
             <div class="fr-col-12 fr-col-md-6">
                 <div class="fr-input-group">
                     <label class="fr-label" for="prenom">Prénom</label>
-                    <input class="fr-input" type="text" name="prenom" id="prenom" required placeholder="Jean" />
+                    <input class="fr-input" type="text" name="prenom" id="prenom" required 
+                           placeholder="Jean" />
                 </div>
             </div>
 
@@ -29,24 +28,21 @@
                     <input class="fr-input" type="date" name="dateNaissance" id="dateNaissance" required />
                 </div>
             </div>
-
+            
             <div class="fr-col-12 fr-col-md-6">
                 <div class="fr-input-group">
-                    <label class="fr-label" for="immatriculation">
-                        N° d'immatriculation
-                    </label>
-                    <input class="fr-input" type="text" name="immatriculation" id="immatriculation" required
-                        pattern="\d{15}" placeholder="123456789012345" title="15 chiffres (NIR + clé)" />
+                    <label class="fr-label" for="immatriculation">N° d'immatriculation</label>
+                    <input class="fr-input" type="text" name="immatriculation" id="immatriculation" required 
+                           pattern="\d{15}" placeholder="123456789012345" 
+                           title="15 chiffres (NIR + clé)" />
                 </div>
             </div>
 
             <div class="fr-col-12">
                 <div class="fr-input-group">
-                    <label class="fr-label" for="codeOrganisme">
-                        Code de l'organisme de sécurité sociale
-                    </label>
-                    <input class="fr-input" type="text" name="codeOrganisme" id="codeOrganisme" required
-                        placeholder="Ex: 01 131 0421" />
+                    <label class="fr-label" for="codeOrganisme">Code de l'organisme de sécurité sociale</label>
+                    <input class="fr-input" type="text" name="codeOrganisme" id="codeOrganisme" required 
+                           placeholder="Ex: 01 131 0421" />
                 </div>
             </div>
         </div>
@@ -57,79 +53,84 @@
             💉 Vaccin
             <span class="fr-hint-text">Recherchez le vaccin par son nom</span>
         </legend>
-        <div class="fr-col-12 fr-col-md-6">
-            <div class="fr-input-group">
-                <label class="fr-label" for="specialite">
-                    Spécialité pharmaceutique
-                    <span class="fr-hint-text">Tapez pour filtrer la liste</span>
-                </label>
-                <input class="fr-input" type="text" name="specialite" id="specialite" required autocomplete="off"
-                    list="vaccins" placeholder="Ex: GARDASIL 9" />
 
-                <datalist id="vaccins">
-                    <option value="ABRYSVO">
-                    <option value="AREXVY">
-                    <option value="AVAXIM 160 U">
-                    <option value="BEXSERO">
-                    <option value="BOOSTRIXTETRA">
-                    <option value="CAPVAXIVE">
-                    <option value="CERVARIX">
-                    <option value="ENCEPUR">
-                    <option value="ENGERIX B 10 µg">
-                    <option value="ENGERIX B 20 µg">
-                    <option value="ERVEBO">
-                    <option value="GARDASIL 9">
-                    <option value="HAVRIX 1440 U ADULTES">
-                    <option value="HAVRIX 720 U ENFANTS">
-                    <option value="HBVAXPRO 10 µg">
-                    <option value="HBVAXPRO 5 µg">
-                    <option value="HEXYON">
-                    <option value="IMVANEX">
-                    <option value="INFANRIX HEXA">
-                    <option value="INFANRIXQUINTA">
-                    <option value="INFANRIXTETRA">
-                    <option value="IXCHIQ">
-                    <option value="IXIARO">
-                    <option value="JYNNEOS">
-                    <option value="M-M-RVAXPRO">
-                    <option value="MENJUGATE 10 µg">
-                    <option value="MENQUADFI">
-                    <option value="MENVEO">
-                    <option value="NEISVAC">
-                    <option value="NIMENRIX">
-                    <option value="PENTAVAC">
-                    <option value="PNEUMOVAX">
-                    <option value="PREVENAR 13">
-                    <option value="PREVENAR 20">
-                    <option value="PRIORIX">
-                    <option value="QDENGA">
-                    <option value="RABIPUR">
-                    <option value="REPEVAX">
-                    <option value="REVAXIS">
-                    <option value="ROTARIX">
-                    <option value="ROTATEQ">
-                    <option value="SHINGRIX">
-                    <option value="SPIROLEPT">
-                    <option value="STAMARIL">
-                    <option value="TETRAVAC-ACELLULAIRE">
-                    <option value="TICOVAC 0,25 ENFANTS">
-                    <option value="TICOVAC 0,5 ADULTES">
-                    <option value="TRUMENBA">
-                    <option value="TWINRIX ADULTE">
-                    <option value="TYPHIM VI">
-                    <option value="VACCIN BCG AJVACCINES">
-                    <option value="VACCIN RABIQUE PASTEUR">
-                    <option value="VAQTA 50 U">
-                    <option value="VARILRIX">
-                    <option value="VARIVAX">
-                    <option value="VAXCHORA">
-                    <option value="VAXELIS">
-                    <option value="VAXNEUVANCE">
-                    <option value="VIMKUNYA">
-                    <option value="VIVOTIF">
-                    <option value="ZOSTAVAX">
-                </datalist>
-            </div>
+        <div class="fr-input-group">
+            <label class="fr-label" for="specialite">
+                Spécialité pharmaceutique
+                <span class="fr-hint-text">Tapez pour filtrer la liste</span>
+            </label>
+            <input class="fr-input" 
+                   type="text" 
+                   name="specialite" 
+                   id="specialite" 
+                   required 
+                   autocomplete="off"
+                   list="vaccins" 
+                   placeholder="Ex: GARDASIL 9" />
+            
+            <datalist id="vaccins">
+                <option value="ABRYSVO">
+                <option value="AREXVY">
+                <option value="AVAXIM 160 U">
+                <option value="BEXSERO">
+                <option value="BOOSTRIXTETRA">
+                <option value="CAPVAXIVE">
+                <option value="CERVARIX">
+                <option value="ENCEPUR">
+                <option value="ENGERIX B 10 µg">
+                <option value="ENGERIX B 20 µg">
+                <option value="ERVEBO">
+                <option value="GARDASIL 9">
+                <option value="HAVRIX 1440 U ADULTES">
+                <option value="HAVRIX 720 U ENFANTS">
+                <option value="HBVAXPRO 10 µg">
+                <option value="HBVAXPRO 5 µg">
+                <option value="HEXYON">
+                <option value="IMVANEX">
+                <option value="INFANRIX HEXA">
+                <option value="INFANRIXQUINTA">
+                <option value="INFANRIXTETRA">
+                <option value="IXCHIQ">
+                <option value="IXIARO">
+                <option value="JYNNEOS">
+                <option value="M-M-RVAXPRO">
+                <option value="MENJUGATE 10 µg">
+                <option value="MENQUADFI">
+                <option value="MENVEO">
+                <option value="NEISVAC">
+                <option value="NIMENRIX">
+                <option value="PENTAVAC">
+                <option value="PNEUMOVAX">
+                <option value="PREVENAR 13">
+                <option value="PREVENAR 20">
+                <option value="PRIORIX">
+                <option value="QDENGA">
+                <option value="RABIPUR">
+                <option value="REPEVAX">
+                <option value="REVAXIS">
+                <option value="ROTARIX">
+                <option value="ROTATEQ">
+                <option value="SHINGRIX">
+                <option value="SPIROLEPT">
+                <option value="STAMARIL">
+                <option value="TETRAVAC-ACELLULAIRE">
+                <option value="TICOVAC 0,25 ENFANTS">
+                <option value="TICOVAC 0,5 ADULTES">
+                <option value="TRUMENBA">
+                <option value="TWINRIX ADULTE">
+                <option value="TYPHIM VI">
+                <option value="VACCIN BCG AJVACCINES">
+                <option value="VACCIN RABIQUE PASTEUR">
+                <option value="VAQTA 50 U">
+                <option value="VARILRIX">
+                <option value="VARIVAX">
+                <option value="VAXCHORA">
+                <option value="VAXELIS">
+                <option value="VAXNEUVANCE">
+                <option value="VIMKUNYA">
+                <option value="VIVOTIF">
+                <option value="ZOSTAVAX">
+            </datalist>
         </div>
     </fieldset>
 
