@@ -17,14 +17,14 @@ export async function listFormFields(pdfBytes, PDFLib) {
         console.error('[PDF Assistant] Données PDF ou PDFLib manquantes.');
         return [];
     }
-    
+
     try {
         const { PDFDocument } = PDFLib;
         const pdfDoc = await PDFDocument.load(pdfBytes);
         const form = pdfDoc.getForm();
-        
+
         const fields = form.getFields();
-        
+
         if (fields.length === 0) {
             console.warn('[PDF Assistant] Ce PDF ne contient aucun champ de formulaire interactif (AcroForm).');
             return [];
@@ -62,38 +62,49 @@ export class PDFFormHandler {
             debugMode: config.debugMode || false,
             ...config
         };
-        
+
         this.templatePdfBytes = null;
         this.PDFLib = window.PDFLib;
+        // ✅ Ajout du verrou sans modifier le reste
+        this._loadPromise = null;
     }
 
     /**
-     * Charge le template PDF
-     * @returns {Promise<void>}
+     * Charge le template avec verrouillage interne pour éviter les fichiers 0ko
      */
     async loadTemplate() {
-        if (this.templatePdfBytes) return;
+        // Si un chargement est déjà en cours ou terminé, on retourne la promesse
+        if (this._loadPromise) return this._loadPromise;
 
-        if (!this.PDFLib && window.PDFLib) {
-            this.PDFLib = window.PDFLib;
-        }
-        if (!this.PDFLib) {
-            throw new Error('PDFLib non disponible. Vérifiez que pdf-lib@1.17.1.js est chargé.');
-        }
+        // Création de la promesse de chargement
+        this._loadPromise = (async () => {
+            try {
+                if (!this.config.pdfUrl) {
+                    throw new Error("[PDFFormHandler] pdfUrl non défini dans la configuration.");
+                }
 
-        const resp = await fetch(this.config.pdfUrl);
-        if (!resp.ok) {
-            throw new Error(`Impossible de charger le modèle PDF (${resp.status})`);
-        }
+                const resp = await fetch(this.config.pdfUrl);
+                if (!resp.ok) throw new Error(`[PDFFormHandler] Erreur HTTP ${resp.status} pour ${this.config.pdfUrl}`);
 
-        this.templatePdfBytes = await resp.arrayBuffer();
+                const bytes = await resp.arrayBuffer();
 
-        // Debug mode : liste les champs du formulaire
-        if (this.config.debugMode) {
-            await listFormFields(this.templatePdfBytes, this.PDFLib);
-        }
+                // Vérification de l'intégrité
+                if (!bytes || bytes.byteLength === 0) {
+                    throw new Error("[PDFFormHandler] Le fichier reçu est vide (0ko).");
+                }
 
-        console.log('[PDF Assistant] Modèle PDF chargé:', this.config.pdfUrl);
+                this.templatePdfBytes = bytes;
+                console.log(`[PDFFormHandler] Modèle chargé avec succès : ${this.config.pdfUrl} (${bytes.byteLength} octets)`);
+
+                return this.templatePdfBytes;
+            } catch (err) {
+                // En cas d'échec, on réinitialise la promesse pour permettre une nouvelle tentative
+                this._loadPromise = null;
+                throw err;
+            }
+        })();
+
+        return this._loadPromise;
     }
 
     /**
@@ -188,20 +199,20 @@ export class PDFFormHandler {
      * @param {string} filename - Nom du fichier
      */
     download(pdfData, filename) {
-        const blob = pdfData instanceof Blob 
-            ? pdfData 
+        const blob = pdfData instanceof Blob
+            ? pdfData
             : new Blob([pdfData], { type: 'application/pdf' });
-        
+
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
         link.download = filename;
         link.style.display = 'none';
-        
+
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        
+
         // Cleanup après un court délai
         setTimeout(() => URL.revokeObjectURL(url), 100);
     }
@@ -228,7 +239,7 @@ export const DateFormatter = {
      */
     toCompact(dateStr) {
         if (!dateStr) return '';
-        
+
         if (dateStr.includes('/')) {
             return dateStr.split('/').join(''); // JJ/MM/AAAA → JJMMAAAA
         }
@@ -246,7 +257,7 @@ export const DateFormatter = {
      */
     toGS1(dateStr) {
         let date;
-        
+
         if (dateStr.includes('/')) {
             const [d, m, y] = dateStr.split('/');
             date = new Date(`${y}-${m}-${d}`);
@@ -259,7 +270,7 @@ export const DateFormatter = {
         const year = String(date.getFullYear()).slice(-2);
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-        
+
         return `${year}${month}${lastDay.toString().padStart(2, '0')}`;
     },
 
@@ -296,7 +307,7 @@ export class PDFPreview {
 
         container.classList.remove('fr-hidden');
         iframe.src = blobUrl;
-        
+
         return true;
     }
 
@@ -381,11 +392,11 @@ export class FormValidator {
         }
 
         const cleaned = nir.replace(/\s/g, '');
-        
+
         if (!/^\d{15}$/.test(cleaned)) {
-            return { 
-                valid: false, 
-                message: 'Le NIR doit contenir exactement 15 chiffres' 
+            return {
+                valid: false,
+                message: 'Le NIR doit contenir exactement 15 chiffres'
             };
         }
 
