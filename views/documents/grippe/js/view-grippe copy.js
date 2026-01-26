@@ -11,15 +11,16 @@ import { PDFFormHandler, DateFormatter, PDFPreview, FormValidator } from '/pharm
 class GrippeHandler extends AppManagers.ViewHandler {
   constructor() {
     super('viewGrippe');
-
-    // Initialisation sans URL fixe (configurée dynamiquement au submit)
+    
+    // Assistant PDF partagé
     this.pdfHandler = new PDFFormHandler({
+      pdfUrl: './views/documents/grippe/pdf/610d.pdf',
       fontSize: 10,
       debugMode: false
     });
 
+    // Cache des vaccins
     this.vaccinsData = [];
-    this._currentPdfUrl = null; // Suivi du fichier actuellement en mémoire
   }
 
   // =============================================================
@@ -27,34 +28,46 @@ class GrippeHandler extends AppManagers.ViewHandler {
   // =============================================================
   CONFIG = {
     vaccinsJsonUrl: './views/documents/grippe/json/vaccins.json',
-
-    // Chemins des différents templates
-    templates: {
-      standard: './views/documents/grippe/pdf/610d.pdf',
-      injection: './views/documents/grippe/pdf/610d-injection.pdf'
-    },
-
+    
+    // Positions des champs sur le PDF (en pourcentages)
     positions: {
       pageWidth: 595.28,
       pageHeight: 841.89,
+      
+      // Cadre haut (spécialité + date)
       specialiteTop: { left: 0.136500, top: 0.499200, width: 0.270000, height: 0.060000 },
       dateTop: { left: 0.420000, top: 0.499200, width: 0.130000, height: 0.060000 },
+      
+      // Cadre bas (date + lot si injection)
       dateBot: { left: 0.17326, top: 0.782300, width: 0.300000, height: 0.060000 },
       lotBot: { left: 0.250000, top: 0.808000, width: 0.300000, height: 0.060000 }
     }
   };
 
+  // =============================================================
+  // Initialisation
+  // =============================================================
   async onload() {
     try {
+      // 1. Date par défaut
       definirAujourdhui();
+
+      // 2. Chargement des données vaccins (petite ressource, chargée au démarrage)
       await this.loadVaccinsData();
+
+      // 3. Gestion du scan DataMatrix
       this.setupDataMatrixScanner();
+
+      // 4. Enregistrement du formulaire
       this.registerForm('formGrippe', this.handleFormSubmit);
+
       AppManagers.log(this.key, 'success', 'Module Grippe initialisé');
     } catch (err) {
       AppManagers.log(this.key, 'error', 'Échec initialisation Grippe', err);
+      await AppManagers.CodexManager.show('error', 'Erreur au chargement du module Grippe');
     }
   }
+
   // =============================================================
   // Chargement des données vaccins
   // =============================================================
@@ -64,7 +77,7 @@ class GrippeHandler extends AppManagers.ViewHandler {
     try {
       const response = await fetch(this.CONFIG.vaccinsJsonUrl);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
+      
       this.vaccinsData = await response.json();
       AppManagers.log(this.key, 'success', `${this.vaccinsData.length} vaccins chargés`);
     } catch (err) {
@@ -119,7 +132,7 @@ class GrippeHandler extends AppManagers.ViewHandler {
             <small>Lot: ${result.lot} | Expiration: ${result.expiration}</small>
           `;
           denominationEl.className = 'fr-text--sm fr-mt-1w';
-
+          
           // Pré-sélectionner le vaccin
           if (specialiteSelect) {
             specialiteSelect.value = vaccin.denomination;
@@ -149,43 +162,38 @@ class GrippeHandler extends AppManagers.ViewHandler {
   // =============================================================
   async handleFormSubmit(formData, form) {
     try {
+      
+      AppManagers.log(formData);
       const data = this.extractData(formData);
 
+      // Validation
       const validation = this.validateData(data);
       if (!validation.valid) {
         await AppManagers.CodexManager.show('error', validation.message);
         return;
       }
 
-      // 1. Détermination de l'URL du fichier
-      const targetUrl = data.avecInjection
-        ? this.CONFIG.templates.injection
-        : this.CONFIG.templates.standard;
-
-      // 2. Changement dynamique du fichier (Correction du cache)
-      if (this._currentPdfUrl !== targetUrl) {
-        // On force l'assistant à oublier l'ancien fichier
-        this.pdfHandler.templatePdfBytes = null;
-        this.pdfHandler._loadPromise = null;
-        this.pdfHandler.config.pdfUrl = targetUrl;
-
+      // Chargement lazy du template PDF (au 1er submit)
+      if (!this.pdfHandler.templatePdfBytes) {
         await AppManagers.CodexManager.show('info', 'Chargement du modèle PDF…');
         await this.pdfHandler.loadTemplate();
-        this._currentPdfUrl = targetUrl;
       }
 
-      await AppManagers.CodexManager.show('info', 'Génération du bon…');
+      await AppManagers.CodexManager.show('info', 'Génération du bon de prise en charge…');
 
       const pdfBytes = await this.generateFilledPDF(data);
+
       const blobUrl = this.pdfHandler.createBlobUrl(pdfBytes);
       const filename = `bon_grippe_${data.nom}_${data.prenom}.pdf`;
 
+      // Affichage du résultat
       this.displayResult(blobUrl, filename, data);
-      await AppManagers.CodexManager.show('success', 'Bon généré avec succès');
+
+      await AppManagers.CodexManager.show('success', 'Bon de prise en charge généré avec succès');
 
     } catch (err) {
       AppManagers.log(this.key, 'error', 'Erreur génération PDF:', err);
-      await AppManagers.CodexManager.show('error', 'Erreur lors de la génération');
+      await AppManagers.CodexManager.show('error', err.message || 'Erreur lors de la génération');
     }
   }
 
@@ -194,6 +202,7 @@ class GrippeHandler extends AppManagers.ViewHandler {
   // =============================================================
   extractData(formData) {
     const today = new Date();
+    
     return {
       nom: formData.get("nom").trim(),
       prenom: formData.get("prenom").trim(),
@@ -208,13 +217,19 @@ class GrippeHandler extends AppManagers.ViewHandler {
   }
 
   validateData(data) {
+    // Validation des champs requis
     const requiredValidation = FormValidator.validateRequired(data, [
-      'nom', 'prenom', 'dateNaissance', 'immatriculation',
+      'nom', 'prenom', 'dateNaissance', 'immatriculation', 
       'codeOrganisme', 'specialite', 'lot'
     ]);
+    
     if (!requiredValidation.valid) return requiredValidation;
 
-    return FormValidator.validateNIR(data.immatriculation);
+    // Validation du NIR
+    const nirValidation = FormValidator.validateNIR(data.immatriculation);
+    if (!nirValidation.valid) return nirValidation;
+
+    return { valid: true, message: '' };
   }
 
   // =============================================================
@@ -224,7 +239,7 @@ class GrippeHandler extends AppManagers.ViewHandler {
     const { pdfDoc, page, font } = await this.pdfHandler.createDocument();
     const form = pdfDoc.getForm();
 
-    // Remplissage des champs de formulaire (Partie commune)
+    // Remplissage des champs de formulaire
     const fieldMap = {
       "N° immat": data.immatriculation,
       "Bénéficiaire": `${data.nom} ${data.prenom}`,
@@ -236,25 +251,31 @@ class GrippeHandler extends AppManagers.ViewHandler {
       this.pdfHandler.fillTextField(form, name, value);
     }
 
+    // Zones personnalisées (via drawText)
     const { pageWidth, pageHeight, specialiteTop, dateTop, dateBot, lotBot } = this.CONFIG.positions;
-    const calcPos = (cadre, offsetY = -25) => this.pdfHandler.calculatePosition(cadre, pageWidth, pageHeight, offsetY);
 
-    // Écriture Haut (Spécialité + Date)
+    const calcPos = (cadre, offsetY = -25) => 
+      this.pdfHandler.calculatePosition(cadre, pageWidth, pageHeight, offsetY);
+
+    // Cadre haut
+    const posSpecialite = calcPos(specialiteTop);
+    const posDateTop = calcPos(dateTop);
+    
     page.drawText(data.specialite.toUpperCase(), {
-      x: calcPos(specialiteTop).x,
-      y: calcPos(specialiteTop).y,
+      x: posSpecialite.x,
+      y: posSpecialite.y,
       size: this.pdfHandler.config.fontSize,
       font
     });
 
     page.drawText(data.dateJour, {
-      x: calcPos(dateTop).x,
-      y: calcPos(dateTop).y,
+      x: posDateTop.x,
+      y: posDateTop.y,
       size: this.pdfHandler.config.fontSize,
       font
     });
 
-    // 3 - LOGIQUE BAS DE PAGE : Uniquement si injection est COCHÉE
+    // Cadre bas (si injection)
     if (data.avecInjection) {
       const posDateBot = calcPos(dateBot);
       const posLotBot = calcPos(lotBot);
@@ -282,7 +303,7 @@ class GrippeHandler extends AppManagers.ViewHandler {
   // =============================================================
   displayResult(blobUrl, filename, data) {
     const shown = PDFPreview.show('previewContainer', 'pdfPreview', blobUrl);
-
+    
     if (!shown) {
       // Fallback : téléchargement direct
       this.pdfHandler.download(new Blob([]), filename);
@@ -305,4 +326,5 @@ class GrippeHandler extends AppManagers.ViewHandler {
   }
 }
 
+// Enregistrement automatique
 new GrippeHandler().register();
