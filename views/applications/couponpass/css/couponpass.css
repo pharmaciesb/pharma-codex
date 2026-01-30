@@ -1,0 +1,138 @@
+/* ========================================
+   CouponPass - Styles personnalisés
+   ======================================== */
+
+/* Zone d'affichage du code promo */
+.couponpass-code {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #e8ffe8 0%, #d4f4d4 100%);
+  border: 2px solid var(--border-default-green-emeraude);
+  border-radius: 0.5rem;
+  color: var(--text-default-success);
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.1em;
+  word-break: break-all;
+  min-height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Animation du code */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.couponpass-code {
+  animation: fadeInScale 0.3s ease-out;
+}
+
+/* Zone de logs */
+.couponpass-logs {
+  background: var(--background-alt-grey);
+  border: 1px solid var(--border-default-grey);
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 0.875rem;
+  max-height: 300px;
+  overflow-y: auto;
+  color: var(--text-default-grey);
+  line-height: 1.4;
+}
+
+/* Entrée de log */
+.couponpass-log-entry {
+  margin-bottom: 0.25rem;
+  word-break: break-word;
+}
+
+.couponpass-log-entry .timestamp {
+  color: var(--text-mention-grey);
+  font-weight: bold;
+}
+
+/* Scrollbar personnalisée pour les logs */
+.couponpass-logs::-webkit-scrollbar {
+  width: 8px;
+}
+
+.couponpass-logs::-webkit-scrollbar-track {
+  background: var(--background-default-grey);
+  border-radius: 4px;
+}
+
+.couponpass-logs::-webkit-scrollbar-thumb {
+  background: var(--border-default-grey);
+  border-radius: 4px;
+}
+
+.couponpass-logs::-webkit-scrollbar-thumb:hover {
+  background: var(--border-default-grey-hover);
+}
+
+/* Input avec bouton intégré (addon) */
+.fr-input-wrap--addon {
+  display: flex;
+  gap: 0;
+}
+
+.fr-input-wrap--addon .fr-input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  flex: 1;
+}
+
+.fr-input-wrap--addon .fr-btn {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  white-space: nowrap;
+}
+
+/* Responsive : empiler sur mobile */
+@media (max-width: 768px) {
+  .fr-input-wrap--addon {
+    flex-direction: column;
+  }
+
+  .fr-input-wrap--addon .fr-input,
+  .fr-input-wrap--addon .fr-btn {
+    border-radius: 0.25rem;
+  }
+
+  .couponpass-code {
+    font-size: 1.5rem;
+    padding: 1rem;
+  }
+}
+
+/* État de chargement du bouton */
+.fr-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Amélioration du callout de logs */
+.fr-callout--brown-caramel .couponpass-logs {
+  background: var(--background-contrast-brown-caramel);
+  border-color: var(--border-default-brown-caramel);
+}
+
+/* Code dans les hints */
+code {
+  background: var(--background-contrast-grey);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875em;
+}

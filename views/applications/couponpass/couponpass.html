@@ -1,0 +1,48 @@
+<div data-load-key="viewCouponpass" id="viewCouponpass">
+    <h4>🎟️ CouponPass - Extracteur HighCo</h4>
+    <div class="fr-container--fluid">
+        <div class="fr-grid-row fr-grid-row--bottom">
+            <div class="fr-col-12 fr-col-md-7">
+                <div class="fr-callout fr-callout--blue-ecume fr-mr-2v">
+                    <h5 class="fr-callout__title">🚀 Comment ça marche ?</h5>
+                    <div class="fr-callout__text">
+                        <ol class="fr-text--sm">
+                            <li>Collez l'URL de la campagne HighCo (format: <code>https://opn.to/a/XXXXXX</code>)</li>
+                            <li>Cliquez sur "Extraire le code"</li>
+                            <li>Le code promo sera affiché et copié automatiquement</li>
+                        </ol>
+                        <p class="fr-text--sm">
+                            <strong>💡 Astuce :</strong> Le code est automatiquement copié dans votre presse-papiers.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="fr-col-12 fr-col-md-5">
+                <!-- Panneau de logs -->
+                <div class="fr-callout fr-callout--pink-macaron fr-ml-2v">
+                    <h6 class="fr-callout__title">📊 Journal d'activité</h6>
+                    <div id="couponpass-logs" class="couponpass-logs fr-text--sm"></div>
+                </div>
+            </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--bottom">
+            <div class="fr-col-12 fr-col-md-7">
+                <form id="formCouponPass">
+                    <legend class="fr-fieldset__legend" id="text-legend">
+                        Formulaire d'obtention rapide du Coupon
+                    </legend>
+                    <div class="fr-fieldset__element">
+                        <div class="fr-input-group">
+                            <label class="fr-label" for="couponpass-url"> URL de la campagne HighCo </label>
+                            <div class="fr-input-wrap fr-input-wrap--addon">
+                                <input class="fr-input" type="url" id="couponpass-url" name="couponpass-url"
+                                    placeholder="https://opn.to/a/XXXXXX" required>
+                                <button class="fr-btn fr-btn--secondary" type="submit" id="couponpass-extract"> 🔍 </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
