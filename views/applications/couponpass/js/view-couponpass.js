@@ -10,7 +10,7 @@ class CouponpassHandler extends AppManagers.ViewHandler {
     super('viewCouponpass');
     
     // Configuration
-    this.PROXY_URL = 'https://long-credit-5315.zink13013.workers.dev/?url=';
+    this.PROXY_URL = 'https://crimson-lake-17be.pharmaciesaintbarthelemy.workers.dev/?url=';
     this.MAX_LOGS = 50;
     this.URL_PATTERN = /opn\.to/i;
   }
