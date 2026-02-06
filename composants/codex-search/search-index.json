@@ -1,22 +1,28 @@
 [
-  { "id": "officine", "title": "Accueil Officine", "keywords": "accueil, dashboard, officine, pharmacie, messageries, laboratoires, orthopedie, fournitures, mutuelles, tiers-payant", "route": "#views/officine/officine.html" },
+  { "id": "officine", "title": "Module Officine", "keywords": "dashboard, officine, messageries, laboratoires, orthopedie, fournitures, mutuelles, tiers-payant", "route": "#views/officine/officine.html" },
 
-  { "id": "documents", "title": "Accueil Documents", "keywords": "accueil, dashboard,  documents, pdf, bons de commande, fiches techniques, vaccins, grippe, cuprior", "route": "#views/documents/documents.html" },
-  { "id": "grippe", "title": "Grippe", "keywords": "grippe, bon, pdf, documents", "route": "#views/documents/grippe/grippe.html" },
-  { "id": "vaccin", "title": "Vaccin", "keywords": "vaccin, bon, pdf, documents", "route": "#views/documents/vaccin/vaccin.html" },  
-  { "id": "cuprior", "title": "Cuprior", "keywords": "cuprior, trientine, bon, pdf, documents, commande, traitement", "route": "#views/documents/cuprior/cuprior.html" },
+  { "id": "documents", "title": "Module Documents", "keywords": "dashboard,  document, pdf, bon, commande, vaccin, grippe, cuprior", "route": "#views/documents/documents.html" },
+  { "id": "grippe", "title": "Générer Bon Grippe", "keywords": "grippe, bon, pdf, document", "route": "#views/documents/grippe/grippe.html" },
+  { "id": "vaccin", "title": "Générer Bon Vaccin", "keywords": "vaccin, bon, pdf, document", "route": "#views/documents/vaccin/vaccin.html" },  
+  { "id": "cuprior", "title": "Commander Cuprior", "keywords": "cuprior, bon, pdf, document, commande", "route": "#views/documents/cuprior/cuprior.html" },
+ 
+  { "id": "applications", "title": "Module Applications", "keywords": "dashboard,  application, utilitaire, outils, gestion, calcul, assistant", "route": "#views/applications/applications.html" },
+  { "id": "calculazen", "title": "Calculs au comptoir", "keywords": "calculazen, utilitaire, outils, gestion, calcul, assistant, remise, posologie, boites, boîtes, délivrance", "route": "#views/applications/calculazen/calculazen.html" },
+  { "id": "calculanir", "title": "Calcul clé sécu", "keywords": "calculanir, utilitaire, outils, gestion, calcul, assistant, numéro, secu, vitale, nir, ins, cle, clé", "route": "#views/applications/calculanir/calculanir.html" },
+  { "id": "renouvellement", "title": "Renouvellement (R1,R2..)", "keywords": "renouvellement, utilitaire, outils, gestion, calcul, assistant, jours, feries, fériés, attente, date, vacances", "route": "#views/applications/renouvellement/renouvellement.html" },
+  { "id": "datamatrix", "title": "Etiquette Datamatrix", "keywords": "datamatrix, utilitaire, outils, gestion, assistant, qr code, qrcode, barre", "route": "#views/applications/datamatrix/datamatrix.html" },
 
-  { "id": "applications", "title": "Accueil Applications", "keywords": "accueil, dashboard,  applications, utilitaires, outils, gestion, calcul, assistant, aide", "route": "#views/applications/applications.html" },
-  { "id": "calculazen", "title": "Calculazen", "keywords": "calculazen, utilitaires, outils, gestion, calcul, assistant, aide, remise, posologie, boites, boîtes, délivrance", "route": "#views/applications/calculazen/calculazen.html" },
-  { "id": "calculanir", "title": "Calculanir", "keywords": "calculanir, utilitaires, outils, gestion, calcul, assistant, aide, numéro, secu, vitale, nir, ins, cle, clé", "route": "#views/applications/calculanir/calculanir.html" },
-  { "id": "renouvellement", "title": "Renouvellement", "keywords": "renouvellement, utilitaires, outils, gestion, calcul, assistant, aide, jours, feries, fériés, attente, date, vacances", "route": "#views/applications/renouvellement/renouvellement.html" },
-  { "id": "datamatrix", "title": "Datamatrix", "keywords": "datamatrix, utilitaires, outils, gestion, assistant, aide, qr code, qrcode, barre", "route": "#views/applications/datamatrix/datamatrix.html" },
+  { "id": "infirmerie", "title": "Module Infirmerie", "keywords": "dashboard, infirmerie, soins, patients, dossiers, facture, ordonnance, ordonnancier, ide", "route": "#views/infirmerie/infirmerie.html" },
+  { "id": "facture", "title": "Facture produits pharmaceutiques", "keywords": "infirmerie, facture, produit, pharmaceutique, ide", "route": "#views/infirmerie/facture/facture.html" },
+  { "id": "ordonnancier", "title": "Ordonnancier IDE", "keywords": "infirmerie, ordonnancier, ordonnance, pansemant, ide", "route": "#views/infirmerie/ordonnancier/ordonnancier.html" },
 
-  {"id": "infirmerie", "title": "Accueil Infirmerie", "keywords": "accueil, dashboard, infirmerie, soins, patients, dossiers, facture, ordonnance, ordonnancier", "route": "#views/infirmerie/infirmerie.html" },
-  {"id": "facture", "title": "Facture produits pharmaceutiques", "keywords": "infirmerie, facture, produits, pharmaceutiques", "route": "#views/infirmerie/facture/facture.html" },
-  {"id": "ordonnancier", "title": "Ordonnancier IDE", "keywords": "infirmerie, ordonnancier, ordonnance, pansemants", "route": "#views/infirmerie/ordonnancier/ordonnancier.html" },
+  { "id": "Vaccination", "title": "Calendrier Vaccinal", "keywords": "dashboard, vaccin, calendrier, prescription, schema", "route": "#views/vaccination/vaccination.html" },
 
-  { "id": "atelier", "title": "Accueil atelier", "keywords": "accueil, dashboard, atelier", "route": "#views/atelier/atelier.html" },
+  { "id": "atelier", "title": "Module atelier", "keywords": "dashboard, atelier, outils", "route": "#views/atelier/atelier.html" },
   { "id": "trombinoscope", "title": "Trombinoscope PDA", "keywords": "trombinoscope, pda, vignettes, qr code, qrcode, barre, atelier", "route": "#views/atelier/trombinoscope/trombinoscope.html" },
-  { "id": "purificateur", "title": "Purificateur PDA", "keywords": "purificateur, pda, bon de livraison, nettoyer, simplifier, atelier", "route": "#views/atelier/purificateur/purificateur.html" }
+  { "id": "purificateur", "title": "Purificateur PDA", "keywords": "purificateur, pda, bon, livraison, nettoyer, simplifier, atelier", "route": "#views/atelier/purificateur/purificateur.html" },
+  { "id": "etiqueteuse", "title": "Etiquette Homeopathie", "keywords": "etiquette, homeo", "route": "#views/atelier/etiqueteuse/etiqueteuse.html" },
+  { "id": "uberml", "title": "Commande Samedi", "keywords": "commande, samedi, ocp, uberml", "route": "#views/atelier/uberml/uberml.html" },
+
+  { "id": "planning", "title": "Affichage Planning", "keywords": "calendrier, planning", "route": "#views/planning/planning.html" }
 ]

@@ -78,7 +78,7 @@ export class CodexSearch extends BaseComponent {
         const results = this.searchIndex.filter(item =>
             item.title.toLowerCase().includes(query) ||
             item.keywords.toLowerCase().includes(query)
-        ).slice(0, 5); // Limiter les résultats
+        ).slice(0, 8); // Limiter les résultats
 
         this._renderResults(results);
     }
