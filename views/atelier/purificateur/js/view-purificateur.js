@@ -82,7 +82,10 @@ class PurificateurHandler extends AppManagers.ViewHandler {
             
             await AppManagers.CodexManager.show('info', 'Texte extrait, analyse en cours...');
             
-            // 5. Parsage des entrées de production
+            // 5. Extraction du nombre attendu de productions
+            const expectedCount = this.extraireNombreProductions(fullText);
+            
+            // 6. Parsage des entrées de production
             const entries = this.parserEntrees(fullText);
             
             if (entries.length === 0) {
@@ -90,12 +93,15 @@ class PurificateurHandler extends AppManagers.ViewHandler {
                 return;
             }
             
+            // 7. Validation (non bloquante)
+            const validationMessage = this.validerNombreEntrees(entries.length, expectedCount);
+            
             await AppManagers.CodexManager.show('info', `${entries.length} entrée(s) trouvée(s), génération du PDF...`);
             
-            // 6. Génération du PDF épuré
-            await this.genererPDFPurifie(entries, bonNumber);
+            // 8. Génération du PDF épuré
+            await this.genererPDFPurifie(entries, bonNumber, expectedCount);
             
-            await AppManagers.CodexManager.show('success', `PDF épuré n°${bonNumber} généré avec succès`);
+            await AppManagers.CodexManager.show('success', `PDF épuré n°${bonNumber} généré avec succès. ${validationMessage}`);
             
         } catch (err) {
             AppManagers.log(this.key, 'error', 'Erreur traitement PDF:', err);
@@ -111,6 +117,34 @@ class PurificateurHandler extends AppManagers.ViewHandler {
     extraireBonNumber(filename) {
         const match = filename.match(/BL(\d{16})\.pdf/i);
         return match ? match[1] : 'INCONNU';
+    }
+    
+    /**
+     * Extrait le nombre de productions attendu depuis l'en-tête
+     * @param {string} fullText
+     * @returns {number|null}
+     */
+    extraireNombreProductions(fullText) {
+        const match = fullText.match(/Nombre de productions:\s*(\d+)/i);
+        return match ? parseInt(match[1], 10) : null;
+    }
+    
+    /**
+     * Valide que le nombre d'entrées parsées correspond au nombre attendu
+     * @param {number} actualCount
+     * @param {number|null} expectedCount
+     * @returns {string}
+     */
+    validerNombreEntrees(actualCount, expectedCount) {
+        if (expectedCount === null) {
+            return 'Validation: nombre de productions non trouvé dans le fichier source.';
+        }
+        
+        if (actualCount === expectedCount) {
+            return `✓ Validation OK: ${actualCount}/${expectedCount} productions.`;
+        } else {
+            return `⚠ Attention: ${actualCount}/${expectedCount} productions parsées.`;
+        }
     }
     
     /**
@@ -141,45 +175,35 @@ class PurificateurHandler extends AppManagers.ViewHandler {
      * @returns {Array<Object>}
      */
     parserEntrees(fullText) {
-        const records = fullText.split(/\s+o\s*/i);
         const entries = [];
+        
+        // ✅ REGEX ROBUSTE: 
+        // - ID production: 16 chiffres commençant par 20XX (2024, 2025, 2026...)
+        // - Nom patient: 1 à plusieurs mots (lettres, espaces, accents, tirets, apostrophes)
+        // - Date début: DD/MM/YYYY
+        // - Date fin: DD/MM/YYYY
+        const productionRegex = /(20\d{14})\s+([A-ZÀ-ÿ\s\-']+?)\s+(\d{2}\/\d{2}\/\d{4})\s+(\d{2}\/\d{2}\/\d{4})/gi;
+        
+        let match;
         let count = 0;
         
-        const patientDataRegex = /(\d{16})\s+(.+?)\s+(\d{2}\/\d{2}\/\d{4})\s+(\d{2}\/\d{2}\/\d{4})/i;
-        
-        // ✅ NOUVEAU : Regex pour détecter et retirer les en-têtes de page
-        const headerPattern = /Bon de livraison.*?Validation/is;
-        
-        for (let i = 0; i < records.length; i++) {
-            let record = records[i].trim();
-            if (!record) continue;
+        while ((match = productionRegex.exec(fullText)) !== null) {
+            count++;
             
-            // ✅ Retire les en-têtes de page qui peuvent apparaître dans le bloc
-            record = record.replace(headerPattern, '').trim();
+            const id = match[1].trim();
+            const name = match[2].trim().replace(/\s+/g, ' '); // Normalise les espaces multiples
+            const startDate = match[3].trim();
+            const endDate = match[4].trim();
             
-            // Si c'est le premier bloc, on cherche après "Validation"
-            if (i === 0) {
-                const validationIndex = record.lastIndexOf('Validation');
-                if (validationIndex !== -1) {
-                    record = record.substring(validationIndex + 'Validation'.length).trim();
-                }
-            }
+            entries.push({
+                count,
+                id,
+                name,
+                start: startDate,
+                end: endDate
+            });
             
-            // Cherche les données patient n'importe où dans le texte (pas besoin de ^)
-            const match = record.match(patientDataRegex);
-            
-            if (match) {
-                count++;
-                entries.push({
-                    count,
-                    id: match[1],
-                    name: match[2].trim().replace(/\s+/g, ' '),
-                    start: match[3],
-                    end: match[4]
-                });
-                
-                AppManagers.log('PurificateurHandler', 'info', `Entrée ${count}: ${match[2]}`);
-            }
+            AppManagers.log('PurificateurHandler', 'info', `Entrée ${count}: ${id} - ${name}`);
         }
         
         return entries;
@@ -189,8 +213,9 @@ class PurificateurHandler extends AppManagers.ViewHandler {
      * Génère le PDF épuré
      * @param {Array<Object>} entries
      * @param {string} bonNumber
+     * @param {number|null} expectedCount
      */
-    async genererPDFPurifie(entries, bonNumber) {
+    async genererPDFPurifie(entries, bonNumber, expectedCount) {
         if (!PDFDocument) {
             throw new Error('PDF-LIB non disponible');
         }
@@ -212,10 +237,28 @@ class PurificateurHandler extends AppManagers.ViewHandler {
             color: rgb(0.2, 0.2, 0.2)
         });
         
+        // ✅ VALIDATION: Affichage du nombre de productions
+        let currentY = height - padding - 25;
+        const validationText = expectedCount !== null 
+            ? `Nombre de productions : ${entries.length}/${expectedCount}`
+            : `Nombre de productions : ${entries.length}`;
+        
+        const validationColor = (expectedCount !== null && entries.length === expectedCount)
+            ? rgb(0, 0.5, 0)  // Vert si OK
+            : rgb(0.8, 0.4, 0); // Orange si différence
+        
+        page.drawText(validationText, {
+            x: padding,
+            y: currentY,
+            font: boldFont,
+            size: 10,
+            color: validationColor
+        });
+        
         // Configuration du tableau
         const colWidths = [30, 100, 150, 70, 70];
         const tableHeaders = ['N°', 'ID Production', 'Nom Patient', 'Début', 'Fin'];
-        let currentY = height - padding - 40;
+        currentY -= 30;
         
         // En-têtes
         this.dessinerLigneTableau(page, tableHeaders, currentY, padding, colWidths, boldFont, fontSize);
