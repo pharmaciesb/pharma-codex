@@ -108,25 +108,41 @@ import { PdfAssistant } from "./assistants/assistant-pdf.js";
                 return this._executeWithRetry(key, retries);
             }
 
-            for (let i = 1; i <= retries; i++) {
-                const el = document.querySelector(`[data-load-key="${key}"]`) || document.getElementById(key);
+            // ✅ NOUVEAU : Vérifier si déjà initialisé
+            const el = document.querySelector(`[data-load-key="${key}"]`) || document.getElementById(key);
 
-                if (el) {
-                    try {
-                        if (handler.presetVariableOnload) handler.presetVariableOnload(el, key);
-                        if (handler.methodeOnload) {
-                            const result = handler.methodeOnload(el, key);
-                            if (result instanceof Promise) await result;
-                        }
-                        log('DomloadManager', 'success', `Initialisé : ${key}`);
-                        return;
-                    } catch (err) {
-                        log('DomloadManager', 'error', `Erreur dans ${key}:`, err);
-                        return;
-                    }
-                }
-                await new Promise(r => setTimeout(r, 50 * i));
+            if (!el) {
+                log('DomloadManager', 'warn', `Cible ${key} non trouvée, skip init`);
+                return;
             }
+
+            if (el.dataset.handlerInitialized === 'true') {
+                log('DomloadManager', 'info', `✅ Handler déjà initialisé : ${key}, skip`);
+                return;
+            }
+
+            // Marquer comme en cours d'initialisation
+            el.dataset.handlerInitialized = 'pending';
+
+            for (let i = 1; i <= retries; i++) {
+                try {
+                    if (handler.presetVariableOnload) handler.presetVariableOnload(el, key);
+                    if (handler.methodeOnload) {
+                        const result = handler.methodeOnload(el, key);
+                        if (result instanceof Promise) await result;
+                    }
+
+                    // ✅ Marquer comme initialisé avec succès
+                    el.dataset.handlerInitialized = 'true';
+                    log('DomloadManager', 'success', `Initialisé : ${key}`);
+                    return;
+                } catch (err) {
+                    el.dataset.handlerInitialized = 'error';
+                    log('DomloadManager', 'error', `Erreur dans ${key}:`, err);
+                    return;
+                }
+            }
+
             log('DomloadManager', 'warn', `Cible ${key} non trouvée après ${retries} essais.`);
         },
 
@@ -226,40 +242,105 @@ import { PdfAssistant } from "./assistants/assistant-pdf.js";
         }
     };
 
-    // --- IncludeLoader : Remplace les <template hx-get> ---
+    // --- IncludeLoader : Chargement des partials avec cache global et gestion de profondeur ---
     const IncludeLoader = {
+        _loadedUrls: new Set(),
+        _pendingLoads: new Map(),
+
         async loadIncludes(container = document, depth = 0) {
             if (depth > 5) {
                 log('IncludeLoader', 'warn', 'Profondeur max atteinte (boucle infinie ?)');
                 return;
             }
 
-            const includes = container.querySelectorAll('[data-include]');
+            const includes = Array.from(container.querySelectorAll('[data-include]'));
             if (includes.length === 0) return;
 
-            await Promise.all(
-                Array.from(includes).map(async (el) => {
-                    const url = el.getAttribute('data-include');
-                    if (!url) return;
+            // ✅ CHANGEMENT CLÉ : Boucle for...of au lieu de Promise.all
+            for (const el of includes) {
+                const url = el.getAttribute('data-include');
+                if (!url) continue;
 
-                    try {
-                        const response = await fetch(url);
-                        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const cacheKey = url;
 
-                        const html = await response.text();
-                        el.outerHTML = html;
+                // Si déjà chargé globalement, on supprime juste l'attribut
+                if (this._loadedUrls.has(cacheKey)) {
+                    log('IncludeLoader', 'info', `⚡ Déjà chargé (cache): ${url}`);
+                    el.removeAttribute('data-include');
+                    continue;
+                }
 
-                        log('IncludeLoader', 'success', `Chargé (depth ${depth}): ${url}`);
-                    } catch (error) {
-                        log('IncludeLoader', 'error', `Erreur: ${url}`, error);
-                        el.innerHTML = '<p class="fr-error-text">Erreur de chargement</p>';
-                    }
-                })
-            );
+                // Si chargement en cours, attendre
+                if (this._pendingLoads.has(cacheKey)) {
+                    log('IncludeLoader', 'info', `⏳ Chargement en cours: ${url}`);
+                    await this._pendingLoads.get(cacheKey);
+                    el.removeAttribute('data-include');
+                    continue;
+                }
 
+                // Nouveau chargement
+                const loadPromise = this._loadFile(url, el, depth);
+                this._pendingLoads.set(cacheKey, loadPromise);
+
+                try {
+                    await loadPromise;
+                    this._loadedUrls.add(cacheKey);
+                } catch (err) {
+                    log('IncludeLoader', 'error', `Erreur fatale: ${url}`, err);
+                } finally {
+                    this._pendingLoads.delete(cacheKey);
+                }
+            }
+
+            // Récursion pour traiter les nouveaux includes ajoutés
             await this.loadIncludes(container, depth + 1);
+        },
+
+        async _loadFile(url, el, depth) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const html = await response.text();
+
+                // ✅ CRITIQUE : Créer un wrapper temporaire
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = html;
+
+                // Remplacer l'élément par le contenu du wrapper
+                el.replaceWith(...wrapper.childNodes);
+
+                log('IncludeLoader', 'success', `Chargé (depth ${depth}): ${url}`);
+            } catch (error) {
+                log('IncludeLoader', 'error', `Erreur: ${url}`, error);
+                el.innerHTML = '<p class="fr-error-text">Erreur de chargement</p>';
+                el.removeAttribute('data-include');
+            }
+        },
+
+        reset() {
+            // ✅ Préserver le cache du layout
+            const layoutUrls = [
+                './layout/header.html',
+                './layout/navigation.html',
+                './layout/fil-ariane.html',
+                './layout/codex-missives.html'
+            ];
+
+            const newSet = new Set();
+            layoutUrls.forEach(url => {
+                if (this._loadedUrls.has(url)) {
+                    newSet.add(url);
+                }
+            });
+
+            this._loadedUrls = newSet;
+            this._pendingLoads.clear();
+
+            log('IncludeLoader', 'info', '🧹 Cache des partials réinitialisé (layout préservé)');
         }
     };
+
 
     // --- ViewHandler : Classe de base pour créer des handlers propres ---
     class ViewHandler {
@@ -323,7 +404,7 @@ import { PdfAssistant } from "./assistants/assistant-pdf.js";
         bindElement(id, event, handler, required = true) {
             const el = this.getElement(id, required);
             if (!el) return;
-            this.addListener(el,event,handler);
+            this.addListener(el, event, handler);
         }
 
         // Cleanup automatique de tous les listeners
