@@ -3,7 +3,7 @@
  * Utile pour : factures, documents, certificats, attestations, etc.
  * 
  * Usage :
- * import { exportToPDF } from './assistants/assistant-html2pdf.js';
+ * import { exportToPDF, PDF_PRESETS } from './assistants/assistant-html2pdf.js';
  * 
  * const element = document.getElementById('ma-facture');
  * await exportToPDF(element, 'facture.pdf');

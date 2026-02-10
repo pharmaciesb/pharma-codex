@@ -1,7 +1,7 @@
 /// <reference path="../../../../static/js/types.js" />
 
 import { definirAujourdhui, formatFR } from '/pharma-codex/static/js/assistants/assistant-date.js';
-import { exportToPDF } from '/pharma-codex/static/js/assistants/assistant-html2pdf.js';
+import { exportToPDF, PDF_PRESETS } from '/pharma-codex/static/js/assistants/assistant-html2pdf.js';
 
 /**
  * Handler pour la vue Facture
