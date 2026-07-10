@@ -1,15 +1,17 @@
 <!doctype html>
 <html lang="fr" data-fr-scheme="system">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="format-detection" content="telephone=no,date=no,address=no,email=no,url=no">
-
-    <meta name="theme-color" content="#000091"><!-- Défini la couleur de thème du navigateur (Safari/Android) -->
+    <meta name="theme-color" content="#006D44"><!-- Défini la couleur de thème du navigateur (Safari/Android) -->
+    <link rel="manifest" href="./manifest.json">
     <link rel="apple-touch-icon" href="./favicon/apple-touch-icon.png"><!-- 180×180 -->
     <link rel="icon" href="./favicon/favicon.svg" type="image/svg+xml">
     <link rel="shortcut icon" href="./favicon/favicon.ico" type="image/x-icon"><!-- 32×32 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Pharma-Codex">
     <link rel="stylesheet" href="./dsfr-v1.14.2/dist/dsfr.min.css">
     <link rel="stylesheet" href="./dsfr-v1.14.2/dist/utility/utility.min.css">
     <link rel="stylesheet" href="./dsfr-v1.14.2/dist/core/core.min.css">
@@ -24,10 +26,8 @@
     <script type="module" src="./static/js/module-route.js"></script>
     <script type="module" src="./static/js/module-breadcrumb.js"></script>
     <script type="module" src="./static/js/module-form-validators.js"></script>
-
     <title>Pharmacie St Barthélémy</title>
 </head>
-
 <body>
     <div data-include="./layout/header.html"></div>
     <main id="main" role="main" class="fr-container fr-my-4w">
@@ -51,6 +51,16 @@
     <script src="./static/js/libs/pizzip@3.2.0.js"></script>
     <script src="./static/js/libs/pizzip-utils@3.2.0.js"></script>
     <script src="./static/js/libs/FileSaver.min@2.0.5.js"></script>
+    <!-- Enregistrement du service worker (PWA) -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("./sw.js", { scope: "./" })
+            .then((reg) => console.log("Service worker enregistré :", reg.scope))
+            .catch((err) => console.error("Échec enregistrement service worker :", err));
+        });
+      }
+    </script>
 </body>
-
 </html>
