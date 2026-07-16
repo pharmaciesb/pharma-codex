@@ -1,0 +1,14 @@
+<template>
+  <div class="carte-infirmier">
+    <div class="carte-header">
+      <span class="carte-nom">${item.nom}</span>
+      <span class="carte-genre">${item.genre === 'F' ? '♀' : '♂'}</span>
+    </div>
+    <div class="carte-contact">
+      <div class="carte-ligne">📞 ${item.telephone || 'Non renseigné'}</div>
+      <div class="carte-ligne">✉️ ${item.mail || 'Non renseigné'}</div>
+    </div>
+    <div class="carte-adresse">${item.adresse || ''}</div>
+    <div class="carte-secteur">${item.secteur || ''}</div>
+  </div>
+</template>

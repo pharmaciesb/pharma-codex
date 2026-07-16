@@ -1,0 +1,50 @@
+[
+  {
+    "nom": "Atika & Radia",
+    "telephone": "07 66 48 61 38",
+    "mail": "Ikar.sante13@gmail.com",
+    "adresse": "",
+    "secteur": "Marseille 14ème",
+    "genre": "F"
+  },
+  {
+    "nom": "Hernandez Julia",
+    "telephone": "06 35 46 60 87",
+    "mail": "",
+    "adresse": "112 rue alphonse daudet 13013 Marseille",
+    "secteur": "Marseille 14ème",
+    "genre": "F"
+  },
+  {
+    "nom": "LUC Thomas",
+    "telephone": "07 60 34 77 01",
+    "mail": "",
+    "adresse": "159 Chemin de Sainte-Marthe",
+    "secteur": "Marseille 14ème",
+    "genre": "H"
+  },
+  {
+    "nom": "YEBDRI Djamila",
+    "telephone": "06 62 02 04 89",
+    "mail": "yebdridjami@icloud.com",
+    "adresse": "261 Chemin de Sainte-Marthe",
+    "secteur": "Marseille 14ème",
+    "genre": "F"
+  },
+  {
+    "nom": "BELKASMI Rhania",
+    "telephone": "07 67 70 12 60",
+    "mail": "raniabelkasmi@icloud.com",
+    "adresse": "",
+    "secteur": "Marseille 3ème,13ème,14ème,15ème",
+    "genre": "F"
+  },
+  {
+    "nom": "MEDAREG NAROU Radouane",
+    "telephone": "06 80 76 48 96",
+    "mail": "mederag@gmail.com",
+    "adresse": "1 Rue Paul LONGES 13014 Marseille",
+    "secteur": "Marseille 14ème",
+    "genre": "H"
+  }
+]

@@ -1,0 +1,73 @@
+<template>
+  <style>
+    .pdf-page {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 10mm;
+      box-sizing: border-box;
+      background: #fff;
+    }
+
+    .page-grid {
+      display: grid;
+      gap: 4mm;
+    }
+
+    .carte-infirmier {
+      border: 1px solid #000091;
+      border-radius: 3mm;
+      padding: 4mm 5mm;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 10pt;
+      color: #1e1e1e;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .carte-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      font-weight: bold;
+      font-size: 12pt;
+      color: #000091;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 2mm;
+      margin-bottom: 2mm;
+    }
+
+    .carte-genre {
+      font-size: 11pt;
+      font-weight: normal;
+      color: #666;
+    }
+
+    .carte-contact {
+      margin-bottom: 2mm;
+    }
+
+    .carte-ligne {
+      font-size: 9.5pt;
+      margin-bottom: 1mm;
+    }
+
+    .carte-adresse {
+      font-size: 9pt;
+      color: #444;
+    }
+
+    .carte-secteur {
+      font-size: 9pt;
+      font-weight: bold;
+      color: #000091;
+      margin-top: 1mm;
+    }
+  </style>
+  <div class="pdf-page">
+    <div class="page-grid"></div>
+  </div>
+</template>

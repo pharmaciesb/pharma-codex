@@ -1,0 +1,58 @@
+<div data-load-key="viewCartes">
+
+  <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle fr-grid-row--between fr-mb-3w">
+    <div class="fr-col-auto">
+      <h2 class="fr-h4 fr-mb-0">Annuaire des infirmiers à domicile</h2>
+    </div>
+  </div>
+
+  <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle fr-grid-row--between fr-mb-3w">
+    <div class="fr-col-12 fr-col-md-4">
+      <div class="fr-select-group" style="margin-bottom:0">
+        <label class="fr-label" for="cartes-filtre-genre">Filtrer par genre</label>
+        <select class="fr-select" id="cartes-filtre-genre">
+          <option value="">Tous</option>
+          <option value="F">Femmes</option>
+          <option value="H">Hommes</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="fr-col-12 fr-col-md-auto fr-grid-row fr-grid-row--right" style="gap:.5rem">
+      <button type="button" class="fr-btn fr-icon-eye-line fr-btn--tertiary fr-btn--sm" id="cartes-btn-apercu" title="Aperçu">
+        Aperçu
+      </button>
+      <button type="button" class="fr-btn fr-icon-file-download-line fr-btn--secondary fr-btn--sm" id="cartes-btn-pdf-tout" title="Télécharger tout (PDF)">
+        Télécharger tout (PDF)
+      </button>
+      <button type="button" class="fr-btn fr-icon-filter-line fr-btn--sm" id="cartes-btn-pdf-filtre" title="Télécharger filtré (PDF)">
+        Télécharger filtré (PDF)
+      </button>
+    </div>
+  </div>
+
+  <div class="fr-table fr-table--bordered fr-table--sm" id="cartes-table-wrapper">
+    <table>
+      <caption class="fr-sr-only">Liste des infirmiers à domicile</caption>
+      <thead>
+        <tr>
+          <th scope="col">Nom</th>
+          <th scope="col">Genre</th>
+          <th scope="col">Téléphone</th>
+          <th scope="col">Mail</th>
+          <th scope="col">Secteur</th>
+          <th scope="col" class="fr-text--center">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="cartes-liste">
+        <tr>
+          <td colspan="6" class="fr-text--center">Chargement en cours…</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Zone d'aperçu / toolbar interactive (colonnes, lignes, téléchargement, impression) -->
+  <div id="cartes-preview" class="fr-mt-4w"></div>
+
+</div>
