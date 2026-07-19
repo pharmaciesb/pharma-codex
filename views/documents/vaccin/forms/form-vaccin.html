@@ -9,16 +9,15 @@
             <div class="fr-col-12 fr-col-md-6">
                 <div class="fr-input-group">
                     <label class="fr-label" for="nom">Nom</label>
-                    <input class="fr-input" type="text" name="nom" id="nom" required 
-                           placeholder="DUPONT" style="text-transform: uppercase;" />
+                    <input class="fr-input" type="text" name="nom" id="nom" required placeholder="DUPONT"
+                        style="text-transform: uppercase;" />
                 </div>
             </div>
-            
+
             <div class="fr-col-12 fr-col-md-6">
                 <div class="fr-input-group">
                     <label class="fr-label" for="prenom">Prénom</label>
-                    <input class="fr-input" type="text" name="prenom" id="prenom" required 
-                           placeholder="Jean" />
+                    <input class="fr-input" type="text" name="prenom" id="prenom" required placeholder="Jean" />
                 </div>
             </div>
 
@@ -28,21 +27,28 @@
                     <input class="fr-input" type="date" name="dateNaissance" id="dateNaissance" required />
                 </div>
             </div>
-            
+
             <div class="fr-col-12 fr-col-md-6">
                 <div class="fr-input-group">
                     <label class="fr-label" for="immatriculation">N° d'immatriculation</label>
-                    <input class="fr-input" type="text" name="immatriculation" id="immatriculation" required 
-                           pattern="\d{15}" placeholder="123456789012345" 
-                           title="15 chiffres (NIR + clé)" />
+                    <input class="fr-input" type="text" name="immatriculation" id="immatriculation" required
+                        pattern="\d{15}" placeholder="123456789012345" title="15 chiffres (NIR + clé)" />
                 </div>
             </div>
 
-            <div class="fr-col-12">
+            <div class="fr-col-12 fr-col-md-6">
                 <div class="fr-input-group">
                     <label class="fr-label" for="codeOrganisme">Code de l'organisme de sécurité sociale</label>
-                    <input class="fr-input" type="text" name="codeOrganisme" id="codeOrganisme" required 
-                           placeholder="Ex: 01 131 0421" />
+                    <input class="fr-input" type="text" name="codeOrganisme" id="codeOrganisme" required
+                        placeholder="Ex: 01 131 0421" />
+                </div>
+            </div>
+
+            <div class="fr-col-12 fr-col-md-6">
+                <div class="fr-input-group">
+                    <label class="fr-label" for="datePrescription">Date de prescription</label>
+                    <input class="fr-input" name="datePrescription" id="datePrescription" type="date"
+                        data-init="aujourdhui" required>
                 </div>
             </div>
         </div>
@@ -59,15 +65,9 @@
                 Spécialité pharmaceutique
                 <span class="fr-hint-text">Tapez pour filtrer la liste</span>
             </label>
-            <input class="fr-input" 
-                   type="text" 
-                   name="specialite" 
-                   id="specialite" 
-                   required 
-                   autocomplete="off"
-                   list="vaccins" 
-                   placeholder="Ex: GARDASIL 9" />
-            
+            <input class="fr-input" type="text" name="specialite" id="specialite" required autocomplete="off"
+                list="vaccins" placeholder="Ex: GARDASIL 9" />
+
             <datalist id="vaccins">
                 <option value="ABRYSVO">
                 <option value="AREXVY">

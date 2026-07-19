@@ -77,7 +77,7 @@ class VaccinHandler extends AppManagers.ViewHandler {
 
   extractData(formData) {
     const rawDateNaiss = formData.get("dateNaissance").trim();
-    const today = new Date();
+    const rawDatePrescription = formData.get("datePrescription").trim();
     
     return {
       nom: formData.get("nom").trim(),
@@ -87,8 +87,7 @@ class VaccinHandler extends AppManagers.ViewHandler {
       specialite: formData.get("specialite").trim(),
       // Formatage compact pour drawSpaced (JJMMAAAA)
       dateNaissCompact: rawDateNaiss.split('-').reverse().join(''), 
-      dateJourCompact: today.toLocaleDateString('fr-FR').split('/').join(''),
-      dateJourFull: today.toLocaleDateString('fr-FR')
+      datePrescriptionCompact: rawDatePrescription.split('-').reverse().join(''),
     };
   }
 
@@ -118,7 +117,7 @@ class VaccinHandler extends AppManagers.ViewHandler {
     drawSpaced(data.dateNaissCompact, pos.naiss);
     drawNormal(data.codeOrganisme, pos.organ);
     drawNormal(data.specialite.toUpperCase(), pos.speci, -25);
-    drawSpaced(data.dateJourCompact, pos.date, -20);
+    drawSpaced(data.datePrescriptionCompact, pos.date, -20);
 
     return await this.pdfHandler.finalize(pdfDoc);
   }
