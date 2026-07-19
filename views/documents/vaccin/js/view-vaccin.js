@@ -1,5 +1,6 @@
 /// <reference path="../../../../static/js/types.js" />
 import { definirAujourdhui } from '/pharma-codex/static/js/assistants/assistant-date.js';
+import { initMasks } from '/pharma-codex/static/js/assistants/assistant-masks.js';
 import { PDFFormHandler, PDFPreview, FormValidator } from '/pharma-codex/static/js/assistants/assistant-pdf-lib.js';
 
 /**
@@ -37,6 +38,7 @@ class VaccinHandler extends AppManagers.ViewHandler {
   async onload() {
     try {
       definirAujourdhui();
+      initMasks();
       this.registerForm('formVaccin', this.handleFormSubmit);
       AppManagers.log(this.key, 'success', 'Module Vaccin initialisé');
     } catch (err) {
