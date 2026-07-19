@@ -93,10 +93,10 @@ class ViewCartes extends AppManagers.ViewHandler {
                 <td>${item.secteur || ''}</td>
                 <td>
                     <div class="fr-grid-row fr-grid-row--center" style="gap:.25rem; flex-wrap:nowrap">
+                    <button type="button" class="fr-btn fr-btn--tertiary fr-btn--sm fr-icon-eye-line"
+                                data-action="preview" data-idx="${idx}" title="Aperçu de la carte de ${item.nom}" title="Aperçu"></button>
                         <button type="button" class="fr-btn fr-btn--tertiary fr-btn--sm fr-icon-file-download-line"
                                 data-action="download" data-idx="${idx}" title="Télécharger la carte de ${item.nom}" title="Télécharger"></button>
-                        <button type="button" class="fr-btn fr-btn--tertiary fr-btn--sm fr-icon-printer-line"
-                                data-action="print" data-idx="${idx}" title="Imprimer la carte de ${item.nom}" title="Imprimer"></button>
                     </div>
                 </td>
             </tr>`;
@@ -113,8 +113,8 @@ class ViewCartes extends AppManagers.ViewHandler {
 
         if (btn.dataset.action === 'download') {
             this._telechargerPdf([item], `carte-${this._slug(item.nom)}.pdf`);
-        } else if (btn.dataset.action === 'print') {
-            this._imprimerCarte(item);
+        } else if (btn.dataset.action === 'preview') {
+            this._apercuPdf([item]);
         }
     }
 
@@ -143,7 +143,7 @@ class ViewCartes extends AppManagers.ViewHandler {
                 columns: 2,
                 rows: 4,
                 filename,
-                targetElementId: null // null => export direct, pas de preview
+                targetElementId: null
             });
             AppManagers.CodexManager.show('success', 'PDF généré avec succès.');
         } catch (err) {
@@ -175,42 +175,6 @@ class ViewCartes extends AppManagers.ViewHandler {
         } catch (err) {
             AppManagers.log(this.key, 'error', "Erreur génération de l'aperçu", err);
             AppManagers.CodexManager.show('error', "Erreur lors de la génération de l'aperçu.");
-        }
-    }
-
-    /**
-     * Impression isolée d'une seule carte (fenêtre d'impression dédiée,
-     * n'affecte pas le reste de l'application).
-     */
-    async _imprimerCarte(item) {
-        try {
-            const { itemTemplate, pageTemplate, printAssistant } = this._urls();
-
-            const [itemTplHtml, pageTplHtml] = await Promise.all([
-                fetch(itemTemplate).then(r => r.text()),
-                fetch(pageTemplate).then(r => r.text())
-            ]);
-
-            // Récupère uniquement le <style> du template de page
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = pageTplHtml.trim();
-            const styleEl = tempDiv.querySelector('template')?.content?.querySelector('style');
-            const styles = styleEl ? styleEl.innerHTML : '';
-
-            const cardEl = AppManagers.PdfAssistant.renderItem(itemTplHtml, { item });
-
-            const { printElement } = await import(printAssistant);
-            printElement(cardEl, {
-                title: `Carte - ${item.nom}`,
-                styles: `
-                    @page { size: auto; margin: 10mm; }
-                    body { display:flex; justify-content:center; padding-top: 10mm; }
-                    ${styles}
-                `
-            });
-        } catch (err) {
-            AppManagers.log(this.key, 'error', "Erreur lors de l'impression", err);
-            AppManagers.CodexManager.show('error', "Erreur lors de l'impression de la carte.");
         }
     }
 }

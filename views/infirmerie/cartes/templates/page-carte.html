@@ -1,16 +1,44 @@
 <template>
   <style>
+    /* --- LOGIQUE D'IMPRESSION --- */
+    @media print {
+
+      /* 1. On cache absolument tout l'interface (DSFR, Menus, Forms) */
+      body * {
+        visibility: hidden;
+      }
+
+      /* 2. On n'affiche que le conteneur du PDF et ses enfants */
+      .pdf-page,
+      .pdf-page * {
+        visibility: visible;
+      }
+
+      /* 3. On plaque le PDF en haut à gauche pour éviter les marges blanches parasites */
+      .pdf-page {
+        position: absolute;
+        left: 0;
+        top: 0;
+        margin: 0;
+        padding: 0;
+      }
+    }
+
     .pdf-page {
-      width: 210mm;
-      min-height: 297mm;
-      padding: 10mm;
+      width: 200mm;
+      min-height: 287mm;
+      padding: 5mm;
+      background: white;
       box-sizing: border-box;
-      background: #fff;
+      font-family: sans-serif;
+      margin: 0 auto;
+      /* Centré à l'écran */
+      color: black;
     }
 
     .page-grid {
       display: grid;
-      gap: 4mm;
+      gap: 2mm;
     }
 
     .carte-infirmier {

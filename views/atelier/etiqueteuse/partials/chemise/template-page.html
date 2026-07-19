@@ -2,6 +2,7 @@
     <style>
         /* --- LOGIQUE D'IMPRESSION --- */
         @media print {
+
             /* 1. On cache absolument tout l'interface (DSFR, Menus, Forms) */
             body * {
                 visibility: hidden;
@@ -31,13 +32,14 @@
             background: white;
             box-sizing: border-box;
             font-family: sans-serif;
-            margin: 0 auto; /* Centré à l'écran */
+            margin: 0 auto;
+            /* Centré à l'écran */
             color: black;
         }
 
         .page-grid {
             display: grid;
-            gap: 2mm; 
+            gap: 2mm;
         }
 
         .etiquette-item {
@@ -71,7 +73,7 @@
             font-weight: bold;
             flex: 1;
             align-self: stretch;
-            overflow: hidden;            
+            overflow: hidden;
         }
 
         .etiquette-visible-header .dilution {
@@ -100,13 +102,12 @@
             justify-content: center;
             margin-top: 4px;
         }
-        
+
         .datamatrix-container svg {
             width: 8mm;
             height: 8mm;
         }
     </style>
-
     <div class="pdf-page">
         <div class="page-grid"></div>
     </div>
