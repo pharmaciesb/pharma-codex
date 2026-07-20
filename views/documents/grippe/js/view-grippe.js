@@ -1,6 +1,7 @@
 /// <reference path="../../../../static/js/types.js" />
 
 import { definirAujourdhui } from '/pharma-codex/static/js/assistants/assistant-date.js';
+import { initMasks } from '/pharma-codex/static/js/assistants/assistant-masks.js';
 import { parseGS1 } from '/pharma-codex/static/js/assistants/assistant-datamatrix.js';
 import { PDFFormHandler, DateFormatter, PDFPreview, FormValidator } from '/pharma-codex/static/js/assistants/assistant-pdf-lib.js';
 
@@ -47,6 +48,7 @@ class GrippeHandler extends AppManagers.ViewHandler {
   async onload() {
     try {
       definirAujourdhui();
+      initMasks();
       await this.loadVaccinsData();
       this.setupDataMatrixScanner();
       this.registerForm('formGrippe', this.handleFormSubmit);
