@@ -190,23 +190,6 @@ export function mountCornerEditor(container, imageEl, initialCorners, onChange, 
     };
 }
 
-/**
- * Extrait l'image finale (recadrée + perspective corrigée) à partir des 4 coins
- * choisis/ajustés par l'utilisateur.
- *
- * ⚠️ Scanic n'expose pas d'API confirmée pour extraire à partir de coins
- * personnalisés (son mode "extract" refait sa propre détection interne et
- * ignore silencieusement les coins qu'on lui passe). On utilise donc toujours
- * notre warp maison (perspectiveWarpCanvas), qui applique exactement les
- * coins choisis par l'utilisateur — c'est le comportement attendu ici.
- */
-export async function extractFlattenedImage(imageEl, corners, outputWidth = 1400) {
-    const ratio = estimateOutputRatio(corners);
-    const outW = outputWidth;
-    const outH = Math.round(outputWidth * ratio);
-    return perspectiveWarpCanvas(imageEl, corners, outW, outH);
-}
-
 function estimateOutputRatio(corners) {
     const [tl, tr, br, bl] = corners;
     const width = (dist(tl, tr) + dist(bl, br)) / 2;
@@ -216,49 +199,118 @@ function estimateOutputRatio(corners) {
 function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
 
 /**
- * Fallback 100% maison : approxime la correction de perspective en découpant
- * le quadrilatère source en 2 triangles, et en appliquant une transformation
- * affine (3 points) à chacun via canvas 2D (setTransform). C'est une approximation
- * (pas une vraie homographie), mais suffisante pour redresser une photo de feuille.
+ * Extrait l'image finale (recadrée + perspective corrigée) à partir des 4 coins
+ * choisis/ajustés par l'utilisateur, via une vraie homographie (pas d'approximation
+ * par triangles) : aucune couture, quelle que soit l'inclinaison de la photo.
+ */
+export async function extractFlattenedImage(imageEl, corners, outputWidth = 1400) {
+    const ratio = estimateOutputRatio(corners);
+    const outW = outputWidth;
+    const outH = Math.round(outputWidth * ratio);
+    return perspectiveWarpCanvas(imageEl, corners, outW, outH);
+}
+
+/**
+ * Calcule les 8 coefficients (a,b,c,d,e,f,g,h) de la transformation projective
+ * qui envoie le carré unité (0,0)-(1,0)-(1,1)-(0,1) sur le quadrilatère `quad`
+ * (dans le même ordre : TL, TR, BR, BL). Méthode classique de Heckbert.
+ *
+ *   x = (a*u + b*v + c) / (g*u + h*v + 1)
+ *   y = (d*u + e*v + f) / (g*u + h*v + 1)
+ */
+function computeSquareToQuadCoeffs([p0, p1, p2, p3]) {
+    const dx1 = p1.x - p2.x, dx2 = p3.x - p2.x, sx = p0.x - p1.x + p2.x - p3.x;
+    const dy1 = p1.y - p2.y, dy2 = p3.y - p2.y, sy = p0.y - p1.y + p2.y - p3.y;
+
+    let a, b, c, d, e, f, g, h;
+
+    if (Math.abs(sx) < 1e-9 && Math.abs(sy) < 1e-9) {
+        // Cas dégénéré : le quadrilatère est en fait un parallélogramme (pas de perspective)
+        a = p1.x - p0.x; b = p2.x - p1.x; c = p0.x;
+        d = p1.y - p0.y; e = p2.y - p1.y; f = p0.y;
+        g = 0; h = 0;
+    } else {
+        const denom = dx1 * dy2 - dx2 * dy1;
+        g = (sx * dy2 - dx2 * sy) / denom;
+        h = (dx1 * sy - sx * dy1) / denom;
+        a = p1.x - p0.x + g * p1.x;
+        b = p3.x - p0.x + h * p3.x;
+        c = p0.x;
+        d = p1.y - p0.y + g * p1.y;
+        e = p3.y - p0.y + h * p3.y;
+        f = p0.y;
+    }
+
+    return { a, b, c, d, e, f, g, h };
+}
+
+/**
+ * Applique le warp perspective par mapping inverse : pour chaque pixel de sortie,
+ * on retrouve le pixel source correspondant (via l'homographie) et on l'échantillonne
+ * en bilinéaire. C'est du calcul brut sur ImageData (pas d'API canvas de warp),
+ * donc plus lent qu'un simple drawImage, mais sans aucune approximation/couture.
  */
 function perspectiveWarpCanvas(imageEl, corners, outW, outH) {
     const [tl, tr, br, bl] = corners;
-    const canvas = document.createElement('canvas');
-    canvas.width = outW;
-    canvas.height = outH;
-    const ctx = canvas.getContext('2d');
+    const { a, b, c, d, e, f, g, h } = computeSquareToQuadCoeffs([tl, tr, br, bl]);
 
-    // Triangle 1 : TL, TR, BL  →  (0,0),(outW,0),(0,outH)
-    drawAffineTriangle(ctx, imageEl, tl, tr, bl, { x: 0, y: 0 }, { x: outW, y: 0 }, { x: 0, y: outH });
-    // Triangle 2 : TR, BR, BL  →  (outW,0),(outW,outH),(0,outH)
-    drawAffineTriangle(ctx, imageEl, tr, br, bl, { x: outW, y: 0 }, { x: outW, y: outH }, { x: 0, y: outH });
+    // Canvas source (pour lire les pixels bruts de l'image)
+    const srcCanvas = document.createElement('canvas');
+    srcCanvas.width = imageEl.naturalWidth;
+    srcCanvas.height = imageEl.naturalHeight;
+    const srcCtx = srcCanvas.getContext('2d', { willReadFrequently: true });
+    srcCtx.drawImage(imageEl, 0, 0);
+    const srcW = srcCanvas.width, srcH = srcCanvas.height;
+    const src = srcCtx.getImageData(0, 0, srcW, srcH).data;
 
-    return canvas;
-}
+    const dstCanvas = document.createElement('canvas');
+    dstCanvas.width = outW;
+    dstCanvas.height = outH;
+    const dstCtx = dstCanvas.getContext('2d');
+    const dstImageData = dstCtx.createImageData(outW, outH);
+    const dst = dstImageData.data;
 
-function drawAffineTriangle(ctx, img, s0, s1, s2, d0, d1, d2) {
-    ctx.save();
+    const maxX = srcW - 1, maxY = srcH - 1;
 
-    // Clip sur le triangle destination
-    ctx.beginPath();
-    ctx.moveTo(d0.x, d0.y);
-    ctx.lineTo(d1.x, d1.y);
-    ctx.lineTo(d2.x, d2.y);
-    ctx.closePath();
-    ctx.clip();
+    for (let py = 0; py < outH; py++) {
+        const v = py / outH;
+        for (let px = 0; px < outW; px++) {
+            const u = px / outW;
+            const denom = g * u + h * v + 1;
+            const di = (py * outW + px) * 4;
 
-    // Résolution de la matrice affine [a,b,c,d,e,f] telle que : dest = M * src
-    const denom = s0.x * (s1.y - s2.y) - s1.x * (s0.y - s2.y) + s2.x * (s0.y - s1.y);
-    if (denom === 0) { ctx.restore(); return; }
+            if (Math.abs(denom) < 1e-9) {
+                dst[di] = 255; dst[di + 1] = 255; dst[di + 2] = 255; dst[di + 3] = 255;
+                continue;
+            }
 
-    const a = (d0.x * (s1.y - s2.y) - d1.x * (s0.y - s2.y) + d2.x * (s0.y - s1.y)) / denom;
-    const b = (d0.y * (s1.y - s2.y) - d1.y * (s0.y - s2.y) + d2.y * (s0.y - s1.y)) / denom;
-    const c = (s0.x * (d1.x - d2.x) - s1.x * (d0.x - d2.x) + s2.x * (d0.x - d1.x)) / denom;
-    const d = (s0.x * (d1.y - d2.y) - s1.x * (d0.y - d2.y) + s2.x * (d0.y - d1.y)) / denom;
-    const e = (s0.x * (s1.y * d2.x - s2.y * d1.x) - s1.x * (s0.y * d2.x - s2.y * d0.x) + s2.x * (s0.y * d1.x - s1.y * d0.x)) / denom;
-    const f = (s0.x * (s1.y * d2.y - s2.y * d1.y) - s1.x * (s0.y * d2.y - s2.y * d0.y) + s2.x * (s0.y * d1.y - s1.y * d0.y)) / denom;
+            const sx = (a * u + b * v + c) / denom;
+            const sy = (d * u + e * v + f) / denom;
 
-    ctx.transform(a, b, c, d, e, f);
-    ctx.drawImage(img, 0, 0);
-    ctx.restore();
+            if (sx < 0 || sy < 0 || sx > maxX || sy > maxY) {
+                // En dehors de l'image source (coin étiré hors-cadre) -> blanc
+                dst[di] = 255; dst[di + 1] = 255; dst[di + 2] = 255; dst[di + 3] = 255;
+                continue;
+            }
+
+            const x0 = sx | 0, y0 = sy | 0;
+            const x1 = x0 < maxX ? x0 + 1 : x0;
+            const y1 = y0 < maxY ? y0 + 1 : y0;
+            const fx = sx - x0, fy = sy - y0;
+
+            const i00 = (y0 * srcW + x0) * 4;
+            const i10 = (y0 * srcW + x1) * 4;
+            const i01 = (y1 * srcW + x0) * 4;
+            const i11 = (y1 * srcW + x1) * 4;
+
+            for (let ch = 0; ch < 4; ch++) {
+                const top = src[i00 + ch] * (1 - fx) + src[i10 + ch] * fx;
+                const bottom = src[i01 + ch] * (1 - fx) + src[i11 + ch] * fx;
+                dst[di + ch] = top * (1 - fy) + bottom * fy;
+            }
+        }
+    }
+
+    dstCtx.putImageData(dstImageData, 0, 0);
+    return dstCanvas;
 }
