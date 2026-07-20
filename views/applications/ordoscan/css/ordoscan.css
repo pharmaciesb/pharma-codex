@@ -1,0 +1,76 @@
+.ordoscan-panel { max-width: 900px; }
+
+.ordoscan-dropzone {
+  border: 2px dashed var(--border-default-blue-france, #000091);
+  border-radius: 0.5rem;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  background: var(--background-alt-blue-france, #f5f5fe);
+  transition: background-color .15s ease, border-color .15s ease;
+}
+.ordoscan-dropzone:hover,
+.ordoscan-dropzone:focus-visible {
+  background: var(--background-alt-blue-france-hover, #e8edff);
+}
+.ordoscan-dropzone.ordoscan-dropzone--dragover {
+  border-color: var(--border-action-high-blue-france, #000091);
+  background: var(--background-contrast-blue-france, #e8edff);
+}
+
+.ordoscan-preview-img,
+.ordoscan-scanic-container canvas {
+  max-width: 100%;
+  max-height: 480px;
+  display: block;
+  margin: 0 auto;
+  border: 1px solid var(--border-default-grey, #ddd);
+}
+
+.ordoscan-scanic-container {
+  position: relative;
+  display: inline-block;
+}
+.ordoscan-base-img,
+.ordoscan-overlay {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.ordoscan-overlay {
+  cursor: crosshair;
+}
+
+/* Fond quadrillé pour visualiser la transparence */
+.ordoscan-checker-bg {
+  background-image:
+    linear-gradient(45deg, #ccc 25%, transparent 25%),
+    linear-gradient(-45deg, #ccc 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ccc 75%),
+    linear-gradient(-45deg, transparent 75%, #ccc 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  border-radius: 0.25rem;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ordoscan-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  padding: 2rem;
+}
+.ordoscan-spin {
+  display: inline-block;
+  font-size: 1.5rem;
+  animation: ordoscan-spin 1.2s linear infinite;
+}
+@keyframes ordoscan-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
