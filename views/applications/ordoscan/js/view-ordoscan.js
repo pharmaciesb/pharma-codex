@@ -28,6 +28,7 @@ class OrdoscanHandler extends AppManagers.ViewHandler {
         this._rawRemovedBgBlob = null;   // masque alpha brut, calculé une seule fois par l'IA
         this._rawRemovedBgForBlob = null; // référence du _croppedBlob utilisé pour ce calcul (invalidation cache)
         this._strengthDebounceTimer = null;
+        this._bgProcessingStarted = false; // flag pour tracker si le traitement IA a démarré
     }
 
     async onload() {
@@ -68,6 +69,9 @@ class OrdoscanHandler extends AppManagers.ViewHandler {
         this.bindElement('ordoscan-bg-strength', 'input', (e) => this.onStrengthChange(e.target.value));
         this.addListener(document.getElementById('ordoscan-fond-blanc'), 'change', () => this.rerenderWithCurrentStrength());
         this.addListener(document.getElementById('ordoscan-fond-transparent'), 'change', () => this.rerenderWithCurrentStrength());
+
+        // Nouveau bouton pour continuer après modification du curseur
+        this.bindElement('ordoscan-btn-continue-to-export', 'click', () => this.goToStep(4));
 
         // --- Étape 4 : export ---
         this.bindElement('ordoscan-btn-download', 'click', () => this.downloadCurrent(this._finalBlob, 'ordonnance-finale.png'));
@@ -183,6 +187,7 @@ class OrdoscanHandler extends AppManagers.ViewHandler {
             // calculé précédemment n'est plus valable.
             this._rawRemovedBgBlob = null;
             this._rawRemovedBgForBlob = null;
+            this._bgProcessingStarted = false;
 
             this.getElement('ordoscan-step2-export', false).classList.remove('fr-hidden');
             await AppManagers.CodexManager.show('success', 'Recadrage validé');
@@ -205,11 +210,19 @@ class OrdoscanHandler extends AppManagers.ViewHandler {
 
         const slider = this.getElement('ordoscan-bg-strength', false);
         const afterImg = this.getElement('ordoscan-bg-after-img', false);
+        const continueBtn = this.getElement('ordoscan-step3-continue', false);
         this.getElement('ordoscan-bg-progress', false).classList.add('fr-hidden');
+
+        // Cacher le bouton "continuer" tant que l'utilisateur n'a pas lancé le traitement
+        continueBtn.classList.add('fr-hidden');
 
         if (this._rawRemovedBgBlob && this._rawRemovedBgForBlob === this._croppedBlob) {
             slider.disabled = false;
             this.rerenderWithCurrentStrength();
+            // Afficher le bouton continuer si on a déjà un traitement complété
+            if (this._bgProcessingStarted) {
+                continueBtn.classList.remove('fr-hidden');
+            }
         } else {
             slider.disabled = true;
             afterImg.classList.add('fr-hidden');
@@ -226,16 +239,20 @@ class OrdoscanHandler extends AppManagers.ViewHandler {
         const progressText = this.getElement('ordoscan-bg-progress-text', false);
         const afterImg = this.getElement('ordoscan-bg-after-img', false);
         const slider = this.getElement('ordoscan-bg-strength', false);
+        const continueBtn = this.getElement('ordoscan-step3-continue', false);
 
         // Cache : si le masque a déjà été calculé pour ce même recadrage, on ne
         // relance pas l'IA (coûteuse), on ré-applique juste le curseur actuel.
         if (this._rawRemovedBgBlob && this._rawRemovedBgForBlob === this._croppedBlob) {
+            this._bgProcessingStarted = true;
+            continueBtn.classList.remove('fr-hidden');
             return this.rerenderWithCurrentStrength();
         }
 
         progressEl.classList.remove('fr-hidden');
         afterImg.classList.add('fr-hidden');
         slider.disabled = true;
+        continueBtn.classList.add('fr-hidden');
 
         try {
             const transparentPng = await removeImageBackground(this._croppedBlob, (key, current, total) => {
@@ -244,6 +261,7 @@ class OrdoscanHandler extends AppManagers.ViewHandler {
 
             this._rawRemovedBgBlob = transparentPng;
             this._rawRemovedBgForBlob = this._croppedBlob;
+            this._bgProcessingStarted = true;
 
             progressEl.classList.add('fr-hidden');
             slider.disabled = false;
@@ -251,8 +269,9 @@ class OrdoscanHandler extends AppManagers.ViewHandler {
             this.getElement('ordoscan-bg-strength-output', false).textContent = '50';
 
             await this.rerenderWithCurrentStrength();
-            await AppManagers.CodexManager.show('success', 'Arrière-plan supprimé');
-            this.goToStep(4);
+            continueBtn.classList.remove('fr-hidden');
+
+            await AppManagers.CodexManager.show('success', 'Arrière-plan supprimé. Ajustez si nécessaire puis continuez.');
         } catch (err) {
             progressEl.classList.add('fr-hidden');
             AppManagers.log(this.key, 'error', 'Erreur suppression du fond', err);
@@ -285,6 +304,12 @@ class OrdoscanHandler extends AppManagers.ViewHandler {
         this._objectUrls.push(url);
         afterImg.src = url;
         afterImg.classList.remove('fr-hidden');
+
+        // Assurez-vous que le bouton continuer est visible
+        const continueBtn = this.getElement('ordoscan-step3-continue', false);
+        if (this._bgProcessingStarted) {
+            continueBtn.classList.remove('fr-hidden');
+        }
     }
 
     // =============================================================
@@ -334,6 +359,7 @@ class OrdoscanHandler extends AppManagers.ViewHandler {
         this._cornerEditor = null;
         this._croppedBlob = null;
         this._finalBlob = null;
+        this._bgProcessingStarted = false;
         this.resetImport();
         this.goToStep(1);
     }
