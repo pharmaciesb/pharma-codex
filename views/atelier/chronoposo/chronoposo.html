@@ -1,0 +1,146 @@
+<link rel="stylesheet" href="./views/atelier/chronoposo/css/chronoposo.css" />
+
+<div data-load-key="viewChronoposo" id="viewChronoposo" class="fr-container">
+
+  <div class="fr-callout fr-icon-scan-line">
+    <h4>⏱️ ChronoPoso</h4>
+    <p class="fr-callout__text">
+      Modifier les dates du fichier PDF : Plan de Posologie.
+    </p>
+  </div>
+
+  <!-- Stepper DSFR -->
+  <nav class="fr-stepper fr-stepper--completed" aria-label="étapes">
+    <ol class="fr-stepper__steps" data-fr-current-step="1">
+      <li class="fr-step">
+        <span class="fr-step__number">1</span>
+        Importer PDF
+      </li>
+      <li class="fr-step">
+        <span class="fr-step__number">2</span>
+        Modifier les dates
+      </li>
+      <li class="fr-step">
+        <span class="fr-step__number">3</span>
+        Télécharger
+      </li>
+    </ol>
+  </nav>
+
+  <p id="chronoposo-step-label" class="fr-text--sm fr-text--grey" style="margin-top: 1rem;">
+    Étape <span id="chronoposo-step-num">1</span> sur 3
+  </p>
+
+  <!-- ÉTAPE 1 : Import -->
+  <section id="chronoposo-panel-1" class="fr-card">
+    <div class="fr-card__body">
+      <h2 class="fr-card__title">1. Importer le PDF</h2>
+
+      <div id="chronoposo-dropzone" class="fr-upload-group chronoposo-dropzone" tabindex="0" role="button"
+        aria-label="Zone de dépôt pour fichier PDF">
+        <label class="fr-label" for="chronoposo-file-input">
+          Sélectionnez ou déposez votre PDF ici
+        </label>
+        <input id="chronoposo-file-input" class="fr-input" type="file" accept=".pdf" style="display: none;" />
+        <p class="fr-hint-text">Format accepté : PDF</p>
+      </div>
+
+      <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+        <button id="chronoposo-btn-to-step2" class="fr-btn" style="display: none;">
+          Continuer
+        </button>
+        <button id="chronoposo-btn-clear-import" class="fr-btn fr-btn--secondary" style="display: none;">
+          Annuler
+        </button>
+      </div>
+
+      <div id="chronoposo-file-info" class="fr-alert" style="display: none; margin-top: 1rem;">
+        <p>
+          Fichier chargé : <strong id="chronoposo-file-name"></strong>
+          (<span id="chronoposo-file-size"></span>)
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÉTAPE 2 : Modifier dates -->
+  <section id="chronoposo-panel-2" class="fr-card fr-hidden">
+    <div class="fr-card__body">
+      <h2 class="fr-card__title">2. Modifier les dates de pilulier</h2>
+
+      <div class="fr-grid-row fr-grid-row--gutter">
+        <div class="fr-col-12 fr-col-md-4">
+          <div class="fr-input-group">
+            <label class="fr-label" for="chronoposo-date-production">
+              Date de production
+            </label>
+            <input id="chronoposo-date-production" class="fr-input" type="date" />
+          </div>
+        </div>
+
+        <div class="fr-col-12 fr-col-md-4">
+          <div class="fr-input-group">
+            <label class="fr-label" for="chronoposo-date-debut">
+              Date de début (pilulier)
+            </label>
+            <input id="chronoposo-date-debut" class="fr-input" type="date" required />
+          </div>
+        </div>
+
+        <div class="fr-col-12 fr-col-md-4">
+          <div class="fr-input-group">
+            <label class="fr-label" for="chronoposo-date-fin">
+              Date de fin (pilulier)
+            </label>
+            <input id="chronoposo-date-fin" class="fr-input" type="date" required />
+          </div>
+        </div>
+      </div>
+
+      <div id="chronoposo-alert-dates" class="fr-alert" style="display: none; margin-top: 1rem;">
+        <p id="chronoposo-alert-text"></p>
+      </div>
+
+      <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+        <button id="chronoposo-btn-back-to-1" class="fr-btn fr-btn--secondary">
+          Retour
+        </button>
+        <button id="chronoposo-btn-apply-dates" class="fr-btn">
+          Appliquer les changements
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÉTAPE 3 : Télécharger -->
+  <section id="chronoposo-panel-3" class="fr-card fr-hidden">
+    <div class="fr-card__body">
+      <h2 class="fr-card__title">3. Télécharger le PDF</h2>
+
+      <div class="fr-alert fr-alert--success">
+        <p>
+          <span class="fr-icon-check-line" aria-hidden="true"></span>
+          Les dates ont été modifiées avec succès !
+        </p>
+      </div>
+
+      <div id="chronoposo-preview-dates"
+        style="background: #f5f5f5; padding: 1rem; border-radius: 4px; margin: 1.5rem 0;">
+        <p><strong>Nouvelles dates appliquées :</strong></p>
+        <p>Production : <span id="chronoposo-preview-production"></span></p>
+        <p>Début pilulier : <span id="chronoposo-preview-debut"></span></p>
+        <p>Fin pilulier : <span id="chronoposo-preview-fin"></span></p>
+      </div>
+
+      <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+        <button id="chronoposo-btn-download" class="fr-btn">
+          <span class="fr-icon-download-line" aria-hidden="true"></span>
+          Télécharger le PDF
+        </button>
+        <button id="chronoposo-btn-restart" class="fr-btn fr-btn--secondary">
+          Réinitialiser
+        </button>
+      </div>
+    </div>
+  </section>
+</div>
