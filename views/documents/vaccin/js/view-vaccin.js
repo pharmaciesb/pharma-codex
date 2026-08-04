@@ -1,7 +1,7 @@
 /// <reference path="../../../../static/js/types.js" />
-import { definirAujourdhui } from '/pharma-codex/static/js/assistants/assistant-date.js';
-import { initMasks } from '/pharma-codex/static/js/assistants/assistant-masks.js';
-import { PDFFormHandler, PDFPreview, FormValidator } from '/pharma-codex/static/js/assistants/assistant-pdf-lib.js';
+import { definirAujourdhui } from 'assistants/date';
+import { initMasks } from 'assistants/masks.js';
+import { PDFFormHandler, PDFPreview, FormValidator } from 'assistants/pdf-lib';
 
 /**
  * Handler pour la vue Vaccin (Bon de prise en charge 611)

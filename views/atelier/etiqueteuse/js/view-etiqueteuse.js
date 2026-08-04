@@ -1,5 +1,5 @@
 /// <reference path="../../../../static/js/types.js" />
-import { toTitleCase } from '/pharma-codex/static/js/assistants/assistant-string.js';
+import { toTitleCase } from 'assistants/string';
 
 let items = [];
 

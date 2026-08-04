@@ -1,7 +1,7 @@
 /// <reference path="../../../../static/js/types.js" />
 
 import { getDocument } from '/pharma-codex/static/js/libs/pdf@5.4.394.js';
-import { initCopyListeners } from '/pharma-codex/static/js/assistants/assistant-clipboard.js';
+import { initCopyListeners } from 'assistants/clipboard';
 
 /**
  * Handler pour la vue UberML (génération de commandes OCP)

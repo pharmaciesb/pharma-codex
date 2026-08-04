@@ -19,6 +19,28 @@
     <link rel="stylesheet" href="./static/css/application.css">
     <!--- Script pour corriger l'effet de flash au chargement du mode sombre, à placer dans le head pour être exécuté le plus tôt possible -->
     <script type="module" src="./static/js/libs/dsfr.themefixer@1.14.2.js"></script>
+    
+    <!-- ✅ IMPORTMAP - Centralise tous les chemins des modules et dépendances -->
+    <script type="importmap">
+    {
+      "imports": {
+        "assistants/share-export": "./static/js/assistants/assistant-share-export.js",
+        "assistants/chronoposo": "./static/js/assistants/assistant-chronoposo.js",
+        "assistants/date": "./static/js/assistants/assistant-date.js",
+        "assistants/clipboard": "./static/js/assistants/assistant-clipboard.js",
+        "assistants/clipboard-paste": "./static/js/assistants/assistant-clipboard-paste.js",
+        "assistants/pdf-lib": "./static/js/assistants/assistant-pdf-lib.js",
+        "assistants/pdf": "./static/js/assistants/assistant-pdf.js",
+        "assistants/string": "./static/js/assistants/assistant-string.js",
+        "assistants/ordoscan-scanic": "./static/js/assistants/assistant-ordoscan-scanic.js",
+        "assistants/ordoscan-bgremoval": "./static/js/assistants/assistant-ordoscan-bgremoval.js",
+        "assistants/html2pdf": "./static/js/assistants/assistant-html2pdf.js",
+        "assistants/masks": "./static/js/assistants/assistant-masks.js",
+        "assistants/datamatrix": "./static/js/assistants/assistant-datamatrix.js"
+      }
+    }
+    </script>
+
     <!-- Script spécifique à l'application -->
     <script type="module" src="./static/js/module-loader.js"></script>
     <script type="module" src="./static/js/module-application-manager.js"></script>

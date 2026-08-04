@@ -1,7 +1,7 @@
 /// <reference path="../../../../static/js/types.js" />
 
-import { downloadBlob } from '/pharma-codex/static/js/assistants/assistant-share-export.js';
-import { ChronoposoAssistant } from '/pharma-codex/static/js/assistants/assistant-chronoposo.js';
+import { downloadBlob } from 'assistants/share-export';
+import { ChronoposoAssistant } from 'assistants/chronoposo';
 
 // Exposer l'assistant globalement pour debugging
 window.ChronoposoAssistant = ChronoposoAssistant;

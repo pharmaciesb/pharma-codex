@@ -1,6 +1,6 @@
 /// <reference path="../../../../static/js/types.js" />
 
-import { exportToPDF, PDF_PRESETS } from '/pharma-codex/static/js/assistants/assistant-html2pdf.js';
+import { exportToPDF, PDF_PRESETS } from 'assistants/html2pdf';
 
 /**
  * Handler pour la vue Ordonnancier

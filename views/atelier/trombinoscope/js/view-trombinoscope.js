@@ -1,6 +1,6 @@
 /// <reference path="../../../../static/js/types.js" />
 
-import { removeAccents } from '/pharma-codex/static/js/assistants/assistant-string.js';
+import { removeAccents } from 'assistants/string';
 
 let items = [];
 

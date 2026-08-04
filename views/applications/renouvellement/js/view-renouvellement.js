@@ -1,7 +1,7 @@
 /// <reference path="../../../../static/js/types.js" />
 
-import { definirAujourdhui, formatFR, obtenirIntervalle } from '/pharma-codex/static/js/assistants/assistant-date.js';
-import { initCopyListeners } from '/pharma-codex/static/js/assistants/assistant-clipboard.js';
+import { definirAujourdhui, formatFR, obtenirIntervalle } from 'assistants/date';
+import { initCopyListeners } from 'assistants/clipboard';
 
 /**
  * Handler pour la vue Renouvellement

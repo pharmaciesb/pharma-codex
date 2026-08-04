@@ -1,9 +1,9 @@
 /// <reference path="../../../../static/js/types.js" />
 
-import { listenForImagePaste, listenForImageDrop } from '/pharma-codex/static/js/assistants/assistant-clipboard-paste.js';
-import { detectDocumentCorners, mountCornerEditor, extractFlattenedImage } from '/pharma-codex/static/js/assistants/assistant-ordoscan-scanic.js';
-import { preloadBackgroundRemoval, removeImageBackground, compositeOnWhite, applyAlphaStrength } from '/pharma-codex/static/js/assistants/assistant-ordoscan-bgremoval.js';
-import { downloadBlob, canShareFiles, shareBlob } from '/pharma-codex/static/js/assistants/assistant-share-export.js';
+import { listenForImagePaste, listenForImageDrop } from 'assistants/clipboard-paste';
+import { detectDocumentCorners, mountCornerEditor, extractFlattenedImage } from 'assistants/ordoscan-scanic';
+import { preloadBackgroundRemoval, removeImageBackground, compositeOnWhite, applyAlphaStrength } from 'assistants/ordoscan-bgremoval';
+import { downloadBlob, canShareFiles, shareBlob } from 'assistants/share-export';
 
 const STEP_TITLES = {
     1: { title: 'Import de la photo', next: 'Recadrage & perspective' },
