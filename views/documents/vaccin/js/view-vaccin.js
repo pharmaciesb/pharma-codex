@@ -7,7 +7,7 @@ import { PDFFormHandler, PDFPreview, FormValidator } from 'assistants/pdf-lib';
  * Handler pour la vue Vaccin (Bon de prise en charge 611)
  * @extends {AppManagers.ViewHandler}
  */
-class VaccinHandler extends AppManagers.ViewHandler {
+class ViewVaccin extends AppManagers.ViewHandler {
   constructor() {
     super('viewVaccin');
     
@@ -138,4 +138,4 @@ class VaccinHandler extends AppManagers.ViewHandler {
   }
 }
 
-new VaccinHandler().register();
+new ViewVaccin().register();
